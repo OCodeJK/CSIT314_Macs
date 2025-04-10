@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Create User</title>
+</head>
+<body>
+    <h2>Create User Account</h2>
+    <form action="/create_user" method="POST">
+        <label>Username:</label><br>
+        <input type="text" name="username" required><br><br>
+
+        <label>Password:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <label>Role:</label><br>
+        <select name="profile_id" required>
+            {% for pid, pname in profiles %}
+                <option value="{{ pid }}">{{ pname }}</option>
+            {% endfor %}
+        </select><br><br>
+
+
+        <input type="submit" value="Create Account">
+    </form>
+    <br><br>
+    <a href="/create_profile">
+        <button type="button">Register new profile</button>
+    </a>
+
+    {%if message %}
+        <div class="message">{{message}}</div>
+    {% endif %}
+
+</body>
+</html>
