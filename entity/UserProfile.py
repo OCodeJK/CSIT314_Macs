@@ -3,12 +3,17 @@ from db_config import db_connection
 
 
 class UserProfile:
-    @staticmethod
-    def createUserProfile(profilename):
+    def __init__(self, profilename):
+        self.__profilename = profilename
+        
+    def get_profilename(self):
+        return self.__profilename
+    
+    def createUserProfile(self):
         try:
             conn = db_connection()
             cur = conn.cursor()
-            cur.execute("INSERT INTO profiles (profilename) VALUES (%s)", (profilename,))
+            cur.execute("INSERT INTO profile (profilename) VALUES (%s)", (self.__profilename,))
             conn.commit()
             cur.close()
             conn.close()

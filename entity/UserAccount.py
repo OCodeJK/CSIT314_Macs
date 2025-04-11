@@ -2,12 +2,27 @@ import psycopg2
 from db_config import db_connection
 
 class UserAccount:
-    @staticmethod
-    def createUserAccount(username, password, profile_id):
+    def __init__(self, username, password, profilename):
+        self.__username = username
+        self.__password = password
+        self.__profilename = profilename
+        
+        
+    #Getters
+    def get_username(self):
+        return self.__username
+
+    def get_profilename(self):
+        return self.__profilename
+    
+
+    #Create account (username, password and profile)
+    def createUserAccount(self):
         try:
             conn = db_connection()
             cur = conn.cursor()
-            cur.execute("INSERT INTO user_accounts (username, password, profileid) VALUES (%s, %s, %s)", (username, password, profile_id))
+            cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s)"
+                        , (self.__username, self.__password, self.__profilename))
             conn.commit()
             cur.close()
             conn.close()
@@ -19,19 +34,25 @@ class UserAccount:
             print("DB Error:", e)
             conn.rollback()
             return False
-        
+    
+    
+    #Login (username, password and profile)    
     @staticmethod
-    def Authenticate(username, password, role):
+    def Authenticate(username, password, profilename):  
         conn = db_connection()
         cur = conn.cursor()
         cur.execute(
-            """SELECT username, password, profilename from user_accounts INNER JOIN profiles 
-            ON user_accounts.profileid = profiles.profileid 
-            WHERE user_accounts.username=%s AND user_accounts.password=%s AND profiles.profilename=%s"""
-            ,(username, password, role)
+            """SELECT username, password, profilename from account INNER JOIN profile 
+            ON account.profileid = profile.profileid 
+            WHERE account.username=%s AND account.password=%s AND profile.profilename=%s"""
+            ,(username, password, profilename)
         )
-        user = cur.fetchone()
+        row = cur.fetchone()
         cur.close()
         conn.close()
-        return user is not None
-
+        
+        if row:
+            username, password, profilename = row
+            return UserAccount(username, password, profilename)
+        else:
+            return None

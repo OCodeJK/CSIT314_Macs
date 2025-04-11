@@ -7,13 +7,11 @@
 <body>
     <h2>Login</h2>
     <form action="/" method="POST">
-        <label for="role">Select Role:</label><br>
-        <select name="role" id="role" required>
-            <option value="">--Select--</option>
-            <option value="Cleaner">Cleaner</option>
-            <option value="Homeowner">Homeowner</option>
-            <option value="User Admin">User Admin</option>
-            <option value="Platform Management">Platform Management</option>
+        <label for="profile_name">Login As:</label><br>
+        <select name="profile_name" required>
+            {% for pid, pname in profiles %}
+                <option value="{{ pname }}">{{ pname }}</option>
+            {% endfor %}
         </select><br><br>
 
         <label>Username:</label><br>

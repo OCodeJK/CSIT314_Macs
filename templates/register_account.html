@@ -13,7 +13,7 @@
         <label>Password:</label><br>
         <input type="password" name="password" required><br><br>
 
-        <label>Role:</label><br>
+        <label>Register As:</label><br>
         <select name="profile_id" required>
             {% for pid, pname in profiles %}
                 <option value="{{ pid }}">{{ pname }}</option>
@@ -23,6 +23,11 @@
 
         <input type="submit" value="Create Account">
     </form>
+    <br>
+    <a href="/">
+        <button type="button">Logout</button>
+    </a>
+    
     <br><br>
     <a href="/create_profile">
         <button type="button">Register new profile</button>
