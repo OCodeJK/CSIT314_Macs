@@ -7,10 +7,10 @@
 <body>
     <h2>Login</h2>
     <form action="/" method="POST">
-        <label for="profile_name">Login As:</label><br>
-        <select name="profile_name" required>
+        <label for="profile_id">Login As:</label><br>
+        <select name="profile_id" required>
             {% for pid, pname in profiles %}
-                <option value="{{ pname }}">{{ pname }}</option>
+                <option value="{{ pid }}">{{ pname }}</option>
             {% endfor %}
         </select><br><br>
 
