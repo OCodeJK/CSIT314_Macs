@@ -6,13 +6,13 @@
 </head>
 <body>
     <h2>Create User Profile</h2>
-    <form action="/create_profile" method="post">
+    <form action="/admin/create_profile" method="post">
         <label>Profile Name:</label><br>
         <input type="text" name="profile_name" required><br><br>
         <input type="submit" value="Create Profile">
     </form>
     <br><br>
-    <a href="/create_user">Back to create account page</a>
+    <a href="/admin/create_user">Back to create account page</a>
 
     {%if message %}
         <div class="message">{{message}}</div>

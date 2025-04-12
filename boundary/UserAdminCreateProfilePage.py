@@ -5,7 +5,7 @@ from control.UserAdminCreateProfileController import UserAdminProfileController
 register_profile_ui = Blueprint("register_profile_ui", __name__)
 controller = UserAdminProfileController()
 
-@register_profile_ui.route("/create_profile", methods=["GET", "POST"])
+@register_profile_ui.route("/admin/create_profile", methods=["GET", "POST"])
 def createUserProfile():
     if request.method == "POST":
         profile_name = request.form["profile_name"]

@@ -74,3 +74,22 @@ class UserAccount:
             return UserAccount(username, password, profileid)
         else:
             return None
+    
+    #View all accounts from the accounts database joined with profile
+    @staticmethod
+    def ViewUserDetails():
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT a.userid, a.username, p.profilename 
+                FROM account a 
+                INNER JOIN profile p ON a.profileid = p.profileid 
+            """)
+            users = cur.fetchall()
+            cur.close()
+            conn.close()
+            return users
+        except Exception as e:
+            print("Error fetching user accounts:", e)
+            return None

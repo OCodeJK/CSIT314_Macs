@@ -7,7 +7,7 @@ register_ui = Blueprint("register_ui", __name__)
 controller = UserAdminCreateAccController()
 
 
-@register_ui.route("/create_user", methods=["GET", "POST"])
+@register_ui.route("/admin/create_user", methods=["GET", "POST"])
 def createUserAccount():
     profiles = get_all_profiles()
     
