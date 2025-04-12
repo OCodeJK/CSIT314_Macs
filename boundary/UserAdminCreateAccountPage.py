@@ -19,11 +19,11 @@ def createUserAccount():
         result = controller.userCreateAccount(username, password, profile_id)
 
         if result is True:
-            message = "✅ Account created!"
+            message = "✅ Account created, you may now login."
         elif isinstance(result, str):
             message = f"⚠️ {result}"
         else:
-            message = "❌ Failed to create account."
+            message = "❌ Create not successful, please try again."
             
         
         return render_template("register_account.html", message=message, profiles=profiles)

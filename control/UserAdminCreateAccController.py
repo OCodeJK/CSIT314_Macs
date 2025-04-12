@@ -1,9 +1,9 @@
 from entity.UserAccount import UserAccount
 
 class UserAdminCreateAccController:
-    def userCreateAccount(self, username, password, profile_id):
+    def userCreateAccount(self, username, password, profileid):
         try:
-            user = UserAccount(username, password, profile_id)
+            user = UserAccount(username, password, profileid)
             return user.createUserAccount()
         except ValueError as ve:
             return str(ve)
