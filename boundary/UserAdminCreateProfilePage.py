@@ -17,7 +17,7 @@ def createUserProfile():
         elif isinstance(result, str):
             message = f"⚠️ {result}"
         else:
-            message = "❌ Could not create profile."
+            message = "❌ Could not create profile." + profile_name
             
         return render_template("register_profile.html", message=message)
     

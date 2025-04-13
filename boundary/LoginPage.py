@@ -16,6 +16,10 @@ def Login():
         profileid = request.form["profile_id"]
         
         user = controller.AuthenticateDetails(username, password, profileid)
+        
+        # Handle string errors returned
+        if isinstance(user, str):
+            return render_template("login.html", message=f"⚠️ {user}", profiles=profiles)
 
         if user:
             if user.get_profileid() == "User Admin":

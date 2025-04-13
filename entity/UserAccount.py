@@ -20,6 +20,12 @@ class UserAccount:
     def get_profileid(self):
         if (self.__profileid == 1):
             return "User Admin"
+        elif(self.__profileid == 2):
+            return "Cleaner"
+        elif(self.__profileid == 3):
+            return "Homeowner"
+        elif(self.__profileid == 4):
+            return "Platform Management"
         else:
             None
     
