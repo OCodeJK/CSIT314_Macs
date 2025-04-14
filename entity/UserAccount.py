@@ -99,3 +99,20 @@ class UserAccount:
         except Exception as e:
             print("Error fetching user accounts:", e)
             return None
+        
+    @staticmethod
+    def UpdateUserAccount(userid, username, password, profileid):
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                UPDATE account
+                SET username = %s, password = %s, profileid = %s
+                WHERE userid = %s            
+            """, (username, password, profileid, userid))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print("DB error:", e)
+            return False

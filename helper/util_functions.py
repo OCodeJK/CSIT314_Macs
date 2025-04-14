@@ -8,3 +8,12 @@ def get_all_profiles():
     cur.close()
     conn.close()
     return profiles
+
+
+def get_user_by_id(userid):
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM account WHERE userid = %s", (userid,))
+    user = cur.fetchone()
+    conn.close()
+    return user

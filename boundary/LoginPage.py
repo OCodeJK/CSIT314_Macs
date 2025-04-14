@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, request, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for
 from control.LoginAccountController import LoginAccountController
 from helper.util_functions import get_all_profiles
 
