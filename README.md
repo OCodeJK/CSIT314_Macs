@@ -9,3 +9,8 @@
  
  
  localhost:5000 to access it
+
+
+**Database:**
+To ensure you are using the latest database
+pg_restore -U username -d c2c_db < db.dump
