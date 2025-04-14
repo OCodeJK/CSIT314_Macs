@@ -13,4 +13,5 @@
 
 **Database:**
 To ensure you are using the latest database
+
 pg_restore -U username -d c2c_db < db.dump
