@@ -116,3 +116,18 @@ class UserAccount:
         except Exception as e:
             print("DB error:", e)
             return False
+        
+        
+    @staticmethod
+    def SearchUser(username):
+        conn = db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT a.userid, a.username, p.profilename
+            FROM account a
+            JOIN profile p ON a.profileid = p.profileid
+            WHERE a.username ILIKE %s
+        """, (f"%{username}%",))
+        ResultSet = cur.fetchall()
+        conn.close()
+        return ResultSet         
