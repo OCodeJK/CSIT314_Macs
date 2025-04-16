@@ -149,7 +149,7 @@ class UserAccount:
             conn = db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT a.userid, a.username, p.profilename
+                SELECT a.userid, a.username, p.profilename, a.suspend
                 FROM account a
                 JOIN profile p ON a.profileid = p.profileid
                 WHERE a.username ILIKE %s

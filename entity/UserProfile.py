@@ -25,3 +25,18 @@ class UserProfile:
             print("DB Error:", e)
             conn.rollback()
             return False
+        
+    @staticmethod
+    def ViewUserProfile():
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT profileid, profilename FROM profile ORDER BY profileid")
+            profiles = cur.fetchall()
+            return profiles
+        except Exception as e:
+            print("DB error:", e)
+            return None
+        finally:
+            cur.close()
+            conn.close()
