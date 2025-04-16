@@ -17,9 +17,14 @@ def Login():
         
         user = controller.AuthenticateDetails(username, password, profileid)
         
+        # ✅ Check for suspension FIRST
+        if user == "suspended":
+            return render_template("login.html", message="❌ Your account has been suspended.", profiles=profiles)
+        
         # Handle string errors returned
         if isinstance(user, str):
             return render_template("login.html", message=f"⚠️ {user}", profiles=profiles)
+        
 
         if user:
             if user.get_profileid() == "User Admin":
@@ -33,8 +38,7 @@ def Login():
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
                 print("this is platform management page")
-            else:
-                return render_template("login.html", message=f"✅ {user.get_username()} exists but not for {user.get_profileid()}.", profiles=profiles)
+            
         else:
             return render_template("login.html", message="❌ Invalid credentials or role.", profiles=profiles)
     

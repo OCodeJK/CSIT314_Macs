@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
 from control.UserAdminViewAccController import UserAdminViewAccController
 from control.UserAdminSearchAccController import UserAdminSearchAccController
+from control.UserAdminSuspendAccController import UserAdminSuspendAccController
 
 view_acc = Blueprint('view_acc', __name__)
 
@@ -15,3 +16,14 @@ def display_all_users():
         users = UserAdminViewAccController.UserAdminViewAcc()
     
     return render_template('view_account.html', users=users)
+
+@view_acc.route("/admin/suspend_user/<int:userid>", methods=["POST"])
+def SuspendUser(userid):
+    result = UserAdminSuspendAccController.UserAdminSuspendAcc(userid)
+    print("Suspend result:", result)
+    
+    if result is True:
+        return redirect(url_for("view_acc.display_all_users", message="User suspended successfully"))
+    else:
+        return redirect(url_for("view_acc.display_all_users", message="Suspension failed: User already suspended.."))
+

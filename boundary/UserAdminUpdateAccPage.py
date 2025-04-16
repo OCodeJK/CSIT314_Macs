@@ -21,7 +21,6 @@ def submitUpdateUserInfo(userid):
     if not password:
         current_user = get_user_by_id(userid)
         if current_user:
-            username = current_user[1] #username is 2nd column
             password = current_user[2] #password is 3rd column
         else:
             return render_template("update_account.html", user=[userid, username, None, profileid], message="Something went wrong...")

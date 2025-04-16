@@ -35,6 +35,7 @@ class UserAccount:
         try:
             conn = db_connection()
             cur = conn.cursor()
+            
             cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s) RETURNING userid"
                         , (self.__username, self.__password, self.__profileid))
             userid = cur.fetchone()[0]
@@ -46,6 +47,7 @@ class UserAccount:
                     "INSERT INTO useradmin (userid) VALUES (%s)", (userid,)
                 )
                 conn.commit()
+            
                 
             return True
         except psycopg2.errors.UniqueViolation:
@@ -65,12 +67,35 @@ class UserAccount:
     def Authenticate(username, password, profileid):  
         conn = db_connection()
         cur = conn.cursor()
+        
+        #check if account is suspended
+        cur.execute("""
+            SELECT suspend from account 
+            WHERE username = %s AND password = %s AND profileid = %s""", (username, password, profileid)
+        )
+        result = cur.fetchone()
+        
+        if result is None:
+            cur.close()
+            conn.close()
+            return None
+        
+        is_suspended = result[0]
+        if is_suspended is True:
+            #Account is suspended
+            cur.close()
+            conn.close()
+            return "suspended"
+        
+        #login when not suspended
         cur.execute(
             """SELECT username, password, account.profileid from account INNER JOIN profile 
             ON account.profileid = profile.profileid 
-            WHERE account.username=%s AND account.password=%s AND profile.profileid=%s"""
-            , (username, password, profileid)
+            WHERE account.username=%s AND account.password=%s AND profile.profileid=%s AND account.suspend=FALSE"""
+            ,(username, password, profileid)
         )
+        
+        
         row = cur.fetchone()
         cur.close()
         conn.close()
@@ -88,9 +113,9 @@ class UserAccount:
             conn = db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT a.userid, a.username, p.profilename 
+                SELECT a.userid, a.username, p.profilename, a.suspend 
                 FROM account a 
-                INNER JOIN profile p ON a.profileid = p.profileid 
+                INNER JOIN profile p ON a.profileid = p.profileid
             """)
             users = cur.fetchall()
             cur.close()
@@ -120,14 +145,40 @@ class UserAccount:
         
     @staticmethod
     def SearchUser(username):
-        conn = db_connection()
-        cur = conn.cursor()
-        cur.execute("""
-            SELECT a.userid, a.username, p.profilename
-            FROM account a
-            JOIN profile p ON a.profileid = p.profileid
-            WHERE a.username ILIKE %s
-        """, (f"%{username}%",))
-        ResultSet = cur.fetchall()
-        conn.close()
-        return ResultSet         
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT a.userid, a.username, p.profilename
+                FROM account a
+                JOIN profile p ON a.profileid = p.profileid
+                WHERE a.username ILIKE %s
+            """, (f"%{username}%",))
+            ResultSet = cur.fetchall()
+            cur.close()
+            conn.close()
+            return ResultSet
+        except Exception as e:
+            print("DB error:", e)
+            return None    
+
+    @staticmethod
+    def SuspendUser(userid):
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT suspend FROM account WHERE userid= %s", (userid,))
+            current_status = cur.fetchone()
+            
+            if current_status[0] is True:
+                return False # Already suspended
+            
+            #suspend the account
+            cur.execute("UPDATE account set suspend=TRUE WHERE userid = %s", (userid,))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return True
+        except Exception as e:
+            print("DB error:", e)
+            return False
