@@ -40,3 +40,21 @@ class UserProfile:
         finally:
             cur.close()
             conn.close()
+    
+    
+    @staticmethod
+    def SearchProfile(profilename):
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT profileid, profilename FROM profile
+                WHERE profilename ILIKE %s
+            """, (f"%{profilename}%",))
+            ResultSet = cur.fetchall()
+            cur.close()
+            conn.close()
+            return ResultSet
+        except Exception as e:
+            print("DB error:", e)
+            return None  
