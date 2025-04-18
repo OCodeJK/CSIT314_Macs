@@ -3,12 +3,30 @@
 <head>
     <title>View Profiles</title>
     <style>
-        table { width: 50%; margin: 30px auto; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
-        th { background-color: #f2f2f2; }
+        table { 
+            width: 50%; 
+            margin: 30px auto; 
+            border-collapse: collapse; 
+        }
+
+        th, td { 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            text-align: center; 
+        }
+
+        th { 
+            background-color: #f2f2f2; 
+        }
+
         h2,h3 {
             text-align: center;
             margin-top: 30px;
+        }
+
+        button {
+            width:70%;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -19,11 +37,19 @@
         <tr>
             <th>Profile ID</th>
             <th>Profile Name</th>
+            <th></th>
+            <th></th>
         </tr>
         {% for profile in profiles %}
         <tr>
             <td>{{ profile[0] }}</td>
             <td>{{ profile[1] }}</td>
+            <td>
+                <button>Update</button>
+            </td>
+            <td>
+                <button>Suspend</button>
+            </td>
         </tr>
         {% endfor %}
     </table>
