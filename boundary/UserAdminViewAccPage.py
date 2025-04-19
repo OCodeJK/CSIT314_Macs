@@ -11,9 +11,9 @@ def display_all_users():
     search_query = request.args.get('search', '') #get the search input from the URL
     
     if search_query:
-        users = UserAdminSearchAccController.SearchUserAccount(search_query)
+        users = UserAdminSearchAccController.searchUserAccount(search_query)
     else:
-        users = UserAdminViewAccController.UserAdminViewAcc()
+        users = UserAdminViewAccController.userAdminViewAcc()
     
     return render_template('view_account.html', users=users)
 

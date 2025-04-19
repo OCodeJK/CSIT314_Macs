@@ -12,6 +12,6 @@ def display_profiles():
     if search_query:
         profiles = UserAdminSearchProfController.SearchUserProfile(search_query)
     else:
-        profiles = UserAdminViewProfController.UserAdminViewProf()
+        profiles = UserAdminViewProfController.userAdminViewProf()
         
     return render_template("view_profile.html", profiles=profiles)

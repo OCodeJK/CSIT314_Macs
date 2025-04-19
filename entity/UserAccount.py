@@ -108,7 +108,7 @@ class UserAccount:
     
     #View all accounts from the accounts database joined with profile
     @staticmethod
-    def ViewUserDetails():
+    def viewUserDetails():
         try:
             conn = db_connection()
             cur = conn.cursor()
@@ -144,7 +144,7 @@ class UserAccount:
         
         
     @staticmethod
-    def SearchUser(username):
+    def searchUser(username):
         try:
             conn = db_connection()
             cur = conn.cursor()

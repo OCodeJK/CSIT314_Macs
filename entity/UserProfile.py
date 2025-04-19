@@ -27,7 +27,7 @@ class UserProfile:
             return False
         
     @staticmethod
-    def ViewUserProfile():
+    def viewUserProfile():
         try:
             conn = db_connection()
             cur = conn.cursor()
