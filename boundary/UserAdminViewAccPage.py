@@ -19,7 +19,7 @@ def display_all_users():
 
 @view_acc.route("/admin/suspend_user/<int:userid>", methods=["POST"])
 def SuspendUser(userid):
-    result = UserAdminSuspendAccController.UserAdminSuspendAcc(userid)
+    result = UserAdminSuspendAccController.userAdminSuspendAcc(userid)
     print("Suspend result:", result)
     
     if result is True:

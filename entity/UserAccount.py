@@ -163,7 +163,7 @@ class UserAccount:
             return None    
 
     @staticmethod
-    def SuspendUser(userid):
+    def suspendUser(userid):
         try:
             conn = db_connection()
             cur = conn.cursor()
