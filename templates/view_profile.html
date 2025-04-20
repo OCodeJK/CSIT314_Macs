@@ -24,6 +24,10 @@
             margin-top: 30px;
         }
 
+        .message {
+            text-align: center;
+        }
+
         button {
             width:70%;
             font-weight: bold;
@@ -68,7 +72,9 @@
             <td>{{ profile[0] }}</td>
             <td>{{ profile[1] }}</td>
             <td>
-                <button>Update</button>
+                <a href="/admin/update_profile/{{ profile[0] }}">
+                    <button>Update</button>
+                </a>
             </td>
             <td>
                 <button>Suspend</button>
@@ -76,5 +82,9 @@
         </tr>
         {% endfor %}
     </table>
+
+    {% if request.args.get('message') %}
+        <div class="message">{{ request.args.get('message') }}</div>
+    {% endif %}
 </body>
 </html>

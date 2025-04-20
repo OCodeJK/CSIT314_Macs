@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Profile</title>
+</head>
+<body>
+    <h2>Update Profile Details</h2>
+    <form action="/admin/update_profile/{{ profile[0] }}" method="POST">
+        <label>Profile name:</label><br>
+        <input type="text" name="profilename" value="{{ profile[1] }}"><br><br>
+
+        <input type="submit" value="Update">
+    </form>
+</body>
+</html>

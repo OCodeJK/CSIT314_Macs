@@ -17,3 +17,12 @@ def get_user_by_id(userid):
     user = cur.fetchone()
     conn.close()
     return user
+
+def get_profile_by_id(profileid):
+    conn = db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM profile WHERE profileid = %s", (profileid,))
+    profile = cur.fetchone()
+    conn.close()
+    cur.close()
+    return profile

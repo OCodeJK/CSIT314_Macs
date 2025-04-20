@@ -40,6 +40,23 @@ class UserProfile:
         finally:
             cur.close()
             conn.close()
+            
+    @staticmethod
+    def updateUserProfile(profileid, profilename):
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                UPDATE profile
+                SET profilename = %s
+                WHERE profileid = %s            
+            """, (profilename, profileid))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print("DB error:", e)
+            return False
     
     
     @staticmethod
