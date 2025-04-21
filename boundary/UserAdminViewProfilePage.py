@@ -24,6 +24,6 @@ def SuspendProfile(profileid):
     print("Suspend result:", result)
     
     if result is True:
-        return redirect(url_for("view_prof.display_profiles", message="Profile suspended successfully"))
+        return redirect(url_for("view_prof.display_profiles", message="✅ Profile suspended successfully"))
     else:
-        return redirect(url_for("view_prof.display_profiles", message="Suspension failed: Profile already suspended.."))
+        return redirect(url_for("view_prof.display_profiles", message="❌ Suspension failed: Profile already suspended.."))

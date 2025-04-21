@@ -66,6 +66,9 @@
             <button type="submit">Search</button>
         </form>
     </div>
+    {% if request.args.get('message') %}
+        <div class="message">{{ request.args.get('message') }}</div>
+    {% endif %}
     <table>
         <thead>
             <tr>
@@ -100,8 +103,6 @@
         </tbody>
     </table>
 
-    {% if request.args.get('message') %}
-        <div class="message">{{ request.args.get('message') }}</div>
-    {% endif %}
+    
 </body>
 </html>
