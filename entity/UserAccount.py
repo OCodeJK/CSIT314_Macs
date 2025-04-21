@@ -8,6 +8,7 @@ from db_config import db_connection
 
 class UserAccount:
     def __init__(self, username, password, profileid):
+        #private attributes
         self.__username = username
         self.__password = password
         self.__profileid = profileid
@@ -27,7 +28,7 @@ class UserAccount:
         elif(self.__profileid == 4):
             return "Platform Management"
         else:
-            None
+            return None
     
 
     #Create account (username, password and profile)
@@ -63,15 +64,14 @@ class UserAccount:
     
     
     #Login (username, password and profile/role)    
-    @staticmethod
-    def Authenticate(username, password, profileid):  
+    def Authenticate(self):  
         conn = db_connection()
         cur = conn.cursor()
         
         #check if account is suspended
         cur.execute("""
             SELECT suspend from account 
-            WHERE username = %s AND password = %s AND profileid = %s""", (username, password, profileid)
+            WHERE username = %s AND password = %s AND profileid = %s""", (self.__username, self.__password, self.__profileid)
         )
         result = cur.fetchone()
         
@@ -92,7 +92,7 @@ class UserAccount:
             """SELECT username, password, account.profileid from account INNER JOIN profile 
             ON account.profileid = profile.profileid 
             WHERE account.username=%s AND account.password=%s AND profile.profileid=%s AND account.suspend=FALSE"""
-            ,(username, password, profileid)
+            ,(self.__username, self.__password, self.__profileid)
         )
         
         
