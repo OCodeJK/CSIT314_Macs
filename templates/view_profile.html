@@ -49,6 +49,12 @@
             font-weight: bold;
             width:36%;
         }
+
+
+        .suspended {
+            background-color: red;
+            opacity: 1.0;
+        }
     </style>
 </head>
 <body>
@@ -61,26 +67,37 @@
         </form>
     </div>
     <table>
-        <tr>
-            <th>Profile ID</th>
-            <th>Profile Name</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for profile in profiles %}
-        <tr>
-            <td>{{ profile[0] }}</td>
-            <td>{{ profile[1] }}</td>
-            <td>
-                <a href="/admin/update_profile/{{ profile[0] }}">
-                    <button>Update</button>
-                </a>
-            </td>
-            <td>
-                <button>Suspend</button>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Profile ID</th>
+                <th>Profile Name</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in profiles %}
+            <tr class="{% if profile[2] == True %}suspended{% endif %}">
+                <td>{{ profile[0] }}</td>
+                <td>{{ profile[1] }}</td>
+                <td>
+                    <a href="/admin/update_profile/{{ profile[0] }}">
+                        <button>Update</button>
+                    </a>
+                </td>
+                <td>
+                    <form method="POST" action="/admin/suspend_profile/{{ profile[0] }}">
+                        <button type="submit">Suspend</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if profiles | length==0 %}
+            <tr>
+                <td colspan="4">No profile found.</td>
+            </tr>
+            {% endif %}
+        </tbody>
     </table>
 
     {% if request.args.get('message') %}

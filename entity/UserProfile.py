@@ -31,7 +31,7 @@ class UserProfile:
         try:
             conn = db_connection()
             cur = conn.cursor()
-            cur.execute("SELECT profileid, profilename FROM profile ORDER BY profileid")
+            cur.execute("SELECT profileid, profilename, suspend FROM profile ORDER BY profileid")
             profiles = cur.fetchall()
             return profiles
         except Exception as e:
@@ -65,7 +65,7 @@ class UserProfile:
             conn = db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT profileid, profilename FROM profile
+                SELECT profileid, profilename, FROM profile
                 WHERE profilename ILIKE %s
             """, (f"%{profilename}%",))
             ResultSet = cur.fetchall()
@@ -74,4 +74,27 @@ class UserProfile:
             return ResultSet
         except Exception as e:
             print("DB error:", e)
-            return None  
+            return None
+        
+        
+        
+    @staticmethod
+    def suspendProfile(profileid):
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT suspend FROM profile WHERE profileid= %s", (profileid,))
+            current_status = cur.fetchone()
+            
+            if current_status[0] is True:
+                return False # Already suspended
+            
+            #suspend the account
+            cur.execute("UPDATE profile set suspend=TRUE WHERE profileid = %s", (profileid,))
+            conn.commit()
+            cur.close()
+            conn.close()
+            return True
+        except Exception as e:
+            print("DB error:", e)
+            return False
