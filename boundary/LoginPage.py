@@ -25,10 +25,12 @@ def Login():
         if isinstance(user, str):
             return render_template("login.html", message=f"⚠️ {user}", profiles=profiles)
         
-
+        # If the login happen check role to load appropriate page
         if user:
             if user.get_profileid() == "User Admin":
+                #redirect to admin page (create account page for now)
                 return redirect(url_for('register_ui.createUserAccount'))
+            
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
                 print("this is cleaner page")
