@@ -4,11 +4,8 @@
  
  **To Run**
  python main.py to run the app
- localhost:5000 
- to access it
- 
- 
  localhost:5000 to access it
+ 
 
 
 **Database:**
