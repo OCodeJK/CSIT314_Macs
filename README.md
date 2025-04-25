@@ -21,7 +21,11 @@ psql -U username c2c_db db.dump
 
 **Folder/File structures:**
 Boundary: Contains all the boundary related file
+
 Control: Contains all the controller related file
+
 Entity: Contains all the entity related file
+
 Template: contains all the html files to be rendered (CSS included)
+
 helper: contains extra functions to help with the program (for neatness)
