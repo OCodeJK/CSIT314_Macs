@@ -1,4 +1,4 @@
-**Before Running:**
+# Before Running:**
  pip install -r requirements.txt to install all relevant dependencies
  
  
@@ -8,7 +8,7 @@
  
 
 
-**Database:**
+# Database:
 To ensure you are using the latest database do:
 
 pg_restore -U username -d c2c_db < db.dump
@@ -19,13 +19,14 @@ psql -U username c2c_db db.dump
 
 
 
-###**Folder/File structures:**
-Boundary: Contains all the boundary related file
+# Folder/File structures:
 
-Control: Contains all the controller related file
+boundary: Contains all the boundary related file
 
-Entity: Contains all the entity related file
+control: Contains all the controller related file
 
-Template: contains all the html files to be rendered (CSS included)
+entity: Contains all the entity related file
+
+template: contains all the html files to be rendered (CSS included)
 
 helper: contains extra functions to help with the program (for neatness)
