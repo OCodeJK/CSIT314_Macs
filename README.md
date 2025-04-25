@@ -19,7 +19,7 @@ psql -U username c2c_db db.dump
 
 
 
-**Folder/File structures:**
+###**Folder/File structures:**
 Boundary: Contains all the boundary related file
 
 Control: Contains all the controller related file
