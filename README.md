@@ -1,4 +1,4 @@
-# Before Running:**
+# Before Running:
  pip install -r requirements.txt to install all relevant dependencies
  
  
