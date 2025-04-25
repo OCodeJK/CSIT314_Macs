@@ -3,8 +3,8 @@
  
  
  # To Run:
- python main.py to run the app
- localhost:5000 to access it
+ - python main.py to run the app
+ - localhost:5000 to access it
  
 
 
