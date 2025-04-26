@@ -6,6 +6,10 @@ from boundary.UserAdminViewAccPage import view_acc
 from boundary.UserAdminViewProfilePage import view_prof
 from boundary.UserAdminUpdateAccPage import update_user_ui
 from boundary.UserAdminUpdateProfPage import update_profile_ui
+from boundary.CleanerViewServicePage import view_service_bp
+from boundary.CleanerCreateServicePage import create_service_bp
+from boundary.ServiceSuspensionPage import suspend_service_bp
+
 
 
 app = Flask(__name__)
@@ -16,6 +20,9 @@ app.register_blueprint(view_acc)
 app.register_blueprint(update_user_ui)
 app.register_blueprint(view_prof)
 app.register_blueprint(update_profile_ui)
+app.register_blueprint(view_service_bp)
+app.register_blueprint(create_service_bp)
+app.register_blueprint(suspend_service_bp)
 
 if __name__ == "__main__":
     print(app.url_map)
