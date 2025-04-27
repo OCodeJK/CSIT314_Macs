@@ -8,16 +8,23 @@
  
 
 
-# Database:
+# Database Restoration:
 To ensure you are using the latest database do:
 
 pg_restore -U username -d c2c_db < db.dump
 
 OR
 
-psql -U username c2c_db db.dump
+psql -U username -d database_name -f dump.sql
 
+# Dumping Database:
+To ensure we can keep our database updated do:
 
+pg_dump -Fc mydb > db.dump
+
+OR
+
+pg_dump mydb > db.sql
 
 # Folder/File structures:
 
