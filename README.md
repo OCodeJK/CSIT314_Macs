@@ -11,7 +11,7 @@
 # Database Restoration:
 To ensure you are using the latest database do:
 
-pg_restore -U username -d c2c_db < db.dump
+pg_restore -U username -d database_name < db.dump
 
 OR
 
