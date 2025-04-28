@@ -69,7 +69,7 @@ class UserProfile:
             conn = db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT profileid, profilename, FROM profile
+                SELECT profileid, profilename, suspend FROM profile
                 WHERE profilename ILIKE %s
             """, (f"%{profilename}%",))
             ResultSet = cur.fetchall()
