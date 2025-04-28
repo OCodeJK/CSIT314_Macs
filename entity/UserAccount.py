@@ -37,18 +37,9 @@ class UserAccount:
             conn = db_connection()
             cur = conn.cursor()
             
-            cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s) RETURNING userid"
+            cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s)"
                         , (self.__username, self.__password, self.__profileid))
-            userid = cur.fetchone()[0]
             conn.commit()
-            
-            #If the profile_id is for example 1, insert into useradmin table
-            if self.__profileid == "1": 
-                cur.execute(
-                    "INSERT INTO useradmin (userid) VALUES (%s)", (userid,)
-                )
-                conn.commit()
-            
                 
             return True
         except psycopg2.errors.UniqueViolation:
