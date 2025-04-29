@@ -202,6 +202,95 @@ ALTER TABLE ONLY public.account
 ALTER TABLE ONLY public.useradmin
     ADD CONSTRAINT fk_useradmin FOREIGN KEY (userid) REFERENCES public.account(userid);
 
+--
+-- create platformanagement
+--
+
+CREATE TABLE public.platformmanagement (
+    pmid integer NOT NULL,
+    userid integer NOT NULL
+);
+
+--
+-- autoincrement for pmid
+--
+
+ALTER TABLE public.platformmanagement ALTER COLUMN pmid ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.platformmanagement_pmid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+--
+-- set primary key 
+--
+
+ALTER TABLE ONLY public.platformmanagement
+    ADD CONSTRAINT platformmanagement_pkey PRIMARY KEY (pmid);
+
+--
+-- set foreign key to accounts userid
+--
+
+ALTER TABLE ONLY public.platformmanagement
+    ADD CONSTRAINT fk_platformmanagement_userid FOREIGN KEY (userid) REFERENCES public.account(userid);
+
+--
+-- Creating trigger to insert into platformmanagement when PM account is trying to be created
+--
+
+SET search_path TO public;
+
+CREATE OR REPLACE FUNCTION insert_platformmanagement()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.profileid = 4 THEN
+    INSERT INTO public.platformmanagement (userid) VALUES (NEW.userid);
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_insert_platformmanagement
+AFTER INSERT ON public.account
+FOR EACH ROW
+EXECUTE FUNCTION insert_platformmanagement();
+
+
+--
+-- Service Category table
+--
+
+CREATE TABLE public.category (
+    categoryid integer NOT NULL,
+    categoryname VARCHAR(100) UNIQUE NOT NULL,
+    suspend boolean DEFAULT false
+);
+
+--
+-- Add primary key constraint on categoryid
+--
+
+ALTER TABLE ONLY public.category
+ADD CONSTRAINT category_categoryid PRIMARY KEY (categoryid);
+
+--
+-- Alter the column to be an identity column (auto-increment)
+--
+
+ALTER TABLE public.category
+ALTER COLUMN categoryid
+ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.category_categoryid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
 
 --
 -- PostgreSQL database dump complete

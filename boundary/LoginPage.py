@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, session
 from control.LoginAccountController import LoginAccountController
 from helper.util_functions import get_all_profiles
 
@@ -27,6 +27,8 @@ def Login():
         
 
         if user:
+            session['profileid'] = user.get_profileid()
+
             if user.get_profileid() == "User Admin":
                 return redirect(url_for('register_ui.createUserAccount'))
             elif user.get_profileid() == "Cleaner":
@@ -37,7 +39,7 @@ def Login():
                 print("this is homeowner")
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
-                print("this is platform management page")
+                return redirect(url_for('createservcat.create_service_category'))
             
         else:
             return render_template("login.html", message="❌ Invalid credentials or role.", profiles=profiles)

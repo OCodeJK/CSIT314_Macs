@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Service Category</title>
+</head>
+<body>
+    <h2>Create New Service Category</h2>
+    <form action="{{ url_for('createservcat.create_service_category') }}" method="POST">
+        <label>Category Name:</label><br>
+        <input type="text" name="category_name" required><br><br>
+        <input type="submit" value="Create Category">
+    </form>
+
+    <br>
+    <a href="/admin/view_category">
+        <button type="button">View categories</button>
+    </a>
+
+    <br><br>
+    <a href="/admin/view_report">
+        <button type="button">View reports</button>
+    </a>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="message">
+          {% for message in messages %}
+            <div>{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>
+
