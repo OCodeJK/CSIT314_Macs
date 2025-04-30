@@ -37,8 +37,20 @@ class UserAccount:
             conn = db_connection()
             cur = conn.cursor()
             
-            cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s)"
+            cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s) RETURNING userid, profileid"
                         , (self.__username, self.__password, self.__profileid))
+            
+            # get the inserted user
+            inserted_user = cur.fetchone()
+            inserted_user_id = inserted_user[0]
+            inserted_user_profile = inserted_user[1]
+            
+            if inserted_user_profile == 2:
+                cur.execute("INSERT INTO cleaner (cleanerid) VALUES (%s)", (inserted_user_id,))
+                
+            if inserted_user_profile == 3:
+                cur.execute("INSERT INTO homeowner (homeownerid) VALUES (%s)", (inserted_user_id,))
+            
             conn.commit()
                 
             return True
