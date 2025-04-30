@@ -45,10 +45,10 @@ class UserAccount:
             inserted_user_id = inserted_user[0]
             inserted_user_profile = inserted_user[1]
             
-            if inserted_user_profile == "2":
+            if inserted_user_profile == 2:
                 cur.execute("INSERT INTO cleaner (cleanerid) VALUES (%s)", (inserted_user_id,))
                 
-            if inserted_user_profile == "3":
+            if inserted_user_profile == 3:
                 cur.execute("INSERT INTO homeowner (homeownerid) VALUES (%s)", (inserted_user_id,))
             
             conn.commit()
