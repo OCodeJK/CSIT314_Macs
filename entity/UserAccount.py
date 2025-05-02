@@ -7,16 +7,19 @@ from db_config import db_connection
 #4 is for Platform Management
 
 class UserAccount:
-    def __init__(self, username, password, profileid):
+    def __init__(self, userid, username, password, profileid):
         #private attributes
         self.__username = username
         self.__password = password
         self.__profileid = profileid
-        
+        self.__userid = userid
         
     #Getters
     def get_username(self):
         return self.__username
+
+    def get_userid(self):
+        return self.__userid
 
     def get_profileid(self):
         if (self.__profileid == 1):
@@ -92,7 +95,7 @@ class UserAccount:
         
         #login when not suspended
         cur.execute(
-            """SELECT username, password, account.profileid from account INNER JOIN profile 
+            """SELECT userid, username, password, account.profileid from account INNER JOIN profile 
             ON account.profileid = profile.profileid 
             WHERE account.username=%s AND account.password=%s AND profile.profileid=%s AND account.suspend=FALSE"""
             ,(self.__username, self.__password, self.__profileid)
@@ -104,8 +107,8 @@ class UserAccount:
         conn.close()
         
         if row:
-            username, password, profileid = row
-            return UserAccount(username, password, profileid)
+            userid, username, password, profileid = row
+            return UserAccount(userid, username, password, profileid)
         else:
             return None
     

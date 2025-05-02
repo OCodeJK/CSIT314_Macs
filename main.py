@@ -9,6 +9,9 @@ from boundary.UserAdminUpdateProfPage import update_profile_ui
 from boundary.CleanerViewServicePage import view_service_bp
 from boundary.CleanerCreateServicePage import create_service_bp
 from boundary.ServiceSuspensionPage import suspend_service_bp
+from boundary.HomeownerViewCleanerPage import view_cleaner_bp
+from boundary.HomeownerViewShortlistPage import view_shortlist_bp
+import secret # for access secret key -- SESSION
 
 
 
@@ -23,6 +26,9 @@ app.register_blueprint(update_profile_ui)
 app.register_blueprint(view_service_bp)
 app.register_blueprint(create_service_bp)
 app.register_blueprint(suspend_service_bp)
+app.register_blueprint(view_cleaner_bp)
+app.register_blueprint(view_shortlist_bp)
+app.secret_key = secret.SECRET_KEY # SESSION RELATED
 
 if __name__ == "__main__":
     print(app.url_map)
