@@ -6,6 +6,9 @@ from boundary.UserAdminViewAccPage import view_acc
 from boundary.UserAdminViewProfilePage import view_prof
 from boundary.UserAdminUpdateAccPage import update_user_ui
 from boundary.PMCreateServCat import createservcat_bp
+from boundary.PMManageServCatGUI import view_category_bp
+from boundary.PMUpdateServCat import update_category_bp
+from boundary.PMSuspendServCat import suspend_category_bp
 
 
 app = Flask(__name__)
@@ -19,6 +22,10 @@ app.register_blueprint(view_acc)
 app.register_blueprint(update_user_ui)
 app.register_blueprint(view_prof)
 app.register_blueprint(createservcat_bp)
+app.register_blueprint(view_category_bp)
+app.register_blueprint(update_category_bp)
+app.register_blueprint(suspend_category_bp)
+
 
 
 if __name__ == "__main__":

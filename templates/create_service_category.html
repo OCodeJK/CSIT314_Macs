@@ -13,7 +13,8 @@
     </form>
 
     <br>
-    <a href="/admin/view_category">
+    <!-- Updated: Use url_for to link to the view categories page -->
+    <a href="{{ url_for('view_category.view_category') }}">
         <button type="button">View categories</button>
     </a>
 
