@@ -11,6 +11,7 @@ from boundary.CleanerCreateServicePage import create_service_bp
 from boundary.ServiceSuspensionPage import suspend_service_bp
 from boundary.HomeownerViewCleanerPage import view_cleaner_bp
 from boundary.HomeownerViewShortlistPage import view_shortlist_bp
+from boundary.HomeownerViewCompletedServicePage import view_completedservice_bp
 import secret # for access secret key -- SESSION
 
 
@@ -28,6 +29,7 @@ app.register_blueprint(create_service_bp)
 app.register_blueprint(suspend_service_bp)
 app.register_blueprint(view_cleaner_bp)
 app.register_blueprint(view_shortlist_bp)
+app.register_blueprint(view_completedservice_bp)
 app.secret_key = secret.SECRET_KEY # SESSION RELATED
 
 if __name__ == "__main__":

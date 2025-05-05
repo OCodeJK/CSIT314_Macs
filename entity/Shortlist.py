@@ -42,7 +42,7 @@ class Shortlist:
             return None
 
     @staticmethod
-    def searchShortlistForHomeowner(userid, cleanerid): #display all service of individual cleaner
+    def searchShortlistForHomeowner(userid, cleaneruser): #display all service of individual cleaner
         try:
             conn = db_connection()
             cur = conn.cursor()
@@ -53,7 +53,7 @@ class Shortlist:
                 INNER JOIN category c on s.categoryid = c.categoryid
                 INNER JOIN shortlist sl on s.cleanerid = sl.cleanerid
                 WHERE sl.homeownerid = %s AND a.username ILIKE %s
-            """, (userid, f"%{cleanerid}%"))
+            """, (userid, f"%{cleaneruser}%"))
             
             shortlist = cur.fetchall()
             cur.close()
@@ -79,3 +79,23 @@ class Shortlist:
         except Exception as e:
             print("Error displaying cleaner accounts:", e)
             return None 
+
+    @staticmethod
+    def createShortlistForHomeowner(cleanerid, homeownerid):
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+                
+            cur.execute("INSERT INTO shortlist (cleanerid, homeownerid) VALUES (%s, %s)"
+                        , (cleanerid, homeownerid))
+                
+            conn.commit()
+                    
+            return True
+        except Exception as e:
+            print("DB Error:", e)
+            conn.rollback()
+            return False
+        finally:
+            cur.close()
+            conn.close()

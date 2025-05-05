@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Cleaners</title>
+    <title>All Completed Services</title>
     <style>
         table {
             width: 60%;
@@ -61,11 +61,11 @@
     </style>
 </head>
 <body>
-    <h2>All Cleaners</h2>
+    <h2>All Completed Services</h2>
     <h3><a href="/homeowner_base">Go back to homeowner menu</a></h3>
     <div class="search-container">
-        <form method="GET" action="/homeowner_base/view_cleaner">
-            <input type="text" name="search" placeholder="Search by username" value="{{ request.args.get('search', '') }}">
+        <form method="GET" action="/homeowner_base/view_completedservice">
+            <input type="text" name="search" placeholder="Search by service name" value="{{ request.args.get('search', '') }}">
             <button type="submit">Search</button>
         </form>
     </div>
@@ -75,47 +75,30 @@
     <table>
         <thead>
             <tr>
-                <th>Cleaner ID</th>
-                <th>Username</th>
+                <th>Completed Service ID</th>
+                <th>Cleaner</th>
                 <th>Services</th>
-                <th></th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Start Date</th>
+                <th>End Date</th>
             </tr>
         </thead>
         <tbody>
-            {% for cleaner in cleaners %}
+            {% for cs in completedservice %}
             <tr>
-                <td>{{ cleaner.cleanerid}}</td>
-                <td>{{ cleaner.cleanername }}</td>
-                <td>
-                    <table>
-                        {% for service in cleaner.services.values() %}
-                        <tr>
-                          <td>{{ service[1]}}</td>
-                          <td>{{ service[2]}}</td>
-                          <td>{{ service[3]}}</td>
-                        </tr>
-                        {% endfor %}
-                        {% if cleaner.services.values() | length==0 %}
-                        <tr>
-                          <td colspan = "5">No services found.</td>
-                        </tr>
-                        {% endif %}
-                    </table>
-                </td>
-                <td>
-                    <form method="POST" action="/homeowner_base/add_shortlist">
-                        <input type="hidden" name="cleanerid" value="{{ cleaner.cleanerid }}">
-                        <button type="submit">Add to Shortlist</button>
-                    </form>
-                    {% if message %}
-                        <p style="color: green;">{{ message }}</p>
-                    {% endif %}
-                </td>
+                <td>{{ cs[0] }}</td>
+                <td>{{ cs[1] }}</td>
+                <td>{{ cs[2] }}</td>
+                <td>{{ cs[3] }}</td>
+                <td>{{ cs[4] }}</td>
+                <td>{{ cs[5] }}</td>
+                <td>{{ cs[5] }}</td>
             </tr>
             {% endfor %}
-            {% if cleaners | length==0 %}
+            {% if completedservice | length==0 %}
             <tr>
-                <td colspan="5">No cleaners found.</td>
+                <td colspan="7">No record found.</td>
             </tr>
             {% endif %}
         </tbody>

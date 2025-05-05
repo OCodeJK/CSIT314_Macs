@@ -241,7 +241,7 @@ class Cleaner:
             return None
 
     @staticmethod
-    def searchShortlistForHomeowner(userid, cleanerid): #display all service of individual cleaner
+    def searchShortlistForHomeowner(userid, cleaneruser): #display all service of individual cleaner
         try:
             conn = db_connection()
             cur = conn.cursor()
@@ -252,7 +252,7 @@ class Cleaner:
                 INNER JOIN category c on s.categoryid = c.categoryid
                 INNER JOIN shortlist sl on s.cleanerid = sl.cleanerid
                 WHERE sl.homeownerid = %s AND a.username ILIKE %s
-            """, (userid, f"%{cleanerid}%"))
+            """, (userid, f"%{cleaneruser}%"))
             
             shortlist = cur.fetchall()
             cur.close()
