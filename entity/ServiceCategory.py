@@ -9,7 +9,7 @@ class ServiceCategory:
                     SELECT categoryid, categoryname, suspend 
                     FROM public.category 
                     WHERE LOWER(categoryname) LIKE LOWER(%s)
-                    ORDER BY categoryname
+                    ORDER BY categoryid
                 """
                 cur.execute(query, (f'%{category_name.lower()}%',))
                 columns = [desc[0] for desc in cur.description]
