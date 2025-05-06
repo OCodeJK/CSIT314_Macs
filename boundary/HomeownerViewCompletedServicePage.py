@@ -12,6 +12,8 @@ def homeowner_base():
 def view_completedservice():
     userid = session.get('userid')
     search_query = request.args.get('search', '') #get the search input from the URL
+    date_range = request.args.get('datefilter', '') #get the search input from the URL
+    print(date_range)
     
     if search_query:
         completedservice = HomeownerSearchCompletedServiceController.homeownerSearchCompletedService(userid, search_query)

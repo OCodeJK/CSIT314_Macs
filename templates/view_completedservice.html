@@ -66,6 +66,7 @@
     <div class="search-container">
         <form method="GET" action="/homeowner_base/view_completedservice">
             <input type="text" name="search" placeholder="Search by service name" value="{{ request.args.get('search', '') }}">
+            <input type="date" name="datefilter"value="2025-01-01" />
             <button type="submit">Search</button>
         </form>
     </div>
