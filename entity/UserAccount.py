@@ -95,7 +95,7 @@ class UserAccount:
         
         #login when not suspended
         cur.execute(
-            """SELECT userid, username, password, account.profileid from account INNER JOIN profile 
+            """SELECT username, password, account.profileid from account INNER JOIN profile 
             ON account.profileid = profile.profileid 
             WHERE account.username=%s AND account.password=%s AND profile.profileid=%s AND account.suspend=FALSE"""
             ,(self.__username, self.__password, self.__profileid)
@@ -107,7 +107,7 @@ class UserAccount:
         conn.close()
         
         if row:
-            userid, username, password, profileid = row
+            username, password, profileid = row
             return UserAccount(username, password, profileid)
         else:
             return None
