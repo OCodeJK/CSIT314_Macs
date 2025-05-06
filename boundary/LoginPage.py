@@ -36,7 +36,7 @@ def Login():
             
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
-                return redirect(url_for('view_service.view_services'))
+                print("This is cleaner page")
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here
                 return redirect(url_for('view_cleaner.homeowner_base'))
