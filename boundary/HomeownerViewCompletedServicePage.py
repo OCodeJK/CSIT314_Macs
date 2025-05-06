@@ -13,10 +13,14 @@ def view_completedservice():
     userid = session.get('userid')
     search_query = request.args.get('search', '') #get the search input from the URL
     date_range = request.args.get('datefilter', '') #get the search input from the URL
-    print(date_range)
+    print("test date: ",date_range)
     
-    if search_query:
+    if search_query and not date_range: #search only
         completedservice = HomeownerSearchCompletedServiceController.homeownerSearchCompletedService(userid, search_query)
+    elif not search_query and date_range: #date only
+        completedservice = HomeownerSearchCompletedServiceController.homeownerSearchCompletedServiceDateOnly(userid, date_range)
+    elif search_query and date_range: #search and date
+        completedservice = HomeownerSearchCompletedServiceController.homeownerSearchCompletedServiceSearchNDate(userid, search_query, date_range)
     else:
         completedservice = HomeownerViewCompletedServiceController.homeownerViewCompletedService(userid)
     
