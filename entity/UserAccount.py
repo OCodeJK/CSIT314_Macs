@@ -31,7 +31,7 @@ class UserAccount:
             return None
     
 
-    #Create account (username, password and profile)
+    # Create account (username, password and profile)
     def createUserAccount(self):
         try:
             conn = db_connection()
