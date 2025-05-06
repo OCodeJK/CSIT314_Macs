@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session
 from control.LoginAccountController import LoginAccountController
-from helper.util_functions import get_all_profiles
+from helper.util_functions import get_all_profiles, userReturnUID
 
 login_ui = Blueprint("login_ui", __name__)
 controller = LoginAccountController()
@@ -16,7 +16,8 @@ def Login():
         profileid = request.form["profile_id"]
         userid = 0
         
-        user = controller.AuthenticateDetails(userid, username, password, profileid)
+        user = controller.AuthenticateDetails(username, password, profileid)
+        userid = userReturnUID(username, password, profileid)
 
         # ✅ Check for suspension FIRST
         if user == "suspended":
@@ -28,7 +29,7 @@ def Login():
         
         # If the login happen check role to load appropriate page
         if user:
-            session['userid'] = user.get_userid()
+            session['userid'] = userid
             if user.get_profileid() == "User Admin":
                 #redirect to admin page (create account page for now)
                 return redirect(url_for('register_ui.createUserAccount'))

@@ -7,12 +7,11 @@ from db_config import db_connection
 #4 is for Platform Management
 
 class UserAccount:
-    def __init__(self, userid, username, password, profileid):
+    def __init__(self, username, password, profileid):
         #private attributes
         self.__username = username
         self.__password = password
         self.__profileid = profileid
-        self.__userid = userid
         
     #Getters
     def get_username(self):
@@ -36,6 +35,7 @@ class UserAccount:
 
     #Create account (username, password and profile)
     def createUserAccount(self):
+        print("TESTTTTTT")
         try:
             conn = db_connection()
             cur = conn.cursor()
@@ -108,7 +108,7 @@ class UserAccount:
         
         if row:
             userid, username, password, profileid = row
-            return UserAccount(userid, username, password, profileid)
+            return UserAccount(username, password, profileid)
         else:
             return None
     
