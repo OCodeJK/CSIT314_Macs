@@ -12,7 +12,7 @@ class PMCreateServCatController:
         category_entity = Category()
 
         if category_entity.checkServCatExists(category_name):
-            return "Failed to create service category"
+            return "Failed to create service category. Service category exists."
 
         if category_entity.CreateServCat(category_name):
             return "Service category created successfully"

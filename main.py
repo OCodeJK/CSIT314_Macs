@@ -9,6 +9,7 @@ from boundary.PMCreateServCat import createservcat_bp
 from boundary.PMManageServCatGUI import view_category_bp
 from boundary.PMUpdateServCat import update_category_bp
 from boundary.PMSuspendServCat import suspend_category_bp
+from boundary.PMViewReportsGUI import view_reports_bp
 
 
 app = Flask(__name__)
@@ -25,6 +26,7 @@ app.register_blueprint(createservcat_bp)
 app.register_blueprint(view_category_bp)
 app.register_blueprint(update_category_bp)
 app.register_blueprint(suspend_category_bp)
+app.register_blueprint(view_reports_bp)
 
 
 

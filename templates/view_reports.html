@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Reports</title>
+</head>
+<body>
+    <h2>View Reports</h2>
+
+    <form method="POST">
+        <h3>Daily</h3>
+        <select name="daily">
+            {% for d in daily_options %}
+                <option value="{{ d }}" {% if selected_daily == d %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="view_daily">View Daily</button>
+
+        <h3>Weekly (Monday Start)</h3>
+        <select name="weekly">
+            {% for w in weekly_options %}
+                <option value="{{ w.value }}" {% if selected_weekly == w.value %}selected{% endif %}>{{ w.label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="view_weekly">View Weekly</button>
+
+        <h3>Monthly</h3>
+        <select name="monthly">
+            {% for m in monthly_options %}
+                <option value="{{ m }}" {% if selected_monthly == m %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="view_monthly">View Monthly</button>
+    </form>
+
+    {% if report_data %}
+    <h3>
+        {% if report_type == 'daily' %}Daily Report for {{ selected_daily }}
+        {% elif report_type == 'weekly' %}Weekly Report starting {{ selected_weekly }}
+        {% elif report_type == 'monthly' %}Monthly Report for {{ selected_monthly }}
+        {% endif %}
+    </h3>
+    <table border="1">
+        <tr>
+            {% for key in report_data[0].keys() %}
+                <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in report_data %}
+            <tr>
+                {% for value in row.values() %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+<!-- Flashed messages only at the bottom -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="message" style="color: #d9534f; margin-top: 20px;">
+      {% for message in messages %}
+        <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div style="margin-top: 30px;">
+    <a href="{{ url_for('createservcat.create_service_category') }}">
+        <button type="button">Back to Create Service Category</button>
+    </a>
+</div>
+</body>
+</html>
+
