@@ -1,0 +1,1 @@
+SECRET_KEY = 'c2c_macs_secret_key' #create secret key FOR SESSION

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Completed Services</title>
+    <style>
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        h2,h3 {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            width:70%;
+            font-weight: bold;
+        }
+
+        .message {
+            text-align: center;
+        }
+
+        .search-container {
+            text-align:center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input[type="text"] {
+            width:250px;
+            padding:8px;
+            margin-right: 10px;
+        }
+
+        .search-container button {
+            padding: 8px 16px;
+            font-weight: bold;
+            width:46%;
+        }
+
+        .suspended {
+            background-color: red;
+            opacity: 1.0;
+        }
+
+       
+
+    </style>
+</head>
+<body>
+    <h2>All Completed Services</h2>
+    <h3><a href="/homeowner_base">Go back to homeowner menu</a></h3>
+    <div class="search-container">
+        <form method="GET" action="/homeowner_base/view_completedservice">
+            <input type="text" name="search" placeholder="Search by service name" value="{{ request.args.get('search', '') }}">
+            <input type="date" name="datefilter" value="Select Date" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    {% if request.args.get('message') %}
+        <div class="message">{{ request.args.get('message') }}</div>
+    {% endif %}
+    <table>
+        <thead>
+            <tr>
+                <th>Completed Service ID</th>
+                <th>Cleaner</th>
+                <th>Services</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cs in completedservice %}
+            <tr>
+                <td>{{ cs[0] }}</td>
+                <td>{{ cs[1] }}</td>
+                <td>{{ cs[2] }}</td>
+                <td>{{ cs[3] }}</td>
+                <td>{{ cs[4] }}</td>
+                <td>{{ cs[5] }}</td>
+                <td>{{ cs[5] }}</td>
+            </tr>
+            {% endfor %}
+            {% if completedservice | length==0 %}
+            <tr>
+                <td colspan="7">No record found.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+</body>
+</html>
