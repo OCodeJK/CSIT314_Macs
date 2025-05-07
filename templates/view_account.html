@@ -27,11 +27,11 @@
             padding: 20px;
             margin: 20px;
             margin-right: 10px;
-            display: flex;
             flex-direction: column;
             justify-content: space-between;
             box-shadow: 2px 0 6px rgba(0,0,0,0.05);
             border-radius: 6px;
+            margin-bottom: 212px;
         }
 
         .sidebar h2 {
@@ -75,18 +75,12 @@
 
         /* Make table inside a scrollable container */
         .table-container {
-            max-height: 818px;   /* You can adjust the height as needed */
+            max-height: 625px;   /* You can adjust the height as needed */
             overflow-y: auto;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
 
-        /* Make table container smaller on a laptop screen */
-        @media screen and (min-width: 1024px) and (max-width: 2560px) {
-            .table-container {
-                max-height: 625px;
-            }
-        }
 
         /* Sticky table header */
         .table-container thead th {
@@ -100,13 +94,11 @@
             width: 100%;
             background-color: white;
             border-collapse: collapse;
-            
         }
 
         th, td {
             padding: 16px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
+            text-align: center;            
             padding-left: 20px;
         }
 
