@@ -32,7 +32,7 @@ def Login():
             session['userid'] = userid
             if user.get_profileid() == "User Admin":
                 #redirect to admin page (create account page for now)
-                return redirect(url_for('register_ui.createUserAccount'))
+                return redirect(url_for('view_acc.display_all_users'))
             
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
