@@ -71,7 +71,7 @@
                         </thead>
                         <tbody>
                             {% for profile in profiles %}
-                            <tr class="{% if profiles[2] == True %}suspended{% endif %}">
+                            <tr class="{% if profile[2] == True %}suspended{% endif %}">
                                 <td>{{ profile[0] }}</td>
                                 <td>{{ profile[1] }}</td>
                                 <td class="action-cell" style="text-align: right;">
