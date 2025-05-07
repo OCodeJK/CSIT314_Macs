@@ -1,5 +1,5 @@
 from entity.Shortlist import Shortlist
 
 class HomeownerCreateShortlistController:
-    def homeownerCreateShortlist(homeownerid, cleanerid):
-        return Shortlist.createShortlistForHomeowner(homeownerid, cleanerid)
+    def homeownerCreateShortlist(cleanerid, homeownerid):
+        return Shortlist.createShortlistForHomeowner(cleanerid, homeownerid)
