@@ -63,10 +63,8 @@
                         </a>
                         <!-- Suspend/Unsuspend toggle button -->
                         <form method="POST" action="{{ url_for('suspend_category.toggle_suspend', category_id=category.categoryid) }}" style="display:inline;">
-                            <input type="hidden" name="suspend_action" value="{{ 'unsuspend' if category.suspend else 'suspend' }}">
-                            <button type="submit" class="button {% if category.suspend %}suspend-inactive{% else %}suspend-active{% endif %}">
-                                {{ "Unsuspend" if category.suspend else "Suspend" }}
-                            </button>
+                            <input type="hidden" name="suspend_action" value="suspend">
+                            <button type="submit" class="button suspend-active">Suspend</button>
                         </form>
                     </td>
                 </tr>

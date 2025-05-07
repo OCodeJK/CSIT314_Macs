@@ -1,0 +1,8 @@
+from entity.User import User
+
+class PMViewMonthlyReportsController:
+    def __init__(self):
+        self.entity = User()
+
+    def ViewMonthlyReports(self, year, month):
+        return self.entity.ViewMonthlyReport(year, month)

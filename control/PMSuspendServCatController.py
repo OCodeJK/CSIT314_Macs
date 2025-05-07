@@ -9,11 +9,10 @@ class PMSuspendServCatController:
         Returns (success, message)
         """
         result = self.entity.SuspendServCat(category_id, suspend)
-        if result:
-            return True, (
-                "Service Category unsuspended successfully."
-                if not suspend else
-                "Service Category suspended successfully."
-            )
+        if result is True:
+            return True, "Service Category suspended successfully."
+        elif result == "already_suspended":
+            return False, "Category is already suspended."
         else:
             return False, "Failed to update suspension status. Please try again."
+
