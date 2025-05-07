@@ -36,4 +36,6 @@ entity: Contains all the entity related file
 
 template: contains all the html files to be rendered (CSS included)
 
+static: contains all the relevant css files for our templates
+
 helper: contains extra functions to help with the program (for neatness)
