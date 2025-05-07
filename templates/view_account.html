@@ -2,111 +2,150 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All User Accounts</title>
+    <title>User Accounts Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='useradmin.css') }}">
     <style>
-        table {
-            width: 60%;
-            border-collapse: collapse;
-            margin: 20px auto;
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
         }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        h2,h3 {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        button {
-            width:70%;
-            font-weight: bold;
-        }
-
-        .message {
-            text-align: center;
-        }
-
-        .search-container {
-            text-align:center;
-            margin-bottom: 20px;
-        }
-
-        .search-container input[type="text"] {
-            width:250px;
-            padding:8px;
-            margin-right: 10px;
-        }
-
-        .search-container button {
-            padding: 8px 16px;
-            font-weight: bold;
-            width:46%;
-        }
-
-        .suspended {
-            background-color: red;
-            opacity: 1.0;
-        }
-
-       
 
     </style>
+    <script>
+        //Script to make the drop down menu for the vertical dot bar
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".dropdown-toggle").forEach(function (toggle) {
+                toggle.addEventListener("click", function (e) {
+                    e.stopPropagation(); // prevent bubbling
+                    const menu = this.nextElementSibling;
+                    menu.style.display = menu.style.display === "block" ? "none" : "block";
+    
+                    // Close other menus
+                    document.querySelectorAll(".dropdown-menu").forEach(m => {
+                        if (m !== menu) m.style.display = "none";
+                    });
+                });
+            });
+    
+            // Close menu when clicking outside
+            document.addEventListener("click", function () {
+                document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
+            });
+
+            //Script to make the modal box work
+            const modal = document.getElementById("accountModal");
+            const openBtn = document.getElementById("openModalBtn");
+            const closeBtn = document.querySelector(".close");
+
+            openBtn.onclick = function() {
+                modal.style.display = "block";
+            }
+
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+
+
+    </script>
 </head>
 <body>
-    <h2>All User Accounts</h2>
-    <h3><a href="/admin/create_user">Go back to create account menu</a></h3>
-    <div class="search-container">
-        <form method="GET" action="/admin/view_accounts">
-            <input type="text" name="search" placeholder="Search by username" value="{{ request.args.get('search', '') }}">
-            <button type="submit">Search</button>
-        </form>
-    </div>
-    {% if request.args.get('message') %}
-        <div class="message">{{ request.args.get('message') }}</div>
-    {% endif %}
-    <table>
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr class="{% if user[3] == True %}suspended{% endif %}">
-                <td>{{ user[0] }}</td>
-                <td>{{ user[1] }}</td>
-                <td>{{ user[2] }}</td>
-                <td>
-                    <a href="/admin/update_user/{{ user[0] }}">
-                        <button>Update</button>
-                    </a>
-                </td>
-                <td>
-                    <form method="POST" action="/admin/suspend_user/{{ user[0] }}">
-                        <button type="submit">Suspend</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-            {% if users | length==0 %}
-            <tr>
-                <td colspan="5">No users found.</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+    <div class="layout">
+        <div class="sidebar">
+            <div>
+                <h2>[X] MACS</h2>
+                <a href="/admin/view_accounts">👤 Users</a>
+                <a href="/admin/view_profiles">🔍 View Profiles</a>
+                <a href="/">&#10060; Logout</a>
+            </div>
+        </div>
 
+        <div class="main">
+            <div class="topbar">
+                <h2>Users</h2>
+                <div class="search-container">
+                    <form method="GET" action="/admin/view_accounts" class="search-bar">
+                        <input type="text" name="search" placeholder="Search" value="{{ request.args.get('search', '') }}">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="content">
+                {% if request.args.get('message') %}
+                    <div class="message">{{ request.args.get('message') }}</div>
+                {% endif %}
+            
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th colspan="2" style="text-align: right; width:250px; padding-right:20px;">
+                                    <a id="openModalBtn" style="text-decoration: none; color:grey;" href="#">+ New Account</a>
+
+                                    <div id="accountModal" class="modal">
+                                        <div class="modal-content">
+                                            <span class="close">&times;</span>
+                                            <h2>Create New Account</h2>
+                                            <form action="/admin/create_user" method="POST">
+                                                <input type="text" name="username" placeholder="Username" required><br><br>
+                                    
+                                                <input type="password" name="password" placeholder="Password" required><br><br>
+                                    
+                                                <select name="profile_id" required>
+                                                    {% for pid, pname in profiles %}
+                                                        <option value="{{ pid }}">{{ pname }}</option>
+                                                    {% endfor %}
+                                                </select><br><br>
+                                    
+                                                <div style="display: flex; justify-content: center;">
+                                                    <input type="submit" value="Continue">
+                                                    <button type="button" class="cancel-btn" onclick="document.getElementById('accountModal').style.display='none'">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr class="{% if user[3] == True %}suspended{% endif %}">
+                                <td>{{ user[0] }}</td>
+                                <td>{{ user[1] }}</td>
+                                <td>{{ user[2] }}</td>
+                                <td class="action-cell" style="text-align: right;">
+                                    <div class="dropdown">
+                                        <button class="dropdown-toggle">⋮</button>
+                                        <div class="dropdown-menu">
+                                            <a style="color: black; " href="/admin/update_user/{{ user[0] }}">Update</a>
+                                            <form method="POST" action="/admin/suspend_user/{{ user[0] }}">
+                                                <button type="submit">Suspend</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if users | length==0 %}
+                            <tr>
+                                <td colspan="5">No users found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </div>
 </body>
 </html>

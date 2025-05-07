@@ -35,7 +35,6 @@ class UserAccount:
 
     #Create account (username, password and profile)
     def createUserAccount(self):
-        print("TESTTTTTT")
         try:
             conn = db_connection()
             cur = conn.cursor()
