@@ -22,6 +22,8 @@ def Login():
         # ✅ Check for suspension FIRST
         if user == "suspended":
             return render_template("login.html", message="❌ Your account has been suspended.", profiles=profiles)
+        if user == "profile_suspended":
+            return render_template("login.html", message="❌ The profile has been suspended.", profiles=profiles)
         
         # Handle string errors returned
         if isinstance(user, str):

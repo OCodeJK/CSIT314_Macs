@@ -1,6 +1,6 @@
 from flask import Flask
 from boundary.LoginPage import login_ui
-from boundary.UserAdminCreateAccountGUI import register_ui
+from boundary.UserAdminCreateAccountPage import register_ui
 from boundary.UserAdminCreateProfilePage import register_profile_ui
 from boundary.UserAdminViewAccPage import view_acc
 from boundary.UserAdminViewProfilePage import view_prof

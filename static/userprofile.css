@@ -100,7 +100,7 @@ th {
 }
 
 .suspended {
-    background-color: red !important;
+    background-color: red;
 }
 
 .message {
