@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
 from control.UserAdminCreateAccController import UserAdminCreateAccController
-from helper.util_functions import get_all_profiles
 
 # Define a Blueprint to register with the Flask app
 register_ui = Blueprint("register_ui", __name__)
@@ -9,7 +8,6 @@ controller = UserAdminCreateAccController()
 
 @register_ui.route("/admin/create_user", methods=["GET", "POST"])
 def createUserAccount():
-    profiles = get_all_profiles()
     
     if request.method == "POST":
         username = request.form["username"]
@@ -20,14 +18,12 @@ def createUserAccount():
         result = controller.userCreateAccount(username, password, profile_id)
 
         if result is True:
-            message = "✅ Account created, you may now login."
+            return redirect(url_for('view_acc.display_all_users', message="✅ Account created."))
         elif isinstance(result, str):
-            message = f"⚠️ {result}"
+            return redirect(url_for('view_acc.display_all_users', message=f"⚠️ {result}"))
         else:
-            message = "❌ Create not successful, please try again."
+            return redirect(url_for('view_acc.display_all_users', message="❌ Account creation failed."))
             
-        
-        return render_template("register_account.html", message=message, profiles=profiles)
 
     #If user visit pages via GET
-    return render_template("register_account.html", message=None, profiles=profiles)
+    return redirect(url_for('view_acc.display_all_users'))

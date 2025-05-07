@@ -4,201 +4,13 @@
     <meta charset="UTF-8">
     <title>User Accounts Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='useradmin.css') }}">
     <style>
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', sans-serif;
         }
 
-        body {
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-
-        .layout {
-            display: flex;
-            height: 100vh;
-        }
-
-        .sidebar {
-            width: 220px;
-            background-color: white;
-            border-right: 1px solid #ddd;
-            padding: 20px;
-            margin: 20px;
-            margin-right: 10px;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 2px 0 6px rgba(0,0,0,0.05);
-            border-radius: 6px;
-        }
-
-        .sidebar h2 {
-            font-size: 20px;
-            margin-bottom: 80px;
-        }
-
-        .sidebar a {
-            text-decoration: none;
-            color: #333;
-            margin-bottom: 10px;
-            font-weight: bold;
-            display: flex
-        }
-
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .topbar {
-            background-color: white;
-            margin: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-        }
-
-        .topbar h2 {
-            margin: 0;
-        }
-
-
-        .content {
-            padding: 20px;
-        }
-
-        /* Make table inside a scrollable container */
-        .table-container {
-            max-height: 625px;   /* You can adjust the height as needed */
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-
-        /* Sticky table header */
-        .table-container thead th {
-            position: sticky;
-            top: 0;
-            background-color: #f2f2f2; /* Match your table header background */
-            z-index: 1;
-        }
-
-        table {
-            width: 100%;
-            background-color: white;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 16px;
-            text-align: center;            
-            padding-left: 20px;
-        }
-
-        th {
-            background-color: #f9f9f9;
-            font-weight: 600;
-        }
-
-        .suspended {
-            background-color: red !important;
-        }
-
-        .message {
-            margin-top: 10px;
-            color: red;
-            text-align: center;
-        }
-
-        
-        .action-cell {
-            position: relative;
-            text-align: right;
-            padding-right: 15px;
-        }
-        
-        .dropdown-toggle {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 30px;
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            padding: 5px 0;
-            min-width: 120px;
-        }
-        
-        .dropdown-menu a,
-        .dropdown-menu button {
-            display: block;
-            width: 100%;
-            padding: 8px 12px;
-            background: none;
-            border: none;
-            text-align: left;
-            font-size: 14px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        
-        .dropdown-menu a:hover,
-        .dropdown-menu button:hover {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .search-container {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            flex: 1;
-        }
-        
-        .search-bar {
-            display: flex;
-            align-items: center;
-            background-color: #f0f0f0;
-            border-radius: 15px;
-            padding: 5px 15px;
-            width: 300px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .search-bar input {
-            border: none;
-            background: transparent;
-            outline: none;
-            flex: 1;
-            padding: 8px;
-            font-size: 14px;
-        }
-        
-        .search-bar button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #999;
-            font-size: 16px;
-        }
-        
-        .search-bar button:hover {
-            color: #333;
-        }
     </style>
     <script>
         //Script to make the drop down menu for the vertical dot bar
@@ -220,14 +32,35 @@
             document.addEventListener("click", function () {
                 document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
             });
+
+            //Script to make the modal box work
+            const modal = document.getElementById("accountModal");
+            const openBtn = document.getElementById("openModalBtn");
+            const closeBtn = document.querySelector(".close");
+
+            openBtn.onclick = function() {
+                modal.style.display = "block";
+            }
+
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
         });
+
+
     </script>
 </head>
 <body>
     <div class="layout">
         <div class="sidebar">
             <div>
-                <h2>📦 MACS</h2>
+                <h2>[X] MACS</h2>
                 <a href="/admin/view_accounts">👤 Users</a>
                 <a href="/admin/view_profiles">🔍 View Profiles</a>
                 <a href="/">&#10060; Logout</a>
@@ -258,7 +91,30 @@
                                 <th>Username</th>
                                 <th>Role</th>
                                 <th colspan="2" style="text-align: right; width:250px; padding-right:20px;">
-                                    <a style="text-decoration: none; color:grey;" href="/admin/create_user">+ New Account</a>
+                                    <a id="openModalBtn" style="text-decoration: none; color:grey;" href="#">+ New Account</a>
+
+                                    <div id="accountModal" class="modal">
+                                        <div class="modal-content">
+                                            <span class="close">&times;</span>
+                                            <h2>Create New Account</h2>
+                                            <form action="/admin/create_user" method="POST">
+                                                <input type="text" name="username" placeholder="Username" required><br><br>
+                                    
+                                                <input type="password" name="password" placeholder="Password" required><br><br>
+                                    
+                                                <select name="profile_id" required>
+                                                    {% for pid, pname in profiles %}
+                                                        <option value="{{ pid }}">{{ pname }}</option>
+                                                    {% endfor %}
+                                                </select><br><br>
+                                    
+                                                <div style="display: flex; justify-content: center;">
+                                                    <input type="submit" value="Continue">
+                                                    <button type="button" class="cancel-btn" onclick="document.getElementById('accountModal').style.display='none'">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </th>
                             </tr>
                         </thead>
