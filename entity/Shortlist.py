@@ -2,7 +2,12 @@ from db_config import db_connection
 from datetime import datetime
 
 class Shortlist:
-    @staticmethod
+    '''def __init__(self, userid):
+        #private attributes
+        self.__userid = userid #homeownerid '''
+
+
+    
     def viewShortlistForHomeowner(userid):
         try:
             conn = db_connection()
@@ -15,12 +20,12 @@ class Shortlist:
                 INNER JOIN shortlist sl on s.cleanerid = sl.cleanerid
                 WHERE sl.homeownerid = %s
             """,(userid,))
-            shortlist = cur.fetchall()
+            shortlists = cur.fetchall()
             cur.close()
             conn.close()
 
             ResultSet = {}
-            for cleaner in shortlist:
+            for cleaner in shortlists:
                 cleanerid = cleaner[0]
                 serviceid = cleaner[2]
                 service_data = cleaner[2:]  # (serviceid, servicename, categoryname, price)
