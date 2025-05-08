@@ -35,7 +35,6 @@ def Login():
             if user.get_profileid() == "User Admin":
                 #redirect to admin page (create account page for now)
                 return redirect(url_for('view_acc.display_all_users'))
-            
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
                 print("This is cleaner page")
@@ -44,7 +43,7 @@ def Login():
                 return redirect(url_for('view_cleaner.homeowner_base'))
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
-                print("this is platform management page")
+                return redirect(url_for('createservcat.create_service_category'))
             
         else:
             return render_template("login.html", message="❌ Invalid credentials or role.", profiles=profiles)

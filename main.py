@@ -23,6 +23,9 @@ import secret # for access secret key -- SESSION
 
 
 app = Flask(__name__)
+
+app.secret_key = 'not-secret'
+
 app.register_blueprint(login_ui)
 app.register_blueprint(register_ui)
 app.register_blueprint(register_profile_ui)
@@ -42,6 +45,7 @@ app.register_blueprint(update_category_bp)
 app.register_blueprint(suspend_category_bp)
 app.register_blueprint(view_reports_bp)
 app.secret_key = secret.SECRET_KEY # SESSION RELATED
+
 
 if __name__ == "__main__":
     print(app.url_map)
