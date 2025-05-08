@@ -43,6 +43,7 @@ def Login():
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here
                 return redirect(url_for('view_cleaner.homeowner_base'))
+            
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
                 print("this is platform management page")
