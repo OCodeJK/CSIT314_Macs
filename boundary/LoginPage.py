@@ -41,10 +41,12 @@ def Login():
                 
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here
-                return redirect(url_for('view_cleaner.homeowner_base'))
+                flash('login success', 'success')
+                return render_template('login.html', redirect_url=url_for('view_cleaner.homeowner_base'))
             
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
+                flash('login success', 'success')
                 print("this is platform management page")
             
         else:
