@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Cleaners</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='HO.css') }}">
+
+    <script>
+
+        // Start of View Details pop up
+        function showPopup(service, cleaner, category, price) {
+            const content = `
+                <strong>Full details of selected service</strong><br><br>
+                Service: ${service}<br>
+                Cleaner: ${cleaner}<br>
+                Category: ${category}<br>
+                Price: ${price}
+            `;
+            document.getElementById("popupContent").innerHTML = content;
+            document.getElementById("popupModal").style.display = "block";
+            document.getElementById("popupBackdrop").style.display = "block";
+        }
+        
+        function closePopup() {
+            document.getElementById("popupModal").style.display = "none";
+            document.getElementById("popupBackdrop").style.display = "none";
+        }
+        // === End ===
+
+        // After click view detail, maintain current state
+        function incViewCount(event) { 
+            event.preventDefault();  // Prevent form from submitting normally
+
+            const formData = new FormData(event.target);
+            
+            fetch('/inc_viewcount', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                // Optional: handle response
+                console.log("");
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="layout">
+        <div class="sidebar">
+            <div>
+                <h2>[X] MACS</h2>
+                <a href="/view_hoservice" style="text-decoration: underline;">🧹 View All Services</a>
+                <a href="/view_hoshortlist">📋 View Shortlist</a>
+                <a href="/view_completedservice">✅ View Completed Services</a>
+                <a href="/">&#10060; Logout</a>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="topbar">
+                <h2>All Cleaners</h2>
+                <div class="search-container">
+                    <form method="GET" action="/view_hoservice" class="search-bar">
+                        <input type="text" name="search" placeholder="Search by username" value="{{ request.args.get('search', '') }}">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="content">
+                {% if request.args.get('message') %}
+                    <div class="message">{{ request.args.get('message') }}</div>
+                {% endif %}
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Service</th>
+                                <th>Cleaner</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ service[1] }}</td>
+                                <td>{{ service[2] }}</td>
+                                <td>
+                                    <form method="POST" action="/inc_viewcount" onsubmit="incViewCount(event)">
+                                        <input type="hidden" name="serviceid" value="{{ service[0] }}">
+                                        <button type="submit" class="btn-shortlist" onclick="showPopup('{{ service[1] }}', '{{ service[2] }}', '{{ service[3] }}', '{{ service[4] }}')">View Full Service Details</button>
+                                    </form>
+
+                                    <div id="popupBackdrop"></div>
+                                    <div id="popupModal">
+                                        <div id="popupContent"></div>
+                                        <br><br>
+                                        <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+                                            <button onclick="closePopup()">Close</button>
+                                            <form method="POST" action="/add_shortlist" style="margin: 0;">
+                                                <input type="hidden" name="serviceid" value="{{ service[0] }}">
+                                                <button onclick="closePopup()">Add to Shortlist</button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    {% if message %}
+                                        <p style="color: green;">{{ message }}</p>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if services | length==0 %}
+                            <tr>
+                                <td colspan="5">No services found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

@@ -8,7 +8,7 @@ view_completedservice_bp = Blueprint('view_completedservice', __name__)
 def homeowner_base():
     return render_template('homeowner_base.html')
 
-@view_completedservice_bp.route('/homeowner_base/view_completedservice')
+@view_completedservice_bp.route('/view_completedservice')
 def view_completedservice():
     userid = session.get('userid')
     search_query = request.args.get('search', '') #get the search input from the URL

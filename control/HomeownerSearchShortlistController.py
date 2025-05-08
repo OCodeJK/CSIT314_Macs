@@ -1,6 +1,6 @@
 from entity.Shortlist import Shortlist
 
 class HomeownerSearchShortlistController:
-    def homeownerSearchShortlist(userid, cleaneruser):
-        ResultSet = Shortlist.searchShortlistForHomeowner(userid, cleaneruser)
+    def homeownerSearchShortlist(userid, servicename):
+        ResultSet = Shortlist.searchShortlistForHomeowner(userid, servicename)
         return ResultSet
