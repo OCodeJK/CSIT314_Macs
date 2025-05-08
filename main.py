@@ -12,6 +12,12 @@ from boundary.ServiceSuspensionPage import suspend_service_bp
 from boundary.HomeownerViewCleanerPage import view_cleaner_bp
 from boundary.HomeownerViewShortlistPage import view_shortlist_bp
 from boundary.HomeownerViewCompletedServicePage import view_completedservice_bp
+from boundary.PMCreateServCat import createservcat_bp
+from boundary.PMManageServCatGUI import view_category_bp
+from boundary.PMUpdateServCat import update_category_bp
+from boundary.PMSuspendServCat import suspend_category_bp
+from boundary.PMViewReportsGUI import view_reports_bp
+
 import secret # for access secret key -- SESSION
 
 
