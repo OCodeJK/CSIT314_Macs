@@ -21,7 +21,7 @@ def Login():
         if user == "suspended":
             return render_template("login.html", message="❌ Your account has been suspended.", profiles=profiles)
         if user == "profile_suspended":
-            return render_template("login.html", message="Your account has been suspended.", profiles=profiles)
+            return render_template("login.html", message="❌ The profile has been suspended.", profiles=profiles)
         
         # Handle string errors returned
         if isinstance(user, str):
@@ -32,7 +32,6 @@ def Login():
             session['userid'] = userid
             if user.get_profileid() == "User Admin":
                 return redirect(url_for('view_acc.display_all_users'))
-                
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
                 print("this is cleaner page")
