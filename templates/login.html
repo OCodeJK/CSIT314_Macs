@@ -3,29 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
-    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white;
+        }
+        
+        .top-bar {
+            background-color: #white;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.4);
+        }
+        
+        .container {
+            display: flex;
+            margin-bottom: 0px;
+            height: 92.5vh;
+            padding-top: 8px;
+        }
+        
+        .left-panel {
+            flex: 1;
+            background-color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-left: 200px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 0px;
+        }
+        
+        .logo-box {
+            border: 2px solid black;
+            padding: 4px 10px;
+            margin-right: 10px;
+        }
+        
+        .image-placeholder {
+            width: 300px;
+            height: 300px;
+            border: 1px solid black;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        
+        .tagline {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #111;
+        }
+        
+        .right-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eee;
+            padding-right: 200px
+        }
+        
+        .login-card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            padding-top:100px;
+            padding-bottom:100px;
+        }
+        
+        .login-card h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .login-card p {
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        .login-card input,
+        .login-card select {
+            width: 93%;
+            padding: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #profileid {
+            width: 300px;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .btn-group button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-group button:first-child {
+            background-color: #fff;
+            border: 1px solid #000;
+            margin-left: 225px;
+        }
+        
+        
+        .message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <form action="/" method="POST">
-        <label for="profile_id">Login As:</label><br>
-        <select name="profile_id" required>
-            {% for pid, pname in profiles %}
-                <option value="{{ pid }}">{{ pname }}</option>
-            {% endfor %}
-        </select><br><br>
-
-        <label>Username:</label><br>
-        <input type="text" name="username"><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password"><br><br>
-
-        <input type="submit" value="Login">
-    </form>
-
-    {% if message %}
-        <div class="message">{{ message }}</div>
-    {% endif %}
+    <div class="top-bar">
+        <div class="logo">
+            <span class="logo-box">X</span>
+            <span class="logo-text">MACS</span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="left-panel">  
+            <div class="image-placeholder"></div>
+            <h2 class="tagline">Life’s Messy.<br>We Make It Easy.</h2>
+        </div>
+        <div class="right-panel">
+            <div class="login-card">
+                <h1>Log in</h1>
+                <p>Welcome back to MACS</p>
+                <form action="/" method="POST">
+                    <select name="profile_id" id="profileid" required>
+                        {% for pid, pname in profiles %}
+                            <option value="{{ pid }}">{{ pname }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="username" placeholder="Enter your ID" required>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                    <div class="btn-group">
+                        <button type="submit">Login</button>
+                        
+                    </div>
+                </form>
+                {% if message %}
+                    <div class="message">{{ message }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>

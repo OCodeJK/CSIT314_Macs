@@ -1,17 +1,41 @@
-**Before Running:**
+# Before Running:
  pip install -r requirements.txt to install all relevant dependencies
  
  
- **To Run**
- python main.py to run the app
- localhost:5000 
- to access it
+ # To Run:
+ - python main.py to run the app
+ - localhost:5000 to access it
  
- 
- localhost:5000 to access it
 
 
-**Database:**
+# Database Restoration:
 To ensure you are using the latest database do:
 
-pg_restore -U username -d c2c_db < db.dump
+pg_restore -U username -d database_name < db.dump
+
+OR
+
+psql -U username -d database_name -f dump.sql
+
+# Dumping Database:
+To ensure we can keep our database updated do:
+
+pg_dump -Fc mydb > db.dump
+
+OR
+
+pg_dump mydb > db.sql
+
+# Folder/File structures:
+
+boundary: Contains all the boundary related file
+
+control: Contains all the controller related file
+
+entity: Contains all the entity related file
+
+template: contains all the html files to be rendered (CSS included)
+
+static: contains all the relevant css files for our templates
+
+helper: contains extra functions to help with the program (for neatness)

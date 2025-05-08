@@ -5,6 +5,7 @@ class UserAdminProfileController:
         try:
             profile = UserProfile(profilename)
             return profile.createUserProfile()
+        
         except ValueError as ve:
             return str(ve)
         except Exception:

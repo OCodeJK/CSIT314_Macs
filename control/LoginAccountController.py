@@ -5,5 +5,8 @@ class LoginAccountController:
         if not username or not password:
             return "Username and password cannot be empty."
         
+        # Create user object
+        user = UserAccount(username, password, profileid)
         
-        return UserAccount.Authenticate(username, password, profileid)
+        # Call and return the instance method
+        return user.Authenticate()

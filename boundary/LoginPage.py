@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session
 from control.LoginAccountController import LoginAccountController
-from helper.util_functions import get_all_profiles
+from helper.util_functions import get_all_profiles, userReturnUID
 
 login_ui = Blueprint("login_ui", __name__)
 controller = LoginAccountController()
@@ -14,9 +14,11 @@ def Login():
         username = request.form["username"]
         password = request.form["password"]
         profileid = request.form["profile_id"]
+        userid = 0
         
         user = controller.AuthenticateDetails(username, password, profileid)
-        
+        userid = userReturnUID(username, password, profileid)
+
         # ✅ Check for suspension FIRST
         if user == "suspended":
             return render_template("login.html", message="❌ Your account has been suspended.", profiles=profiles)
@@ -27,7 +29,7 @@ def Login():
         if isinstance(user, str):
             return render_template("login.html", message=f"⚠️ {user}", profiles=profiles)
         
-
+        # If the login happen check role to load appropriate page
         if user:
             session['userid'] = userid
             if user.get_profileid() == "User Admin":
@@ -35,7 +37,7 @@ def Login():
                 return redirect(url_for('view_acc.display_all_users'))
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
-                print("this is cleaner page")
+                print("This is cleaner page")
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here
                 return redirect(url_for('view_cleaner.homeowner_base'))

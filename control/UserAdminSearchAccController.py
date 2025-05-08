@@ -1,5 +1,5 @@
 from entity.UserAccount import UserAccount
 
 class UserAdminSearchAccController:
-    def SearchUserAccount(username):
-        return UserAccount.SearchUser(username)
+    def searchUserAccount(username):
+        return UserAccount.searchUser(username)

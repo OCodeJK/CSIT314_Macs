@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homeowner Base Page</title>
+</head>
+<body>
+    <h2>Menu</h2>
+    
+    <br>
+    <a href="/homeowner_base/view_cleaner">
+        <button type="button">View All Cleaners</button>
+    </a>
+
+    <br><br>
+    <a href="/homeowner_base/view_shortlist">
+        <button type="button">View Your Shortlist</button>
+    </a>
+
+    <br><br>
+    <a href="/homeowner_base/view_completedservice">
+        <button type="button">View Your Service History</button>
+    </a>
+
+    <br><br>
+    <a href="/">
+        <button type="button">Logout</button>
+    </a>
+    
+
+    {%if message %}
+        <div class="message">{{message}}</div>
+    {% endif %}
+
+</body>
+</html>
