@@ -73,42 +73,6 @@ class UserAccount:
         conn = db_connection()
         cur = conn.cursor()
         
-        #check if account is suspended
-        cur.execute("""
-            SELECT suspend from account 
-            WHERE username = %s AND password = %s AND profileid = %s""", (self.__username, self.__password, self.__profileid)
-        )
-        account_result = cur.fetchone()
-        
-        cur.execute("""
-                    SELECT suspend from profile WHERE profileid = %s""", (self.__profileid,)
-        )
-        profile_result = cur.fetchone()
-        
-        if account_result is None:
-            cur.close()
-            conn.close()
-            return None
-        
-        if profile_result is None:
-            cur.close()
-            conn.close()
-            return None
-        
-        account_is_suspended = account_result[0]
-        profile_is_suspended = profile_result[0]
-        if account_is_suspended is True:
-            #Account is suspended
-            cur.close()
-            conn.close()
-            return "suspended"
-        elif profile_is_suspended is True:
-            # Profile is suspended
-            cur.close()
-            conn.close()
-            return "profile_suspended"
-        
-        
         #login when not suspended
         cur.execute(
             """SELECT username, password, account.profileid from account INNER JOIN profile 

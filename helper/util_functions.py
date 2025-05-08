@@ -50,3 +50,29 @@ def userReturnUID(username, password, profileid):
             return userid
         else:
             return None
+        
+        
+        
+def check_if_user_suspended(username, password, profileid):
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    #check if account is suspended
+    cur.execute("""
+        SELECT suspend from account 
+        WHERE username = %s AND password = %s AND profileid = %s""", (username, password, profileid)
+    )
+    account_result = cur.fetchone()
+    
+    if account_result is None:
+            cur.close()
+            conn.close()
+            return None
+        
+        
+    account_is_suspended = account_result[0]
+    if account_is_suspended is True:
+        #Account is suspended
+        cur.close()
+        conn.close()
+        return "suspended"

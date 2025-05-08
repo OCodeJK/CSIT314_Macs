@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session, flash
 from control.LoginAccountController import LoginAccountController
-from helper.util_functions import get_all_profiles, userReturnUID
+from helper.util_functions import get_all_profiles, userReturnUID, check_if_user_suspended
 
 login_ui = Blueprint("login_ui", __name__)
 controller = LoginAccountController()
@@ -20,11 +20,9 @@ def Login():
         userid = userReturnUID(username, password, profileid)
 
         # ✅ Check for suspension FIRST
-        if user == "suspended":
+        if check_if_user_suspended(username, password, profileid) == "suspended":
             return render_template("login.html", message="❌ Your account has been suspended.", profiles=profiles)
-        if user == "profile_suspended":
-            return render_template("login.html", message="❌ The profile has been suspended.", profiles=profiles)
-        
+
         # Handle string errors returned
         if isinstance(user, str):
             return render_template("login.html", message=f"⚠️ {user}", profiles=profiles)
@@ -34,8 +32,8 @@ def Login():
             session['userid'] = userid
             if user.get_profileid() == "User Admin":
                 #redirect to admin page (create account page for now)
-                flash("login success")
-                return redirect(url_for('view_acc.display_all_users'))
+                flash('login success', 'success')
+                return render_template('login.html', redirect_url=url_for('view_acc.display_all_users'))
             
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
