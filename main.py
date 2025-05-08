@@ -36,6 +36,11 @@ app.register_blueprint(suspend_service_bp)
 app.register_blueprint(view_cleaner_bp)
 app.register_blueprint(view_shortlist_bp)
 app.register_blueprint(view_completedservice_bp)
+app.register_blueprint(createservcat_bp)
+app.register_blueprint(view_category_bp)
+app.register_blueprint(update_category_bp)
+app.register_blueprint(suspend_category_bp)
+app.register_blueprint(view_reports_bp)
 app.secret_key = secret.SECRET_KEY # SESSION RELATED
 
 if __name__ == "__main__":
