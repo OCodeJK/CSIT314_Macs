@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for, session
+from flask import Blueprint, request, render_template, redirect, url_for, session, flash
 from control.LoginAccountController import LoginAccountController
 from helper.util_functions import get_all_profiles, userReturnUID
 
@@ -34,6 +34,7 @@ def Login():
             session['userid'] = userid
             if user.get_profileid() == "User Admin":
                 #redirect to admin page (create account page for now)
+                flash("login success")
                 return redirect(url_for('view_acc.display_all_users'))
             
             elif user.get_profileid() == "Cleaner":
