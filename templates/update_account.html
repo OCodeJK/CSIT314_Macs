@@ -2,28 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update User</title>
+    <title>Edit User Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='useradmin_edit_user.css') }}">
 </head>
 <body>
-    <h2>Update User Account</h2>
-    <form action="/admin/update_user/{{ user[0] }}" method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" value="{{ user[1] }}"><br><br>
+    <div class="layout">
+        <div class="sidebar">
+            <h2>[X] MACS</h2>
+            <a href="/admin/view_accounts">👤 Users</a>
+            <a href="/admin/view_profiles">🔍 Profiles</a>
+            <a href="/">❌ Logout</a>
+        </div>
 
-        <label>Password:</label><br>
-        <input type="password" name="password"><br><br>
+        <div class="main">
+            <div class="topbar">
+                <h2>Users</h2>
+                <div class="icons">
+                    <i class="fas fa-bell"></i>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
 
-        <label>Profile:</label><br>
-        <select name="profileid" id="profileid">
-            <option value="1" {% if user[3] == 1 %}selected{% endif %}>User Admin</option>
-            <option value="2" {% if user[3] == 2 %}selected{% endif %}>Cleaner</option>
-            <option value="3" {% if user[3] == 3 %}selected{% endif %}>Homeowner</option>
-            <option value="4" {% if user[3] == 4 %}selected{% endif %}>Platform Management</option>
-        </select>
-        <br><br>
-        <input type="submit" value="Update">
-        <br><br>
-        <a href="/admin/view_accounts">Back to view accounts page</a>
-    </form>
+            <div class="form-card">
+                <form action="/admin/update_user/{{ user[0] }}" method="POST">
+                    <div class="form-header">
+                        <h3>Edit User Account</h3>
+                        <a href="/admin/view_accounts" class="close">&times;</a>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" name="username" value="{{ user[1] }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select name="profileid" required>
+                                <option value="1" {% if user[3] == 1 %}selected{% endif %}>User Admin</option>
+                                <option value="2" {% if user[3] == 2 %}selected{% endif %}>Cleaner</option>
+                                <option value="3" {% if user[3] == 3 %}selected{% endif %}>Homeowner</option>
+                                <option value="4" {% if user[3] == 4 %}selected{% endif %}>Platform Management</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
