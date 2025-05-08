@@ -3,75 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <title>View Reports</title>
+    <style>
+        .message {
+            color: #d9534f;
+            margin-top: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #bbb;
+            padding: 8px;
+        }
+        th {
+            background: #f2f2f2;
+        }
+        .dropdown-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 250px;
+            margin-bottom: 20px;
+        }
+        .dropdown-checkbox-btn {
+            width: 100%;
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .dropdown-checkbox-list {
+            display: none;
+            position: absolute;
+            background: #fff;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            width: 100%;
+            margin-top: 2px;
+        }
+        .dropdown-checkbox.open .dropdown-checkbox-list {
+            display: block;
+        }
+        .dropdown-checkbox-list label {
+            display: block;
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+        .dropdown-checkbox-list label:hover {
+            background: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h2>View Reports</h2>
 
-    <form method="POST">
-        <h3>Daily</h3>
-        <select name="daily">
-            {% for d in daily_options %}
-                <option value="{{ d }}" {% if selected_daily == d %}selected{% endif %}>{{ d }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" name="view_daily">View Daily</button>
+    <form method="POST" id="report-form">
+        <!-- Checkbox Dropdown for Categories -->
+        <div class="dropdown-checkbox" id="category-dropdown">
+            <div class="dropdown-checkbox-btn" onclick="toggleDropdown()">Select categories &#x25BC;</div>
+            <div class="dropdown-checkbox-list">
+                {% for cat in all_categories %}
+                    <label>
+                        <input type="checkbox" name="categories" value="{{ cat }}"
+                            {% if cat in selected_categories %}checked{% endif %}>
+                        {{ cat }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
 
-        <h3>Weekly (Monday Start)</h3>
-        <select name="weekly">
-            {% for w in weekly_options %}
-                <option value="{{ w.value }}" {% if selected_weekly == w.value %}selected{% endif %}>{{ w.label }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" name="view_weekly">View Weekly</button>
+        <div style="margin-bottom: 15px;">
+            <h3>Daily</h3>
+            <select name="daily">
+                {% for d in daily_options %}
+                    <option value="{{ d }}" {% if selected_daily == d %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="view_daily">View Daily</button>
+        </div>
 
-        <h3>Monthly</h3>
-        <select name="monthly">
-            {% for m in monthly_options %}
-                <option value="{{ m }}" {% if selected_monthly == m %}selected{% endif %}>{{ m }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" name="view_monthly">View Monthly</button>
+        <div style="margin-bottom: 15px;">
+            <h3>Weekly (Monday Start)</h3>
+            <select name="weekly">
+                {% for w in weekly_options %}
+                    <option value="{{ w.value }}" {% if selected_weekly == w.value %}selected{% endif %}>{{ w.label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="view_weekly">View Weekly</button>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <h3>Monthly</h3>
+            <select name="monthly">
+                {% for m in monthly_options %}
+                    <option value="{{ m }}" {% if selected_monthly == m %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="view_monthly">View Monthly</button>
+        </div>
     </form>
 
+    <script>
+    function toggleDropdown() {
+        document.getElementById('category-dropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+        var dropdown = document.getElementById('category-dropdown');
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+        }
+    });
+    </script>
+
     {% if report_data %}
-    <h3>
-        {% if report_type == 'daily' %}Daily Report for {{ selected_daily }}
-        {% elif report_type == 'weekly' %}Weekly Report starting {{ selected_weekly }}
-        {% elif report_type == 'monthly' %}Monthly Report for {{ selected_monthly }}
-        {% endif %}
-    </h3>
-    <table border="1">
-        <tr>
-            {% for key in report_data[0].keys() %}
-                <th>{{ key }}</th>
-            {% endfor %}
-        </tr>
-        {% for row in report_data %}
+        <h3>
+            {% if report_type == 'daily' %}Daily Report for {{ selected_daily }}
+            {% elif report_type == 'weekly' %}Weekly Report starting {{ selected_weekly }}
+            {% elif report_type == 'monthly' %}Monthly Report for {{ selected_monthly }}
+            {% endif %}
+        </h3>
+        <table>
             <tr>
-                {% for value in row.values() %}
-                    <td>{{ value }}</td>
+                {% for key in report_data[0].keys() %}
+                    <th>{{ key }}</th>
                 {% endfor %}
             </tr>
-        {% endfor %}
-    </table>
-{% endif %}
+            {% for row in report_data %}
+                <tr>
+                    {% for value in row.values() %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 
-<!-- Flashed messages only at the bottom -->
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="message" style="color: #d9534f; margin-top: 20px;">
-      {% for message in messages %}
-        <div>{{ message }}</div>
-      {% endfor %}
+    <!-- Flashed messages at the bottom -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="message">
+          {% for message in messages %}
+            <div>{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('createservcat.create_service_category') }}">
+            <button type="button">Back to Create Service Category</button>
+        </a>
     </div>
-  {% endif %}
-{% endwith %}
-
-<div style="margin-top: 30px;">
-    <a href="{{ url_for('createservcat.create_service_category') }}">
-        <button type="button">Back to Create Service Category</button>
-    </a>
-</div>
 </body>
 </html>
-
