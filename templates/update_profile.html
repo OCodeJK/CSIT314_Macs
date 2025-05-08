@@ -2,17 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Profile</title>
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='useradmin_edit_profile.css') }}">
 </head>
 <body>
-    <h2>Update Profile Details</h2>
-    <form action="/admin/update_profile/{{ profile[0] }}" method="POST">
-        <label>Profile name:</label><br>
-        <input type="text" name="profilename" value="{{ profile[1] }}"><br><br>
+    <div class="layout">
+        <div class="sidebar">
+            <h2>[X] MACS</h2>
+            <a href="/admin/view_accounts">👤 View Users</a>
+            <a href="/admin/view_profiles" style="text-decoration: underline;">🔍 View Profiles</a>
+            <a href="/">❌ Logout</a>
+        </div>
 
-        <input type="submit" value="Update">
-        <br><br>
-        <a href="/admin/view_profiles">Back to view profiles page</a>
-    </form>
+        <div class="main">
+            <div class="topbar">
+                <h2>Profiles</h2>
+            </div>
+
+            <div class="form-card">
+                <form action="/admin/update_profile/{{ profile[0] }}" method="POST">
+                    <div class="form-header">
+                        <h3>Edit Profile</h3>
+                        <a href="/admin/view_profiles" class="close">&times;</a>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Profile Name</label>
+                            <input type="text" name="profilename" value="{{ profile[1] }}">
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit">Save</button>
+                    </div>
+            
+                </form>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
