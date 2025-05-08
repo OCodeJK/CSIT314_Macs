@@ -195,7 +195,7 @@ class UserAccount:
             if current_status[0] is True:
                 return False # Already suspended
             
-            #suspend the account
+            # Suspend the account
             cur.execute("UPDATE account set suspend=TRUE WHERE userid = %s", (userid,))
             conn.commit()
             cur.close()
