@@ -24,12 +24,11 @@ def view_cleaners():
 def add_shortlist():
     userid = session.get('userid')
     cleanerid = request.form.get("cleanerid")
-    print ("cleanerid: ", cleanerid)
 
     final = HomeownerCreateShortlistController.homeownerCreateShortlist(cleanerid, userid)
     
     if final:
-        return redirect(url_for('view_cleaner.view_cleaners', message='Added to Shortlist'))
+        return redirect(url_for('view_cleaner.view_cleaners', message='Cleaner successfully added to shortlist'))
     else:
-        return redirect(url_for('view_cleaner.view_cleaners', message='Already Shortlisted'))
+        return redirect(url_for('view_cleaner.view_cleaners', message='Cleaner already shortlisted'))
 

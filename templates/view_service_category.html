@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Service Categories</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+        .search-container { margin: 20px 0; }
+        .button { padding: 5px 10px; margin-right: 5px; cursor: pointer; }
+        .suspend-active { background-color: #f44336; color: white; }
+        .suspend-inactive { background-color: #4CAF50; color: white; }
+        .message { margin: 10px 0; color: #d9534f; }
+    </style>
+</head>
+<body>
+    <h2>Service Categories</h2>
+    
+    <!-- Search Form -->
+    <div class="search-container">
+        <form action="{{ url_for('view_category.view_category') }}" method="GET" style="display:inline;">
+            <input type="text" placeholder="Search categories..." name="search" value="{{ search_term or '' }}">
+            <button type="submit">Search</button>
+        </form>
+        {% if search_term %}
+            <a href="{{ url_for('view_category.view_category') }}"><button type="button">Clear</button></a>
+        {% endif %}
+    </div>
+    
+    <!-- Feedback / Flashed messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="message">
+          {% for message in messages %}
+            <div>{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Categories Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if categories %}
+                {% for category in categories %}
+                <tr>
+                    <td>{{ category.categoryid }}</td>
+                    <td>{{ category.categoryname }}</td>
+                    <td>{{ "Suspended" if category.suspend else "Active" }}</td>
+                    <td>
+                        <!-- Update button -->
+                        <a href="{{ url_for('update_category.update_category_form', category_id=category.categoryid) }}">
+                            <button class="button">Update</button>
+                        </a>
+                        <!-- Suspend/Unsuspend toggle button -->
+                        <form method="POST" action="{{ url_for('suspend_category.toggle_suspend', category_id=category.categoryid) }}" style="display:inline;">
+                            <input type="hidden" name="suspend_action" value="suspend">
+                            <button type="submit" class="button suspend-active">Suspend</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">
+                        {% if search_term %}
+                            No categories found matching "{{ search_term }}".
+                        {% else %}
+                            No categories found.
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <!-- Back to Create Service Category Button -->
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('createservcat.create_service_category') }}">
+            <button type="button">Back to Create Service Category</button>
+        </a>
+    </div>
+</body>
+</html>

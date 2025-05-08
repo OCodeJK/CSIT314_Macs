@@ -31,12 +31,12 @@ def Login():
         if user:
             session['userid'] = userid
             if user.get_profileid() == "User Admin":
-                #redirect to admin page (create account page for now)
+                # redirect to admin page (create account page for now)
                 flash('login success', 'success')
                 return render_template('login.html', redirect_url=url_for('view_acc.display_all_users'))
-            
+              
             elif user.get_profileid() == "Cleaner":
-                #implement cleaner page here
+                # implement cleaner page here
                 print("This is cleaner page")
                 
             elif user.get_profileid() == "Homeowner":
@@ -47,7 +47,7 @@ def Login():
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
                 flash('login success', 'success')
-                print("this is platform management page")
+                return render_template('login.html', redirect_url=url_for('createservcat.create_service_category'))
             
         else:
             return render_template("login.html", message="❌ Invalid credentials or role.", profiles=profiles)
