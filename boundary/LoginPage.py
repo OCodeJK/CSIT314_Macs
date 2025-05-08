@@ -20,6 +20,8 @@ def Login():
         # ✅ Check for suspension FIRST
         if user == "suspended":
             return render_template("login.html", message="❌ Your account has been suspended.", profiles=profiles)
+        if user == "profile_suspended":
+            return render_template("login.html", message="Your account has been suspended.", profiles=profiles)
         
         # Handle string errors returned
         if isinstance(user, str):
@@ -27,16 +29,16 @@ def Login():
         
 
         if user:
-            session['profileid'] = user.get_profileid()
-
+            session['userid'] = userid
             if user.get_profileid() == "User Admin":
-                return redirect(url_for('register_ui.createUserAccount'))
+                return redirect(url_for('view_acc.display_all_users'))
+                
             elif user.get_profileid() == "Cleaner":
                 #implement cleaner page here
                 print("this is cleaner page")
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here
-                print("this is homeowner")
+                return redirect(url_for('view_cleaner.homeowner_base'))
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
                 return redirect(url_for('createservcat.create_service_category'))
