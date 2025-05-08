@@ -58,7 +58,7 @@ class UserAccount:
             return True
         except psycopg2.errors.UniqueViolation:
             conn.rollback()
-            raise ValueError("Username already exists.")
+            return False
         except Exception as e:
             print("DB Error:", e)
             conn.rollback()
@@ -81,7 +81,7 @@ class UserAccount:
         account_result = cur.fetchone()
         
         cur.execute("""
-                    SELECT suspend from profile WHERE profileid = %s""", (self.__profileid)
+                    SELECT suspend from profile WHERE profileid = %s""", (self.__profileid,)
         )
         profile_result = cur.fetchone()
         

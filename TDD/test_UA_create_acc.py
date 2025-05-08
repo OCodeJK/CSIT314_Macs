@@ -2,7 +2,6 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import pytest
 from entity.UserAccount import UserAccount
 from db_config import db_connection
 
@@ -31,12 +30,14 @@ def test_createUserAccount_success():
     
     assert result is True
 
-def test_createUserAccount_duplicate():
-    existing_username = "jk"
-    existing_password = "123"
-    profileid = 1
+def test_createUserAccount_failed():
+    username = "test_general_error"
+    password = "pass123"
+    profileid = "invalid"  # Should be an int, this triggers a general exception
 
-    account = UserAccount(existing_username, existing_password, profileid)
+    clear_test_user(username)
 
-    with pytest.raises(ValueError, match="Username already exists."):
-        account.createUserAccount()
+    account = UserAccount(username, password, profileid)
+    result = account.createUserAccount()
+    
+    assert result is False  # Should return False due to general exception
