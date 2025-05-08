@@ -9,9 +9,6 @@ import datetime
 
 view_reports_bp = Blueprint('view_reports', __name__)
 
-def is_platform_management():
-    return session.get('profileid') == "Platform Management"
-
 def get_daily_options():
     start_date = datetime.date(2024, 1, 1)
     today = datetime.date.today()
@@ -46,9 +43,6 @@ def get_monthly_options():
 
 @view_reports_bp.route('/admin/view_report', methods=['GET', 'POST'])
 def view_report():
-    if not is_platform_management():
-        flash("Unauthorized: Only Platform Management can access this page.")
-        return redirect(url_for('login_ui.Login'))
 
     # Use the controller to get all categories
     category_controller = PMSearchDailyReportsController()

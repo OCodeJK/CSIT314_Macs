@@ -28,15 +28,6 @@
       <button type="button">Logout</button>
     </a>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="message">
-          {% for message in messages %}
-            <div>{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
 </body>
 </html>
 

@@ -4,14 +4,8 @@ from control.PMViewServCatController import PMViewServCatController
 
 view_category_bp = Blueprint('view_category', __name__)
 
-def is_platform_management():
-    return session.get('profileid') == "Platform Management"
-
 @view_category_bp.route('/admin/view_category', methods=['GET'])
 def view_category():
-    if not is_platform_management():
-        flash("Unauthorized: Only Platform Management can access this page.")
-        return redirect(url_for('login_ui.Login'))
 
     search_term = request.args.get('search', '').strip()
     
