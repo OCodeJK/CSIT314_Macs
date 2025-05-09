@@ -64,7 +64,7 @@ class UserProfile:
     
     
     @staticmethod
-    def SearchProfile(profilename):
+    def searchProfile(profilename):
         try:
             conn = db_connection()
             cur = conn.cursor()
