@@ -95,7 +95,6 @@ th, td {
 }
 
 th {
-    background-color: #f9f9f9;
     font-weight: 600;
 }
 
@@ -125,13 +124,11 @@ th {
 
 .dropdown-menu {
     display: none;
-    position: absolute;
-    right: 0;
-    top: 30px;
+    position: fixed; /* Change from absolute to fixed */
     background-color: white;
     border: 1px solid #ddd;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    z-index: 100;
+    z-index: 1000;
     padding: 5px 0;
     min-width: 120px;
 }
