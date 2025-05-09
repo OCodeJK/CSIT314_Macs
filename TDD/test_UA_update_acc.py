@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from entity.UserAccount import UserAccount
 
 def test_updateUserAcc():
-    userid = "28"
+    userid = 28
     change_username = "john333"
     change_password = "abcd222"
     change_profileid = 2
