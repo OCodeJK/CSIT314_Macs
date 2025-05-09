@@ -34,7 +34,7 @@ control: Contains all the controller related file
 
 entity: Contains all the entity related file
 
-template: contains all the html files to be rendered (CSS included)
+template: contains all the html files to be rendered
 
 static: contains all the relevant css files for our templates
 
