@@ -1,0 +1,116 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f5f5;
+}
+
+.layout {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: white;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    margin: 20px;
+    margin-right: 10px;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.05);
+    border-radius: 6px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 80px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+    display: flex
+}
+
+.main {
+    flex: 1;
+    padding: 30px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    margin-bottom: 30px;
+}
+
+.form-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    
+    
+    margin: auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-header h3 {
+    margin: 0;
+}
+
+.close {
+    font-size: 28px;
+    color: #666;
+    text-decoration: none;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-footer {
+    text-align: right;
+    margin-top: 20px;
+}
+
+button[type="submit"] {
+    background: #ccc;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}

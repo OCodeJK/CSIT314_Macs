@@ -21,7 +21,7 @@ class UserProfile:
             return True
         except psycopg2.errors.UniqueViolation:
             conn.rollback()
-            raise ValueError("Profile already exists.")
+            return False
         except Exception as e:
             print("DB Error:", e)
             conn.rollback()
@@ -64,7 +64,7 @@ class UserProfile:
     
     
     @staticmethod
-    def SearchProfile(profilename):
+    def searchProfile(profilename):
         try:
             conn = db_connection()
             cur = conn.cursor()

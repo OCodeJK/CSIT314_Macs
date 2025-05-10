@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for
 from control.UserAdminCreateAccController import UserAdminCreateAccController
 
 # Define a Blueprint to register with the Flask app
@@ -18,11 +18,11 @@ def createUserAccount():
         result = controller.userCreateAccount(username, password, profile_id)
 
         if result is True:
-            return redirect(url_for('view_acc.display_all_users', message="✅ Account created."))
+            return redirect(url_for('view_acc.display_all_users', message="✅ Account created, you may now login."))
         elif isinstance(result, str):
             return redirect(url_for('view_acc.display_all_users', message=f"⚠️ {result}"))
         else:
-            return redirect(url_for('view_acc.display_all_users', message="❌ Account creation failed."))
+            return redirect(url_for('view_acc.display_all_users', message="❌ Create not successful, please try again."))
             
 
     #If user visit pages via GET
