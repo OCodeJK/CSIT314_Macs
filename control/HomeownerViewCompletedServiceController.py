@@ -1,6 +1,6 @@
-from entity.CompletedService import CompletedService
+from entity.HistoryRecord import HistoryRecord
 
 class HomeownerViewCompletedServiceController:
     def homeownerViewCompletedService(userid):
-        ResultSet = CompletedService.viewCompletedServiceForHomeowner(userid)
+        ResultSet = HistoryRecord.viewCompletedServiceForHomeowner(userid)
         return ResultSet
