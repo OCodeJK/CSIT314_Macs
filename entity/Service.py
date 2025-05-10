@@ -39,8 +39,8 @@ class Service:
         cur.execute(
             """
             SELECT * FROM service 
-            WHERE (cleanerId IS NULL OR cleanerId = '') 
-            AND suspended = FALSE
+            WHERE (cleanerId IS NULL) 
+            AND suspend = FALSE
             ORDER BY serviceName
             """
         )
@@ -79,7 +79,7 @@ class Service:
         cleanerId = str(cleanerId)
         cur.execute(
             """
-            SELECT s.serviceId, s.serviceName, s.categoryId, s.cleanerId, s.price, s.suspended
+            SELECT s.serviceId, s.serviceName, s.categoryId, s.cleanerId, s.price, s.suspend
             FROM service s
             WHERE s.cleanerId = %s
             """,
@@ -103,7 +103,7 @@ class Service:
         cur.execute(
             """
             SELECT * FROM service 
-            WHERE serviceId = %s AND (cleanerId IS NULL OR cleanerId = '')
+            WHERE serviceId = %s AND (cleanerId IS NULL)
             """,
             (serviceId,)
         )
@@ -149,7 +149,7 @@ class Service:
         cur.execute(
             """
             SELECT * FROM service 
-            WHERE serviceId = %s AND cleanerId = %s AND suspended = FALSE
+            WHERE serviceId = %s AND cleanerId = %s AND suspend = FALSE
             """,
             (serviceId, cleanerId)
         )
@@ -165,7 +165,7 @@ class Service:
         cur.execute(
             """
             UPDATE service
-            SET suspended = TRUE
+            SET suspend = TRUE
             WHERE serviceId = %s
             """,
             (serviceId,)
