@@ -1,10 +1,10 @@
-from entity.Cleaner import Cleaner
+from entity.service import Service
 
 class CleanerViewServiceController:
-    def __init__(self):
-        self.cleaner = Cleaner()
+    """Controller class for handling cleaner service view operations"""
     
-    def getServiceList(self, cleanerId):
-        # Get the list of services for a cleaner
-        services = self.cleaner.getServiceList(cleanerId)
-        return services
+    def __init__(self):
+        pass
+    
+    def getServiceList(self, cleanerId=None):
+            return Service.getServiceName(cleanerId)

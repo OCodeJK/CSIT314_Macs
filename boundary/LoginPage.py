@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session, flash
+from boundary.CleanerViewServicePage import CleanerViewServicePage
 from control.LoginAccountController import LoginAccountController
-from helper.util_functions import get_all_profiles, userReturnUID, check_if_user_suspended
+from helper.util_functions import get_all_profiles, get_profile_by_id, userReturnUID, check_if_user_suspended
 
 login_ui = Blueprint("login_ui", __name__)
 controller = LoginAccountController()
@@ -37,7 +38,12 @@ def Login():
               
             elif user.get_profileid() == "Cleaner":
                 # implement cleaner page here
-                print("This is cleaner page")
+                # profile = get_profile_by_id(session.get('profile_id'))
+                
+                cleaner_id = userid
+                print("cleaner_id_check", cleaner_id)
+                cleanerViewServicePg = CleanerViewServicePage()
+                return cleanerViewServicePg.displayServiceList(cleaner_id)
                 
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here

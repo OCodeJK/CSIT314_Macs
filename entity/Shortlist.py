@@ -2,7 +2,57 @@ from db_config import db_connection
 from datetime import datetime
 
 class Shortlist:
+    """Entity class for managing shortlisted services"""
+    
+    def __init__(self, id=None, cleanerId=None, homeownerId=None, serviceId=None):
+        """Initialize a new Shortlist instance"""
+        self.id = id
+        self.cleanerId = cleanerId
+        self.homeownerId = homeownerId
+        self.serviceId = serviceId
+    
+    @staticmethod
+    def numberOfShortlistedTime(cleanerId, serviceId):
+        """Count how many times a cleaner's service has been shortlisted"""
+        try:
+            # Establish database connection
+            conn = db_connection()
+            cur = conn.cursor()
+            cleanerId = str(cleanerId)
+            
+            if serviceId:
+                # Count shortlists for specific service
+                cur.execute(
+                    "SELECT COUNT(*) FROM shortlist WHERE cleanerId = %s AND serviceId = %s",
+                    (cleanerId, serviceId)
+                )
+            else:
+                # Count all shortlists for the cleaner
+                cur.execute(
+                    "SELECT COUNT(*) FROM shortlist WHERE cleanerId = %s",
+                    (cleanerId,)
+                )
+            
+            result = cur.fetchone()
+            
+            # Close cursor and connection
+            cur.close()
+            conn.close()
+            
+            return result[0] if result else 0
+                
+        except Exception as e:
+            print(f"Error in numberOfShortlistedTime: {str(e)}")
+            # Ensure connection is closed even if an error occurs
+            if 'cur' in locals() and cur:
+                cur.close()
+            if 'conn' in locals() and conn:
+                conn.close()
+            return 0
+    
+    @staticmethod
     def viewShortlistForHomeowner(userid):
+        """Get all shortlisted services for a homeowner"""
         try:
             conn = db_connection()
             cur = conn.cursor()
@@ -18,15 +68,14 @@ class Shortlist:
             cur.close()
             conn.close()
 
-
-
             return ResultSet
         except Exception as e:
             print("Error fetching shortlisted cleaner accounts:", e)
             return None
 
     @staticmethod
-    def searchShortlistForHomeowner(userid, servicename): #display all service of individual cleaner
+    def searchShortlistForHomeowner(userid, servicename):
+        """Search shortlisted services by name for a homeowner"""
         try:
             conn = db_connection()
             cur = conn.cursor()
@@ -43,7 +92,6 @@ class Shortlist:
             cur.close()
             conn.close()
 
-
             return ResultSet
         except Exception as e:
             print("Error displaying cleaner accounts:", e)
@@ -51,6 +99,7 @@ class Shortlist:
 
     @staticmethod
     def createShortlistForHomeowner(serviceid, homeownerid):
+        """Add a service to homeowner's shortlist"""
         try:
             conn = db_connection()
             cur = conn.cursor()

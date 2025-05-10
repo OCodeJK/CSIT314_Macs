@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Services - Cleaner {{ cleaner.cleanerId }}{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <!-- Header and Navigation -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Cleaner Services</h1>
+        <a href="{{ url_for('view_service.index') }}" class="btn btn-sm btn-secondary">Back</a>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category if category != 'error' else 'danger' }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Search Form -->
+    <div class="card mb-3">
+        <div class="card-header bg-light">Search Services</div>
+        <div class="card-body">
+            <form action="{{ url_for('search_service.search_services') }}" method="get">
+                <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
+                <div class="input-group">
+                    <input type="text" name="search_query" class="form-control" placeholder="Search for services..."
+                        value="{{ search_query|default('') }}">
+                    <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Current Services Table -->
+    <div class="card mb-3">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Current Services</h5>
+            <span class="badge bg-primary">{{ services|length }} service(s)</span>
+        </div>
+        <div class="card-body p-0">
+            {% if services %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Views</th>
+                            <th>Shortlisted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr {% if service.suspended %}class="text-muted" {% endif %}>
+                            <td>{{ service.serviceName }}</td>
+                            <td>{{ service.categoryId }}</td>
+                            <td>${{ service.price }}</td>
+                            <td>
+                                <span class="badge {% if service.suspended %}bg-danger{% else %}bg-success{% endif %}">
+                                    {{ 'Suspended' if service.suspended else 'Active' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">
+                                    {{ service_views[service.serviceId] if service_views and service.serviceId in
+                                    service_views else 0 }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-purple">
+                                    {{ shortlist_counts[service.serviceId] if shortlist_counts and service.serviceId in
+                                    shortlist_counts else 0 }}
+                                </span>
+                            </td>
+                            <td>
+
+                                <!-- Edit button -->
+                                <a href="{{ url_for('update_service.update_service', service_id=service.serviceId, cleaner_id=cleaner.cleanerId) }}"
+                                    class="btn btn-sm btn-primary">
+                                    Edit
+                                </a>
+
+                                <!-- Views button -->
+                                <a href="{{ url_for('service_views.get_service_views', serviceId=service.serviceId, cleaner_id=cleaner.cleanerId) }}"
+                                    class="btn btn-sm btn-info">
+                                    Views
+                                </a>
+
+                                <!-- Suspend button (only for active services) -->
+                                {% if not service.suspended %}
+                                <form
+                                    action="{{ url_for('suspend_service.suspend_service_submit', serviceId=service.serviceId) }}"
+                                    method="post" class="d-inline">
+                                    <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure you want to suspend this service?')">
+                                        Suspend
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-4 text-center">
+                <p class="mb-0">You don't have any services yet. Add a service to get started.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Add Service (Collapsed by default) -->
+    <div class="card mb-3">
+        <div class="card-header bg-light" data-bs-toggle="collapse" data-bs-target="#addServiceSection"
+            style="cursor: pointer;">
+            <div class="d-flex justify-content-between">
+                <span>Add New Service</span>
+                <span class="small">Click to expand</span>
+            </div>
+        </div>
+        <div class="collapse" id="addServiceSection">
+            <div class="card-body">
+                {% if available_services %}
+                <form action="{{ url_for('create_service.add_service') }}" method="post" id="serviceAddForm">
+                    <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
+                    <div class="mb-3">
+                        <label for="service_id" class="form-label">Select a service to add:</label>
+                        <select name="service_id" id="service_id" class="form-select" required>
+                            <option value="">-- Select a service --</option>
+                            {% for service in available_services %}
+                            <option value="{{ service.serviceId }}">
+                                {{ service.serviceName }} - {{ service.categoryId }} - ${{ service.price }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success" id="addServiceBtn">
+                        <i class="bi bi-plus-circle"></i> Add Service
+                    </button>
+                </form>
+                {% else %}
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    No available services to add. You may have already added all available services.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Add custom styles -->
+<style>
+    /* Custom badge color */
+    .bg-purple {
+        background-color: #9b59b6;
+    }
+
+    /* Custom button color */
+    .btn-purple {
+        color: #fff;
+        background-color: #9b59b6;
+        border-color: #9b59b6;
+    }
+
+    .btn-purple:hover {
+        color: #fff;
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+    }
+
+    /* Add hover effect to the table rows */
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+    /* Make buttons wrap better in the table */
+    .btn-sm {
+        margin-bottom: 0.25rem;
+        margin-right: 0.25rem;
+    }
+
+    /* Increase width of Actions column */
+    table th:last-child,
+    table td:last-child {
+        min-width: 300px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize collapsible sections
+        var addServiceSection = document.getElementById('addServiceSection');
+        if (addServiceSection && typeof bootstrap !== 'undefined') {
+            // Auto-expand the Add Service section if no services
+            {% if not services %}
+            var bsCollapse = new bootstrap.Collapse(addServiceSection, {
+                toggle: true
+            });
+            {% endif %}
+        }
+
+        // Form validation
+        var form = document.getElementById('serviceAddForm');
+        if (form) {
+            form.addEventListener('submit', function (event) {
+                var serviceSelect = document.getElementById('service_id');
+                if (!serviceSelect.value) {
+                    event.preventDefault();
+                    alert('Please select a service to add');
+                    return false;
+                }
+
+                // Show loading state on button
+                var button = document.getElementById('addServiceBtn');
+                if (button) {
+                    button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+                    button.disabled = true;
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
