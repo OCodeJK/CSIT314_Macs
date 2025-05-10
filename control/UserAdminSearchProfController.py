@@ -1,5 +1,5 @@
 from entity.UserProfile import UserProfile
 
 class UserAdminSearchProfController:
-    def SearchUserProfile(profilename):
-        return UserProfile.SearchProfile(profilename)
+    def searchUserProfile(profilename):
+        return UserProfile.searchProfile(profilename)

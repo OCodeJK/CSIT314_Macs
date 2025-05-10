@@ -13,10 +13,12 @@ class UserAccount:
         self.__password = password
         self.__profileid = profileid
         
-        
     #Getters
     def get_username(self):
         return self.__username
+
+    def get_userid(self):
+        return self.__userid
 
     def get_profileid(self):
         if (self.__profileid == 1):
@@ -37,23 +39,26 @@ class UserAccount:
             conn = db_connection()
             cur = conn.cursor()
             
-            cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s) RETURNING userid"
+            cur.execute("INSERT INTO account (username, password, profileid) VALUES (%s, %s, %s) RETURNING userid, profileid"
                         , (self.__username, self.__password, self.__profileid))
-            userid = cur.fetchone()[0]
+            
+            # get the inserted user
+            inserted_user = cur.fetchone()
+            inserted_user_id = inserted_user[0]
+            inserted_user_profile = inserted_user[1]
+            
+            if inserted_user_profile == 2:
+                cur.execute("INSERT INTO cleaner (cleanerid) VALUES (%s)", (inserted_user_id,))
+                
+            if inserted_user_profile == 3:
+                cur.execute("INSERT INTO homeowner (homeownerid) VALUES (%s)", (inserted_user_id,))
+            
             conn.commit()
-            
-            #If the profile_id is for example 1, insert into useradmin table
-            if self.__profileid == "1": 
-                cur.execute(
-                    "INSERT INTO useradmin (userid) VALUES (%s)", (userid,)
-                )
-                conn.commit()
-            
                 
             return True
         except psycopg2.errors.UniqueViolation:
             conn.rollback()
-            raise ValueError("Username already exists.")
+            return False
         except Exception as e:
             print("DB Error:", e)
             conn.rollback()
@@ -67,25 +72,6 @@ class UserAccount:
     def Authenticate(self):  
         conn = db_connection()
         cur = conn.cursor()
-        
-        #check if account is suspended
-        cur.execute("""
-            SELECT suspend from account 
-            WHERE username = %s AND password = %s AND profileid = %s""", (self.__username, self.__password, self.__profileid)
-        )
-        result = cur.fetchone()
-        
-        if result is None:
-            cur.close()
-            conn.close()
-            return None
-        
-        is_suspended = result[0]
-        if is_suspended is True:
-            #Account is suspended
-            cur.close()
-            conn.close()
-            return "suspended"
         
         #login when not suspended
         cur.execute(
@@ -173,7 +159,7 @@ class UserAccount:
             if current_status[0] is True:
                 return False # Already suspended
             
-            #suspend the account
+            # Suspend the account
             cur.execute("UPDATE account set suspend=TRUE WHERE userid = %s", (userid,))
             conn.commit()
             cur.close()

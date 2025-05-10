@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, request, redirect, url_for
 from control.UserAdminCreateProfileController import UserAdminProfileController
 
 #Define a blueprint for flask
@@ -11,14 +11,12 @@ def createUserProfile():
         profilename = request.form["profile_name"]
         
         result = controller.createUserProfileController(profilename)
-        
-        if result is True:
-            message = "✅ Profile created successfully!"
-        elif isinstance(result, str):
-            message = f"⚠️ {result}"
-        else:
-            message = "❌ Could not create profile." + profilename
-            
-        return render_template("register_profile.html", message=message)
     
-    return render_template("register_profile.html", message=None)
+        if result is True:
+            return redirect(url_for('view_prof.display_profiles', message="✅ Profile created."))
+        elif isinstance(result, str):
+            return redirect(url_for('view_prof.display_profiles', message=f"⚠️ {result}"))
+        else:
+            return redirect(url_for('view_prof.display_profiles', message="❌ Create not successful, please try again."))
+    
+    return redirect(url_for('view_prof.display_profiles'))

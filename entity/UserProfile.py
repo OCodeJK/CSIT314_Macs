@@ -9,22 +9,26 @@ class UserProfile:
     def get_profilename(self):
         return self.__profilename
     
+    # Create Profile (profilename)
     def createUserProfile(self):
         try:
             conn = db_connection()
             cur = conn.cursor()
+            
             cur.execute("INSERT INTO profile (profilename) VALUES (%s)", (self.__profilename,))
             conn.commit()
-            cur.close()
-            conn.close()
+            
             return True
         except psycopg2.errors.UniqueViolation:
             conn.rollback()
-            raise ValueError("Profile already exists.")
+            return False
         except Exception as e:
             print("DB Error:", e)
             conn.rollback()
             return False
+        finally:
+            cur.close()
+            conn.close()
         
     @staticmethod
     def viewUserProfile():
@@ -60,12 +64,12 @@ class UserProfile:
     
     
     @staticmethod
-    def SearchProfile(profilename):
+    def searchProfile(profilename):
         try:
             conn = db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT profileid, profilename, FROM profile
+                SELECT profileid, profilename, suspend FROM profile
                 WHERE profilename ILIKE %s
             """, (f"%{profilename}%",))
             ResultSet = cur.fetchall()

@@ -1,4 +1,5 @@
 from db_connection import ConnectionFromPool
+from db_config import db_connection
 from datetime import datetime
 
 class Cleaner:
@@ -126,3 +127,75 @@ class Cleaner:
                 'serviceId': c[1],
                 'suspend_bool': c[2]
             }
+
+    @staticmethod
+    def viewCleanerForHomeowner(): #display all shortlist
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT s.cleanerid, a.username, s.serviceid, s.servicename, c.categoryname, s.price
+                FROM account a
+                INNER JOIN service s ON a.userid = s.cleanerid
+                INNER JOIN category c ON s.categoryid = c.categoryid
+            """)
+            cleaners = cur.fetchall()
+            cur.close()
+            conn.close()
+
+            ResultSet = {}
+            for cleaner in cleaners:
+                cleanerid = cleaner[0]
+                serviceid = cleaner[2]
+                service_data = cleaner[2:]  # (serviceid, servicename, categoryname, price)
+
+                if cleanerid not in ResultSet:
+                    # Start a new inner dict for services per cleaner
+                    ResultSet[cleanerid] = {
+                        "cleanerid": cleaner[0],
+                        "cleanername": cleaner[1],
+                        "services": {}
+                    }
+
+                ResultSet[cleanerid]["services"][serviceid] = service_data
+
+            return ResultSet
+        except Exception as e:
+            print("Error fetching cleaner accounts:", e)
+            return None
+    
+    @staticmethod
+    def searchCleanerForHomeowner(cleaneruser): #display all service of individual cleaner
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT s.cleanerid, a.username, s.serviceid, s.servicename, c.categoryname, s.price
+                FROM account a
+                INNER JOIN service s ON a.userid = s.cleanerid
+                INNER JOIN category c ON s.categoryid = c.categoryid
+                WHERE a.username ILIKE %s
+            """, (f"%{cleaneruser}%",))
+            cleaners = cur.fetchall()
+            cur.close()
+            conn.close()
+
+            ResultSet = {}
+            for cleaner in cleaners:
+                cleanerid = cleaner[0]
+                serviceid = cleaner[2]
+                service_data = cleaner[2:]  # (serviceid, servicename, categoryname, price)
+
+                if cleanerid not in ResultSet:
+                    # Start a new inner dict for services per cleaner
+                    ResultSet[cleanerid] = {
+                        "cleanerid": cleaner[0],
+                        "cleanername": cleaner[1],
+                        "services": {}
+                    }
+
+                ResultSet[cleanerid]["services"][serviceid] = service_data
+            return ResultSet
+        except Exception as e:
+            print("Error displaying cleaner accounts:", e)
+            return None    

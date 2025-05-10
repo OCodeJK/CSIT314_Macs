@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from control.UserAdminViewAccController import UserAdminViewAccController
 from control.UserAdminSearchAccController import UserAdminSearchAccController
 from control.UserAdminSuspendAccController import UserAdminSuspendAccController
+from helper.util_functions import get_all_profiles
 
 view_acc = Blueprint('view_acc', __name__)
 
@@ -15,7 +16,8 @@ def display_all_users():
     else:
         users = UserAdminViewAccController.userAdminViewAcc()
     
-    return render_template('view_account.html', users=users)
+    profiles = get_all_profiles()
+    return render_template('view_account.html', users=users, profiles=profiles)
 
 @view_acc.route("/admin/suspend_user/<int:userid>", methods=["POST"])
 def SuspendUser(userid):

@@ -11,7 +11,7 @@ def display_profiles():
     search_query = request.args.get('search', '') #get the search input from the URL
     
     if search_query:
-        profiles = UserAdminSearchProfController.SearchUserProfile(search_query)
+        profiles = UserAdminSearchProfController.searchUserProfile(search_query)
     else:
         profiles = UserAdminViewProfController.userAdminViewProf()
         
