@@ -1,31 +1,37 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
-from control.CleanerSuspendServiceController import ServiceSuspensionController
+from flask import Blueprint, request, redirect, url_for, flash
+from control.ServiceSuspensionController import ServiceSuspensionController
 
-suspend_service_bp = Blueprint('suspend_service', __name__)
+# Create the blueprint
+suspend_service_bp = Blueprint('suspend_service', __name__, url_prefix='/suspend-service')
 
 class ServiceSuspensionPage:
-    def __init__(self):
-        self.controller = ServiceSuspensionController()
     
-    def suspend_service(self, cleanerId, serviceId):
-        # Process the service suspension request
-        result = self.controller.suspendService(cleanerId, serviceId)
-        return result
+    def __init__(self):
+        """Initialize with controller"""
+        self.controller = ServiceSuspensionController()
 
 
 # Flask routes
-@suspend_service_bp.route('/suspend-service/<serviceId>', methods=['POST'])
+@suspend_service_bp.route('/<serviceId>', methods=['POST'])
 def suspend_service_submit(serviceId):
-    # Use default cleaner ID
-    cleanerId = current_app.config.get('DEFAULT_CLEANER_ID', '1')
+
+    cleaner_id = request.form.get('cleaner_id', request.args.get('cleaner_id'))
     
-    # Process suspension
-    suspension_page = ServiceSuspensionPage()
-    result = suspension_page.suspend_service(cleanerId, serviceId)
+    if not cleaner_id:
+        flash("Missing cleaner ID", "error")
+        return redirect(url_for('view_service.index'))
     
+    # Initialize controller directly
+    controller = ServiceSuspensionController()
+    
+    # Process suspension via controller
+    result = controller.suspendService(cleaner_id, serviceId)
+    
+    # Handle result
     if result:
-        flash("Service suspended successfully", "success")
+        flash(f"Service {serviceId} has been suspended", "success")
     else:
-        flash("Suspension failed; Service is already suspended.", "error")
+        flash("Failed to suspend service. Service may already be suspended.", "error")
     
-    return redirect(url_for('view_service.view_services'))
+    # Redirect back to the services page
+    return redirect(url_for('view_service.view_services', cleaner_id=cleaner_id))
