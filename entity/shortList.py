@@ -49,6 +49,8 @@ class Shortlist:
                 conn.close()
             return 0
     
+    # =========== HOMEOWNER FUNCTIONS ==============
+
     @staticmethod
     def viewShortlistForHomeowner(userid):
         """Get all shortlisted services for a homeowner"""
@@ -116,3 +118,5 @@ class Shortlist:
         finally:
             cur.close()
             conn.close()
+
+    # ======= END OF HOMEOWNER FUNCTIONS ===========
