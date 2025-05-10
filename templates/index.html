@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleaner Service Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+
+        .jumbotron {
+            background-color: #fff;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .card {
+            margin-bottom: 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+            font-weight: 600;
+        }
+
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="jumbotron">
+            <h1 class="display-4">Cleaner Service Management</h1>
+            <p class="lead">Manage your cleaning services, track customer interest, and monitor service performance.</p>
+            <hr class="my-4">
+            <p>Select an option below to get started.</p>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category if category != 'error' else 'danger' }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Main Navigation Cards -->
+        <div class="row">
+            <!-- Cleaner Management Card -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-person-badge"></i> Cleaner Management
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Cleaners</h5>
+                        <p class="card-text">View and manage all registered cleaners in the system.</p>
+                        <!-- Fixed URL to direct /cleaners route -->
+                        <a href="/cleaners" class="btn btn-primary">
+                            <i class="bi bi-people-fill btn-icon"></i>View Cleaners
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Management Card -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-tools"></i> Service Management
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Services</h5>
+                        <p class="card-text">Add, edit, and monitor your cleaning services.</p>
+                        <!-- Fixed URL to redirect to services view -->
+                        <a href="/services/1" class="btn btn-success">
+                            <i class="bi bi-list-check btn-icon"></i>View Services
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Management Card -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history"></i> Service History
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Service History</h5>
+                        <p class="card-text">View service history and completed jobs.</p>
+                        <!-- Fixed URL to direct to history route -->
+                        <a href="/history/1" class="btn btn-info">
+                            <i class="bi bi-journal-text btn-icon"></i>View History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer text-center">
+            <p>&copy; 2025 Cleaner Service Management</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

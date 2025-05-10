@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service History & Confirmed Matches</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-filter-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border: 1px solid transparent;
+            padding: 8px 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-decoration: none;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .btn-secondary {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-success {
+            color: #fff;
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.6em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .badge-success {
+            color: #fff;
+            background-color: #28a745;
+        }
+
+        .badge-danger {
+            color: #fff;
+            background-color: #dc3545;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Tab design */
+        .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs .nav-link {
+            margin-bottom: -1px;
+            border: 1px solid transparent;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+            padding: 10px 20px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #3498db;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: #e9ecef #e9ecef #dee2e6;
+        }
+
+        .tab-content {
+            padding: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Flash messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="mb-4">
+            <h1>Service Management</h1>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" id="serviceTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
+                    type="button" role="tab" aria-controls="history" aria-selected="true">
+                    <i class="bi bi-clock-history"></i> Service History
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="matches-tab" data-bs-toggle="tab" data-bs-target="#matches" type="button"
+                    role="tab" aria-controls="matches" aria-selected="false">
+                    <i class="bi bi-check-circle"></i> Confirmed Matches
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="serviceTabsContent">
+            <!-- History Tab -->
+            <div class="tab-pane fade show active" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <!-- Search and Filter Section -->
+                <div class="search-filter-card">
+                    <h3>Search & Filter</h3>
+
+                    <!-- Service Name Search -->
+                    <div class="mb-4">
+                        <h5><i class="bi bi-search"></i> Search by Service Name</h5>
+                        <form method="GET"
+                            action="{{ url_for('cleaner_filter_history.filter_records', cleaner_id=cleaner_id) }}"
+                            class="mb-3">
+                            <div class="input-group">
+                                <input type="hidden" name="cleaner_id" value="{{ cleaner_id }}">
+                                <input type="text" class="form-control" id="search_query" name="search_query"
+                                    placeholder="Enter service name..." value="{{ search_query }}">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                {% if search_query %}
+                                <a href="{{ url_for('cleaner_filter_history.filter_records', cleaner_id=cleaner_id) }}"
+                                    class="btn btn-outline-secondary">Clear</a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Date Range Filter -->
+                    <div>
+                        <h5><i class="bi bi-calendar-range"></i> Filter by Date Range</h5>
+                        <form method="GET"
+                            action="{{ url_for('cleaner_filter_history.filter_records', cleaner_id=cleaner_id) }}">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <label for="start_date" class="form-label">Start Date:</label>
+                                    <input type="date" class="form-control" id="start_date" name="start_date"
+                                        value="{{ start_date }}">
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="end_date" class="form-label">End Date:</label>
+                                    <input type="date" class="form-control" id="end_date" name="end_date"
+                                        value="{{ end_date }}">
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                                </div>
+                            </div>
+                            <input type="hidden" name="search_query" value="{{ search_query }}">
+                            <input type="hidden" name="cleaner_id" value="{{ cleaner_id }}">
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Filter selection indicators -->
+                {% if search_query or start_date or end_date %}
+                <div class="alert alert-info">
+                    Showing results
+                    {% if search_query %} matching "{{ search_query }}" {% endif %}
+                    {% if search_query and (start_date or end_date) %} and {% endif %}
+                    {% if start_date or end_date %}
+                    from {{ start_date if start_date else '(any start date)' }}
+                    to {{ end_date if end_date else '(any end date)' }}
+                    {% endif %}
+                    <a href="{{ url_for('cleaner_filter_history.filter_records', cleaner_id=cleaner_id) }}"
+                        class="btn btn-sm btn-outline-secondary float-end">Clear All Filters</a>
+                </div>
+                {% endif %}
+
+                <!-- History Records Table -->
+                <div class="table-responsive">
+                    {% if history %}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>History ID</th>
+                                <th>Service Name</th>
+                                <th>Service ID</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in history %}
+                            <tr>
+                                <td>{{ record.historyId }}</td>
+                                <td>{{ record.serviceName }}</td>
+                                <td>{{ record.serviceId }}</td>
+                                <td>{{ record.startDate.strftime('%Y-%m-%d') if record.startDate is not string and
+                                    record.startDate is not none else record.startDate }}</td>
+                                <td>{{ record.endDate.strftime('%Y-%m-%d') if record.endDate is not string and
+                                    record.endDate is not none else record.endDate }}</td>
+                                <td>
+                                    <span class="badge {{ 'badge-danger' if record.endDate else 'badge-success' }}">
+                                        {{ 'Completed' if record.endDate else 'Active' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('cleaner_filter_history.view_history_details', history_id=record.historyId, cleaner_id=cleaner_id) }}"
+                                        class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> Details
+                                    </a>
+                                    {% if not record.endDate %}
+                                    <a href="{{ url_for('cleaner_filter_history.end_service', service_id=record.serviceId, cleaner_id=cleaner_id) }}"
+                                        class="btn btn-sm btn-warning"
+                                        onclick="return confirm('Are you sure you want to mark this service as completed?')">
+                                        <i class="bi bi-check-circle"></i> End Service
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="alert alert-info">
+                        {% if search_query %}
+                        No history records found matching "{{ search_query }}".
+                        {% elif start_date or end_date %}
+                        No history records found for the selected date range.
+                        {% else %}
+                        No history records found for this cleaner.
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Confirmed Matches Tab -->
+            <div class="tab-pane fade" id="matches" role="tabpanel" aria-labelledby="matches-tab">
+                <h3>Confirmed Matches</h3>
+                <p class="lead">View your active service matches</p>
+
+                <!-- Matches Table -->
+                <div class="table-responsive">
+                    {% if matches %}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Match ID</th>
+                                <th>Service Name</th>
+                                <th>Service ID</th>
+                                <th>Start Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for match in matches %}
+                            <tr>
+                                <td>{{ match.matchId }}</td>
+                                <td>{{ match.serviceName }}</td>
+                                <td>{{ match.serviceId }}</td>
+                                <td>{{ match.date }}</td>
+                                <td>
+                                    <span class="badge badge-success">Active</span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('confirmed_matches.view_match_details', match_id=match.matchId, cleaner_id=cleaner_id) }}"
+                                        class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> Details
+                                    </a>
+                                    <a href="{{ url_for('cleaner_filter_history.end_service', service_id=match.serviceId, cleaner_id=cleaner_id) }}"
+                                        class="btn btn-sm btn-warning"
+                                        onclick="return confirm('Are you sure you want to mark this service as completed?')">
+                                        <i class="bi bi-check-circle"></i> End Service
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="alert alert-info">
+                        You don't have any active matches. When you start providing services, they'll appear here.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS for tabs functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

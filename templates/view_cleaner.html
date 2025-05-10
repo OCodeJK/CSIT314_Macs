@@ -1,0 +1,66 @@
+{% extends 'homeowner_base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Available Cleaners</h2>
+
+    <!-- Flash messages -->
+    {% if message %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <!-- Search form -->
+    <div class="mb-4">
+        <form action="{{ url_for('view_cleaner.view_cleaners') }}" method="get" class="row g-3">
+            <div class="col-md-10">
+                <input type="text" class="form-control" name="search" placeholder="Search cleaners..."
+                    value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Cleaners list -->
+    <div class="row">
+        {% if cleaners|length > 0 %}
+        {% for cleaner in cleaners %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title">{{ cleaner.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Cleaner ID:</strong> {{ cleaner.id }}</p>
+                    <p><strong>Shortlisted:</strong> <span class="badge bg-info">{{ cleaner.shortlist_count }}</span>
+                        times</p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('view_cleaner.view_services', cleaner_id=cleaner.id) }}"
+                            class="btn btn-primary">View Services</a>
+                        <form action="{{ url_for('view_cleaner.add_shortlist') }}" method="post">
+                            <input type="hidden" name="cleanerid" value="{{ cleaner.id }}">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-bookmark-plus"></i> Shortlist
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No cleaners found. Please try a different search criteria.
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

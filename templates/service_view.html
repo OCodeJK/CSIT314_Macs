@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Service View Count</title>
+</head>
+
+<body>
+    <h1>View Count</h1>
+    <p>Cleaner ID: {{ cleaner_id }}</p>
+    <p>Service ID: {{ service_id }}</p>
+    <p>View Count: {{ view_count }}</p>
+    <a href="{{ url_for('view_service.view_services', cleaner_id=cleaner_id) }}">Back to Services</a>
+</body>
+
+</html>
