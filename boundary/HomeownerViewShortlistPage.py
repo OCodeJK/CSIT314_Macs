@@ -2,13 +2,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from control.HomeownerViewShortlistController import HomeownerViewShortlistController
 from control.HomeownerSearchShortlistController import HomeownerSearchShortlistController
 
-view_shortlist_bp = Blueprint('view_shortlist', __name__)
+view_hoshortlist_bp = Blueprint('view_hoshortlist', __name__)
 
-@view_shortlist_bp.route('/homeowner_base')
+@view_hoshortlist_bp.route('/homeowner_base')
 def homeowner_base():
     return render_template('homeowner_base.html')
 
-@view_shortlist_bp.route('/homeowner_base/view_shortlist')
+@view_hoshortlist_bp.route('/view_hoshortlist')
 def view_shortlist():
     userid = session.get('userid')
     search_query = request.args.get('search', '') #get the search input from the URL
@@ -19,5 +19,5 @@ def view_shortlist():
         shortlist = HomeownerViewShortlistController.homeownerViewShortlist(userid)
 
 
-    return render_template('view_shortlist.html', shortlist=shortlist.values())
+    return render_template('view_hoshortlist.html', shortlist=shortlist)
 

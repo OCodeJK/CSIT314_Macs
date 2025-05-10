@@ -2,43 +2,22 @@ from db_config import db_connection
 from datetime import datetime
 
 class Shortlist:
-    '''def __init__(self, userid):
-        #private attributes
-        self.__userid = userid #homeownerid '''
-
-
-    
     def viewShortlistForHomeowner(userid):
         try:
             conn = db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT s.cleanerid, a.username, s.serviceid, s.servicename, c.categoryname, s.price
+                SELECT s.servicename, a.username, c.categoryname, s.price
                 FROM service s
                 INNER JOIN account a on s.cleanerid = a.userid
                 INNER JOIN category c on s.categoryid = c.categoryid
-                INNER JOIN shortlist sl on s.cleanerid = sl.cleanerid
+                INNER JOIN shortlist sl on s.serviceid = sl.serviceid
                 WHERE sl.homeownerid = %s
             """,(userid,))
-            shortlists = cur.fetchall()
+            ResultSet = cur.fetchall()
             cur.close()
             conn.close()
 
-            ResultSet = {}
-            for cleaner in shortlists:
-                cleanerid = cleaner[0]
-                serviceid = cleaner[2]
-                service_data = cleaner[2:]  # (serviceid, servicename, categoryname, price)
-
-                if cleanerid not in ResultSet:
-                    # Start a new inner dict for services per cleaner
-                    ResultSet[cleanerid] = {
-                        "cleanerid": cleaner[0],
-                        "cleanername": cleaner[1],
-                        "services": {}
-                    }
-
-                ResultSet[cleanerid]["services"][serviceid] = service_data
 
 
             return ResultSet
@@ -47,38 +26,23 @@ class Shortlist:
             return None
 
     @staticmethod
-    def searchShortlistForHomeowner(userid, cleaneruser): #display all service of individual cleaner
+    def searchShortlistForHomeowner(userid, servicename): #display all service of individual cleaner
         try:
             conn = db_connection()
             cur = conn.cursor()
             cur.execute("""
-                SELECT s.cleanerid, a.username, s.serviceid, s.servicename, c.categoryname, s.price
+                SELECT s.servicename, a.username, c.categoryname, s.price
                 FROM service s
                 INNER JOIN account a on s.cleanerid = a.userid
                 INNER JOIN category c on s.categoryid = c.categoryid
-                INNER JOIN shortlist sl on s.cleanerid = sl.cleanerid
-                WHERE sl.homeownerid = %s AND a.username ILIKE %s
-            """, (userid, f"%{cleaneruser}%"))
+                INNER JOIN shortlist sl on s.serviceid = sl.serviceid
+                WHERE sl.homeownerid = %s AND s.servicename ILIKE %s
+            """, (userid, f"%{servicename}%"))
             
-            shortlist = cur.fetchall()
+            ResultSet = cur.fetchall()
             cur.close()
             conn.close()
 
-            ResultSet = {}
-            for cleaner in shortlist:
-                cleanerid = cleaner[0]
-                serviceid = cleaner[2]
-                service_data = cleaner[2:]  # (serviceid, servicename, categoryname, price)
-
-                if cleanerid not in ResultSet:
-                    # Start a new inner dict for services per cleaner
-                    ResultSet[cleanerid] = {
-                        "cleanerid": cleaner[0],
-                        "cleanername": cleaner[1],
-                        "services": {}
-                    }
-
-                ResultSet[cleanerid]["services"][serviceid] = service_data
 
             return ResultSet
         except Exception as e:
@@ -86,13 +50,13 @@ class Shortlist:
             return None 
 
     @staticmethod
-    def createShortlistForHomeowner(cleanerid, homeownerid):
+    def createShortlistForHomeowner(serviceid, homeownerid):
         try:
             conn = db_connection()
             cur = conn.cursor()
                 
-            cur.execute("INSERT INTO shortlist (cleanerid, homeownerid) VALUES (%s, %s)"
-                        , (cleanerid, homeownerid))
+            cur.execute("INSERT INTO shortlist (serviceid, homeownerid) VALUES (%s, %s)"
+                        , (serviceid, homeownerid))
                 
             conn.commit()
                     

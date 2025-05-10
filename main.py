@@ -8,16 +8,15 @@ from boundary.UserAdminUpdateAccPage import update_user_ui
 from boundary.UserAdminUpdateProfPage import update_profile_ui
 from boundary.CleanerViewServicePage import view_service_bp
 from boundary.CleanerCreateServicePage import create_service_bp
-from boundary.ServiceSuspensionPage import suspend_service_bp
-from boundary.HomeownerViewCleanerPage import view_cleaner_bp
-from boundary.HomeownerViewShortlistPage import view_shortlist_bp
-from boundary.HomeownerViewCompletedServicePage import view_completedservice_bp
+from boundary.ServiceSuspensionPage import suspend_service_bp 
+from boundary.HomeownerViewServicePage import view_hoservice_bp #homeowner
+from boundary.HomeownerViewShortlistPage import view_hoshortlist_bp #homeowner
+from boundary.HomeownerViewCompletedServicePage import view_completedservice_bp #homeowner
 from boundary.PMCreateServCat import createservcat_bp
 from boundary.PMManageServCatGUI import view_category_bp
 from boundary.PMUpdateServCat import update_category_bp
 from boundary.PMSuspendServCat import suspend_category_bp
 from boundary.PMViewReportsGUI import view_reports_bp
-
 import secret # for access secret key -- SESSION
 
 
@@ -36,8 +35,8 @@ app.register_blueprint(update_profile_ui)
 app.register_blueprint(view_service_bp)
 app.register_blueprint(create_service_bp)
 app.register_blueprint(suspend_service_bp)
-app.register_blueprint(view_cleaner_bp)
-app.register_blueprint(view_shortlist_bp)
+app.register_blueprint(view_hoservice_bp)
+app.register_blueprint(view_hoshortlist_bp)
 app.register_blueprint(view_completedservice_bp)
 app.register_blueprint(createservcat_bp)
 app.register_blueprint(view_category_bp)

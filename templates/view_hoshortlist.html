@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homeowner Shortlist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='HO.css') }}">
+</head>
+<body>
+    <div class="layout">
+        <div class="sidebar">
+            <div>
+                <h2>[X] MACS</h2>
+                <a href="/view_hoservice">🧹 View All Services</a>
+                <a href="/view_hoshortlist" style="text-decoration: underline;">📋 View Shortlist</a>
+                <a href="/view_completedservice">✅ View Completed Services</a>
+                <a href="/">&#10060; Logout</a>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="topbar">
+                <h2>Homeowner Shortlist</h2>
+                <div class="search-container">
+                    <form method="GET" action="/view_hoshortlist" class="search-bar">
+                        <input type="text" name="search" placeholder="Search by username" value="{{ request.args.get('search', '') }}">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="content">
+                {% if request.args.get('message') %}
+                    <div class="message">{{ request.args.get('message') }}</div>
+                {% endif %}
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Service</th>
+                                <th>Cleaner</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in shortlist %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ service[0] }}</td>
+                                <td>{{ service[1] }}</td>
+                                <td>{{ service[2] }}</td>
+                                <td>{{ service[3] }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% if shortlist | length==0 %}
+                            <tr>
+                                <td colspan="5">No cleaner found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

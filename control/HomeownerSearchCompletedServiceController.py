@@ -1,9 +1,6 @@
-from entity.CompletedService import CompletedService
+from entity.HistoryRecord import HistoryRecord
 
 class HomeownerSearchCompletedServiceController:
-    def homeownerSearchCompletedService(userid, service): #search only
-        return CompletedService.searchCompletedServiceForHomeowner(userid, service)
-    def homeownerSearchCompletedServiceDateOnly(userid, date): #date only
-        return CompletedService.searchCompletedServiceForHomeownerDateOnly(userid, date)
-    def homeownerSearchCompletedServiceSearchNDate(userid, service, date): #search and date
-        return CompletedService.searchCompletedServiceForHomeownerSearchNDate(userid, service, date)
+    def homeownerSearchCompletedService(userid, service, date):
+        ResultSet = HistoryRecord.searchCompletedServiceForHomeowner(userid, service, date)
+        return ResultSet
