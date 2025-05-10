@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from control.CleanerViewServiceController import CleanerViewServiceController
 from control.ServiceViewsController import ServiceViewsController
 from control.ShortlistCountForCleanerController import ShortlistCountForCleanerController
-from entity.service import Service
+from entity.Service import Service
 from helper.util_functions import get_profile_by_id
 
 # Create blueprint

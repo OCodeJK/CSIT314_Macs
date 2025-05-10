@@ -1,4 +1,4 @@
-from entity.service import Service
+from entity.Service import Service
 
 class CleanerCreateServiceController:
     

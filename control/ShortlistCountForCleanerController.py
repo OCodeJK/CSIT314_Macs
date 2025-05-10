@@ -1,4 +1,4 @@
-from entity.shortList import Shortlist
+from entity.Shortlist import Shortlist
 
 class ShortlistCountForCleanerController:
     """

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from control.CleanerUpdateServiceController import CleanerUpdateServiceController
-from entity.service import Service
+from entity.Service import Service
 from db_config import db_connection
 
 # Create the blueprint instance

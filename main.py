@@ -6,8 +6,8 @@ from boundary.UserAdminViewAccPage import view_acc
 from boundary.UserAdminViewProfilePage import view_prof
 from boundary.UserAdminUpdateAccPage import update_user_ui
 from boundary.UserAdminUpdateProfPage import update_profile_ui
-# from boundary.HomeownerViewServicePage import view_hoservice_bp #homeowner
-# from boundary.HomeownerViewShortlistPage import view_hoshortlist_bp #homeowner
+from boundary.HomeownerViewServicePage import view_hoservice_bp #homeowner
+from boundary.HomeownerViewShortlistPage import view_hoshortlist_bp #homeowner
 from boundary.HomeownerViewCompletedServicePage import view_completedservice_bp #homeowner
 from boundary.PMCreateServCat import createservcat_bp
 from boundary.PMManageServCatGUI import view_category_bp
@@ -40,8 +40,8 @@ app.register_blueprint(view_acc)
 app.register_blueprint(update_user_ui)
 app.register_blueprint(view_prof)
 app.register_blueprint(update_profile_ui)
-# app.register_blueprint(view_hoservice_bp)
-# app.register_blueprint(view_hoshortlist_bp)
+app.register_blueprint(view_hoservice_bp)
+app.register_blueprint(view_hoshortlist_bp)
 app.register_blueprint(view_completedservice_bp)
 app.register_blueprint(createservcat_bp)
 app.register_blueprint(view_category_bp)

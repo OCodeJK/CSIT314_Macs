@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 from control.CleanerSearchServiceController import CleanerSearchServiceController
-from entity.cleaner import Cleaner
-from entity.service import Service   
+from entity.Cleaner import Cleaner
+from entity.Service import Service   
 
 search_service_bp = Blueprint('search_service', __name__)
 

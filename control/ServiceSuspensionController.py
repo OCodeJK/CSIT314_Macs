@@ -1,4 +1,4 @@
-from entity.service import Service
+from entity.Service import Service
 from entity.HistoryRecord import HistoryRecord
 
 class ServiceSuspensionController:
