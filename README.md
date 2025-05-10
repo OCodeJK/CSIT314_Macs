@@ -20,11 +20,11 @@ psql -U username -d database_name -f dump.sql
 # Dumping Database:
 To ensure we can keep our database updated do:
 
-pg_dump -Fc mydb > db.dump
+pg_dump -U username -Fc mydbname > db.dump
 
 OR
 
-pg_dump mydb > db.sql
+pg_dump -U username mydbname > db.sql
 
 # Folder/File structures:
 
