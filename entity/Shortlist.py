@@ -12,7 +12,7 @@ class Shortlist:
         self.serviceId = serviceId
     
     @staticmethod
-    def numberOfShortlistedTime(cleanerId, serviceId):
+    def numberOfShortlistedTime(cleanerId, serviceId=None):
         """Count how many times a cleaner's service has been shortlisted"""
         try:
             # Establish database connection
@@ -23,13 +23,23 @@ class Shortlist:
             if serviceId:
                 # Count shortlists for specific service
                 cur.execute(
-                    "SELECT COUNT(*) FROM shortlist WHERE cleanerId = %s AND serviceId = %s",
+                    """
+                    SELECT COUNT(*) 
+                    FROM shortlist sl
+                    JOIN service s ON sl.serviceid = s.serviceid
+                    WHERE s.cleanerid = %s AND sl.serviceid = %s
+                    """,
                     (cleanerId, serviceId)
                 )
             else:
                 # Count all shortlists for the cleaner
                 cur.execute(
-                    "SELECT COUNT(*) FROM shortlist WHERE cleanerId = %s",
+                    """
+                    SELECT COUNT(*) 
+                    FROM shortlist sl
+                    JOIN service s ON sl.serviceid = s.serviceid
+                    WHERE s.cleanerid = %s
+                    """,
                     (cleanerId,)
                 )
             
@@ -49,6 +59,7 @@ class Shortlist:
             if 'conn' in locals() and conn:
                 conn.close()
             return 0
+    
     
     @staticmethod
     def viewShortlistForHomeowner(userid):

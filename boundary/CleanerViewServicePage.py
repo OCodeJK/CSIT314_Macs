@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from control.CleanerViewServiceController import CleanerViewServiceController
+from control.ServiceViewsController import ServiceViewsController
+from control.ShortlistCountForCleanerController import ShortlistCountForCleanerController
 from helper.util_functions import get_profile_by_id
 
 # Create blueprint
@@ -11,6 +13,10 @@ class CleanerViewServicePage:
    def __init__(self):
        """Initialize with controllers for business logic"""
        self.controller = CleanerViewServiceController()
+       self.views_controller = ServiceViewsController()
+       self.shortlist_controller = ShortlistCountForCleanerController()
+   
+
    
    def displayServiceList(self, cleaner_id):
        # Get services for the cleaner
@@ -21,6 +27,10 @@ class CleanerViewServicePage:
        
        # Format services for the template
        formatted_services = []
+       
+       # Initialize view and shortlist count dictionaries
+       service_views = {}
+       shortlist_counts = {}
        
        if db_services:
            for service in db_services:
@@ -35,6 +45,13 @@ class CleanerViewServicePage:
                    'suspended': service[5] if len(service) > 5 else False
                }
                formatted_services.append(formatted_service)
+               
+               # Get view count for this service
+               service_views[service_id] = self.views_controller.getTotalViews(cleaner_id, service_id)
+               
+               # Get shortlist count for this service
+               shortlist_counts[service_id] = self.shortlist_controller.getNumberOfShortlistedTime(cleaner_id, service_id)
+               print(f"Service {service_id} - Shortlist count: {shortlist_counts[service_id]}")
        
        # Format available services
        formatted_available = []
@@ -57,8 +74,8 @@ class CleanerViewServicePage:
            available_services=formatted_available,
            cleaner_id=cleaner_id,
            cleaner=cleaner,
-           service_views={},
-           shortlist_counts={}
+           service_views=service_views,
+           shortlist_counts=shortlist_counts
        )
 
 @view_service_bp.route('/services/<cleaner_id>')
@@ -66,3 +83,8 @@ def view_services(cleaner_id):
    # Create page instance and display services
    page = CleanerViewServicePage()
    return page.displayServiceList(cleaner_id)
+   
+@view_service_bp.route('/')
+def index():
+    # Render the index.html template (home page)
+    return render_template('index.html')

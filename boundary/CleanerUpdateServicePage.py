@@ -11,6 +11,7 @@ class CleanerUpdateServicePage:
        """Initialize with controller """
        self.controller = CleanerUpdateServiceController()
 
+
 update_page = CleanerUpdateServicePage()
 
 # Flask routes
