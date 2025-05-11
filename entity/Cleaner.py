@@ -12,6 +12,7 @@ class Cleaner:
         """Get a cleaner by ID"""
         conn = db_connection()
         cur = conn.cursor()
+        cleanerId = str(cleanerId)
         
         cur.execute("SELECT * FROM cleaner WHERE cleanerId = %s", (cleanerId,))
         c = cur.fetchone()

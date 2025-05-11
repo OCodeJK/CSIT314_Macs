@@ -1,24 +1,22 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from control.CleanerUpdateServiceController import CleanerUpdateServiceController
-from entity.Service import Service
-from db_config import db_connection
 
 # Create the blueprint instance
 update_service_bp = Blueprint('update_service', __name__)
 
 class CleanerUpdateServicePage:
-    
-    def __init__(self):
-        self.controller = CleanerUpdateServiceController()
-    
-    def submitUpdateServiceInfo(self, serviceId, serviceName, cleanerId, categoryId):
+   """Boundary class for handling service update operations"""
+   
+   def __init__(self):
+       """Initialize with controller """
+       self.controller = CleanerUpdateServiceController()
 
-        self.controller.cleanerUpdateService(serviceId, serviceName, cleanerId, categoryId)
-
+update_page = CleanerUpdateServicePage()
 
 # Flask routes
 @update_service_bp.route('/update-service/<service_id>', methods=['GET', 'POST'])
 def update_service(service_id):
+    """Handle service update requests"""
     cleaner_id = request.args.get('cleaner_id', request.form.get('cleaner_id', '1'))
     
     # Handle POST request (form submission)
@@ -27,51 +25,44 @@ def update_service(service_id):
         service_name = request.form.get('service_name', '')
         category_id = request.form.get('category_id', '')
         
-        # Initialize page boundary
-        page = CleanerUpdateServicePage()
+        # Validate category ID first
+        if not update_page.controller.validateCategoryId(category_id):
+            flash(f"Category ID '{category_id}' does not exist in the database", "error")
+            # Get current service details to redisplay the form
+            service = update_page.controller.getServiceDetails(service_id, cleaner_id)
+            if not service:
+                flash("Service not found or you don't have permission to update it", "error")
+                return redirect(url_for('view_service.view_services', cleaner_id=cleaner_id))
+                
+            return render_template(
+                'update_services.html',
+                service=service,
+                cleaner_id=cleaner_id
+            )
         
-        # Call the boundary method (void return)
-        page.submitUpdateServiceInfo(service_id, service_name, cleaner_id, category_id)
-        
-        # Check result from controller directly for flash message
-        controller = CleanerUpdateServiceController()
-        result = controller.cleanerUpdateService(service_id, service_name, cleaner_id, category_id)
+        # Call the controller to update service
+        result = update_page.controller.cleanerUpdateService(service_id, service_name, cleaner_id, category_id)
         
         if result:
             flash("Service updated successfully", "success")
         else:
             flash("Failed to update service", "error")
-            
+        
         # Redirect to the update service page to view changes
         return redirect(url_for('update_service.update_service', service_id=service_id, cleaner_id=cleaner_id))
     
     # Handle GET request (display form)
     else:
-        # Get service details
-        service = Service.get_by_id(service_id)
+        # Get service details from controller
+        service = update_page.controller.getServiceDetails(service_id, cleaner_id)
         
         if not service:
-            flash("Service not found", "error")
+            flash("Service not found or you don't have permission to update it", "error")
             return redirect(url_for('view_service.view_services', cleaner_id=cleaner_id))
         
-        # Check if the service belongs to the cleaner
-        if service[3] != cleaner_id:
-            flash("You don't have permission to update this service", "error")
-            return redirect(url_for('view_service.view_services', cleaner_id=cleaner_id))
-        
-        # Format service for template
-        formatted_service = {
-            'serviceId': service[0],
-            'serviceName': service[1],
-            'categoryId': service[2],
-            'cleanerId': service[3],
-            'price': service[4]
-        }
-        
-
-        
+        # Render template with service details
         return render_template(
             'update_services.html',
-            service=formatted_service,
+            service=service,
             cleaner_id=cleaner_id
         )

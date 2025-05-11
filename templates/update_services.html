@@ -153,16 +153,10 @@
             </div>
 
             <div class="form-group">
-                <label for="category_id">Category:</label>
-                <select id="category_id" name="category_id" class="form-select" required>
-                    <option value="CAT1" {% if service.categoryId=='CAT1' %}selected{% endif %}>CAT1</option>
-                    <option value="CAT2" {% if service.categoryId=='CAT2' %}selected{% endif %}>CAT2</option>
-                    <option value="CAT3" {% if service.categoryId=='CAT3' %}selected{% endif %}>CAT3</option>
-                    <option value="CAT4" {% if service.categoryId=='CAT4' %}selected{% endif %}>CAT4</option>
-                    <option value="CAT5" {% if service.categoryId=='CAT5' %}selected{% endif %}>CAT5</option>
-                </select>
+                <label for="category_id">Category ID:</label>
+                <input type="text" id="category_id" name="category_id" value="{{ service.categoryId }}" required>
                 <div id="categoryHelp" class="form-text">
-                    Please select a category
+                    Please enter a valid category ID from the database
                 </div>
             </div>
 

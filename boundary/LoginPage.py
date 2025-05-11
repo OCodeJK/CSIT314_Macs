@@ -37,14 +37,10 @@ def Login():
                 return render_template('login.html', redirect_url=url_for('view_acc.display_all_users'))
               
             elif user.get_profileid() == "Cleaner":
-                # implement cleaner page here
-                # profile = get_profile_by_id(session.get('profile_id'))
-                
-                cleaner_id = userid
-                print("cleaner_id_check", cleaner_id)
-                cleanerViewServicePg = CleanerViewServicePage()
-                return cleanerViewServicePg.displayServiceList(cleaner_id)
-                
+                # Implement cleaner page login redirect
+                flash('login success', 'success')
+                return render_template('login.html', redirect_url=url_for('view_service.view_services', cleaner_id=userid)) 
+                 
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here
                 flash('login success', 'success')
