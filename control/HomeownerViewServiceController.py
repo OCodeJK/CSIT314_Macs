@@ -5,6 +5,6 @@ class HomeownerViewServiceController:
         ResultSet = Service.viewServiceForHomeowner()
         return ResultSet
 
-    def homeownerIncViewcount(serviceid):
-        ResultSet = Service.incViewCount(serviceid)
-        return ResultSet
+    # def homeownerIncViewcount(serviceid):
+    #     ResultSet = Service.incViewCount(serviceid)
+    #     return ResultSet

@@ -50,7 +50,6 @@
                             <th>Category</th>
                             <th>Price</th>
                             <th>Status</th>
-                            <th>Views</th>
                             <th>Shortlisted</th>
                             <th>Actions</th>
                         </tr>
@@ -66,12 +65,7 @@
                                     {{ 'Suspended' if service.suspended else 'Active' }}
                                 </span>
                             </td>
-                            <td>
-                                <span class="badge bg-info">
-                                    {{ service_views[service.serviceId] if service_views and service.serviceId in
-                                    service_views else 0 }}
-                                </span>
-                            </td>
+
                             <td>
                                 <span class="badge bg-purple">
                                     {{ shortlist_counts[service.serviceId] if shortlist_counts and service.serviceId in
