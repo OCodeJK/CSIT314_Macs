@@ -1,21 +1,21 @@
-# Fix for controller/service_suspension_controller.py
-from entity.Cleaner import Cleaner
+from entity.Service import Service
 from entity.HistoryRecord import HistoryRecord
 
 class ServiceSuspensionController:
+    
     def __init__(self):
-        self.cleaner = Cleaner()
         self.history_record = HistoryRecord()
     
     def suspendService(self, cleanerId, serviceId):
-        # Validate inputs
+     
+        # Validate input parameters
         if not cleanerId or not serviceId:
             return False
         
-        # Suspend the service
-        result = self.cleaner.cleanerSuspendService(cleanerId, serviceId)
+        # Call the Service entity method to suspend the service
+        result = Service.cleanerSuspendService(cleanerId, serviceId)
         
-        # If suspension successful, update history record
+        # If suspension was successful, mark the service as completed in history
         if result:
             self.history_record.end_service(cleanerId, serviceId)
         

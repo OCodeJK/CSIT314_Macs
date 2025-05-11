@@ -16,11 +16,6 @@ class ServiceSuspensionPage:
 def suspend_service_submit(serviceId):
 
     cleaner_id = request.form.get('cleaner_id', request.args.get('cleaner_id'))
-    
-    if not cleaner_id:
-        flash("Missing cleaner ID", "error")
-        return redirect(url_for('view_service.index'))
-    
     # Initialize controller directly
     controller = ServiceSuspensionController()
     

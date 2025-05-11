@@ -96,7 +96,6 @@
             margin-bottom: 10px;
         }
 
-        /* Service breakdown styles */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -137,7 +136,7 @@
 
 <body>
     <div class="container">
-        <a href="{{ url_for('view_service.index') }}" class="btn-back">← Back to Services</a>
+        <a href="/services/{{ cleaner_id }}" class="btn-back">← Back to Services</a>
 
         <h1>Shortlist Statistics</h1>
 
@@ -201,14 +200,6 @@
         </div>
         {% endif %}
 
-        <div class="info-message">
-            <strong>What does this mean?</strong><br>
-            Being shortlisted means customers have saved your profile to their list of preferred cleaners.
-            A higher number indicates greater interest in your services.
-            {% if service_stats and service_stats|length > 0 %}
-            The breakdown shows which of your services are most popular with customers.
-            {% endif %}
-        </div>
     </div>
 </body>
 

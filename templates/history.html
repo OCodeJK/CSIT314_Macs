@@ -201,8 +201,9 @@
                     <!-- Service Name Search -->
                     <div class="mb-4">
                         <h5><i class="bi bi-search"></i> Search by Service Name</h5>
+                        <!-- Thay thế đoạn code sau trong history.html -->
                         <form method="GET"
-                            action="{{ url_for('cleaner_filter_history.filter_records', cleaner_id=cleaner_id) }}"
+                            action="{{ url_for('cleaner_search_history.search_history', cleaner_id=cleaner_id) }}"
                             class="mb-3">
                             <div class="input-group">
                                 <input type="hidden" name="cleaner_id" value="{{ cleaner_id }}">

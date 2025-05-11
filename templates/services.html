@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Services - Cleaner {{ cleaner.cleanerId }}{% endblock %}
+{% block title %}Cleaner Services{% endblock %}
 
 {% block content %}
 <div class="container mt-3">
     <!-- Header and Navigation -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Cleaner Services</h1>
-        <a href="{{ url_for('view_service.index') }}" class="btn btn-sm btn-secondary">Back</a>
+        <a href="/dashboard" class="btn btn-sm btn-secondary">Back</a>
     </div>
 
     <!-- Flash Messages -->
@@ -23,14 +23,12 @@
     <div class="card mb-3">
         <div class="card-header bg-light">Search Services</div>
         <div class="card-body">
-            <form action="{{ url_for('search_service.search_services') }}" method="get">
+            <form action="/search-services" method="get">
                 <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
                 <div class="input-group">
                     <input type="text" name="search_query" class="form-control" placeholder="Search for services..."
                         value="{{ search_query|default('') }}">
-                    <button type="submit" class="btn btn-primary">
-                        Search
-                    </button>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </form>
         </div>
@@ -81,29 +79,20 @@
                                 </span>
                             </td>
                             <td>
-
                                 <!-- Edit button -->
-                                <a href="{{ url_for('update_service.update_service', service_id=service.serviceId, cleaner_id=cleaner.cleanerId) }}"
-                                    class="btn btn-sm btn-primary">
-                                    Edit
-                                </a>
+                                <a href="/update-service/{{ service.serviceId }}?cleaner_id={{ cleaner.cleanerId }}"
+                                    class="btn btn-sm btn-primary">Edit</a>
 
                                 <!-- Views button -->
-                                <a href="{{ url_for('service_views.get_service_views', serviceId=service.serviceId, cleaner_id=cleaner.cleanerId) }}"
-                                    class="btn btn-sm btn-info">
-                                    Views
-                                </a>
+                                <a href="/service/{{ service.serviceId }}/views?cleaner_id={{ cleaner.cleanerId }}"
+                                    class="btn btn-sm btn-info">Views</a>
 
                                 <!-- Suspend button (only for active services) -->
                                 {% if not service.suspended %}
-                                <form
-                                    action="{{ url_for('suspend_service.suspend_service_submit', serviceId=service.serviceId) }}"
-                                    method="post" class="d-inline">
+                                <form action="/suspend-service/{{ service.serviceId }}" method="post" class="d-inline">
                                     <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
                                     <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure you want to suspend this service?')">
-                                        Suspend
-                                    </button>
+                                        onclick="return confirm('Are you sure you want to suspend this service?')">Suspend</button>
                                 </form>
                                 {% endif %}
                             </td>
@@ -132,7 +121,7 @@
         <div class="collapse" id="addServiceSection">
             <div class="card-body">
                 {% if available_services %}
-                <form action="{{ url_for('create_service.add_service') }}" method="post" id="serviceAddForm">
+                <form action="/add-service" method="post" id="serviceAddForm">
                     <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
                     <div class="mb-3">
                         <label for="service_id" class="form-label">Select a service to add:</label>
@@ -158,17 +147,14 @@
             </div>
         </div>
     </div>
-
 </div>
 
-<!-- Add custom styles -->
+<!-- Custom styles -->
 <style>
-    /* Custom badge color */
     .bg-purple {
         background-color: #9b59b6;
     }
 
-    /* Custom button color */
     .btn-purple {
         color: #fff;
         background-color: #9b59b6;
@@ -181,18 +167,15 @@
         border-color: #8e44ad;
     }
 
-    /* Add hover effect to the table rows */
     .table-hover tbody tr:hover {
         background-color: rgba(0, 123, 255, 0.05);
     }
 
-    /* Make buttons wrap better in the table */
     .btn-sm {
         margin-bottom: 0.25rem;
         margin-right: 0.25rem;
     }
 
-    /* Increase width of Actions column */
     table th:last-child,
     table td:last-child {
         min-width: 300px;

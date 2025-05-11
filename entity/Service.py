@@ -4,14 +4,14 @@ from datetime import datetime
 class Service:
     """Entity class representing a Service in the system"""
     
-    def __init__(self, serviceId=None, serviceName=None, categoryId=None, cleanerId=None, price=None, suspended=False):
+    def __init__(self, serviceId=None, serviceName=None, categoryId=None, cleanerId=None, price=None, suspend=False):
         """Initialize a new Service instance"""
         self.serviceId = serviceId
         self.serviceName = serviceName
         self.categoryId = categoryId
         self.cleanerId = cleanerId
         self.price = price
-        self.suspended = suspended if suspended is not None else False
+        self.suspend = suspend if suspend is not None else False
     
     @staticmethod
     def get_all():
@@ -29,10 +29,7 @@ class Service:
     
     @staticmethod
     def get_available_services():
-        """
-        Get all available services that aren't assigned to any cleaner
-        and aren't suspended
-        """
+ 
         conn = db_connection()
         cur = conn.cursor()
         
@@ -138,14 +135,23 @@ class Service:
         conn.close()
         
         return True
-    
+        
     @staticmethod
     def cleanerSuspendService(cleanerId, serviceId):
-        """Suspend a service owned by a cleaner"""
+        """
+        Suspend a service owned by a cleaner
+        
+        Args:
+            cleanerId (str): ID of the cleaner who owns the service
+            serviceId (str): ID of the service to suspend
+            
+        Returns:
+            bool: True if successful, False if service is already suspended or doesn't belong to cleaner
+        """
         conn = db_connection()
         cur = conn.cursor()
         
-        # Check if the service belongs to the cleaner
+        # Check if the service belongs to the cleaner and is not already suspended
         cur.execute(
             """
             SELECT * FROM service 
@@ -161,7 +167,7 @@ class Service:
             conn.close()
             return False
             
-        # Suspend the service
+        # Update the service to suspended status
         cur.execute(
             """
             UPDATE service
@@ -186,33 +192,40 @@ class Service:
         conn = db_connection()
         cur = conn.cursor()
 
-        # Update the service
-        cur.execute(
-            """
-            UPDATE service
-            SET serviceName = %s, categoryId = %s
-            WHERE serviceId = %s
-            """,
-            (serviceName, categoryId, serviceId)
-        )
+        try:
+            # Update the service
+            cur.execute(
+                """
+                UPDATE service
+                SET serviceName = %s, categoryId = %s
+                WHERE serviceId = %s
+                """,
+                (serviceName, categoryId, serviceId)
+            )
 
-        # Add a history record for the update
-        cur.execute(
-            """
-            INSERT INTO historyrecord (cleanerId, serviceId, startDate, endDate)
-            VALUES (%s, %s, CURRENT_DATE, NULL)
-            """,
-            (cleanerId, serviceId)
-        )
         
-        conn.commit()
-        cur.close()
-        conn.close()
+            cur.execute(
+                """
+                INSERT INTO historyrecord (cleanerId, serviceId, startDate, endDate, homeownerid)
+                VALUES (%s, %s, CURRENT_DATE, CURRENT_DATE, %s)
+                """,
+                (cleanerId, serviceId, 22)  
+            )
+            
+            conn.commit()
+            cur.close()
+            conn.close()
+            
+            return True
+        except Exception as e:
+            print(f"Error in updateCleanerService: {str(e)}")
+            conn.rollback()
+            cur.close()
+            conn.close()
+            return False
         
-        return True
-    
     @staticmethod
-    def searchServices(cleanerId, searchQuery):
+    def getServices(cleanerId, searchQuery):
         """Search for services by name for a specific cleaner"""
         conn = db_connection()
         cur = conn.cursor()
@@ -289,6 +302,27 @@ class Service:
         conn.close()
         
         return results
+    
+    @staticmethod
+    def checkCategoryExists(categoryId):
+        """Check if a category exists in the database"""
+        conn = db_connection()
+        cur = conn.cursor()
+        
+        cur.execute(
+            """
+            SELECT COUNT(*) FROM category 
+            WHERE categoryId = %s
+            """,
+            (categoryId,)
+        )
+        
+        count = cur.fetchone()[0]
+        
+        cur.close()
+        conn.close()
+        
+        return count > 0
     
     @staticmethod
     def viewServiceForHomeowner():
