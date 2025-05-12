@@ -38,7 +38,8 @@
                             <li class="nav-item">
                                 <!-- Updated to use the correct blueprint name -->
                                 <a class="nav-link"
-                                    href="{{ url_for('cleaner_filter_history.filter_records', cleaner_id=cleaner_id|default(1)) }}">History</a>
+                                    href="{{ url_for('cleaner_history.display_history', cleaner_id=cleaner_id|default(1)) }}">History</a>
+
                             </li>
                         </ul>
                     </div>

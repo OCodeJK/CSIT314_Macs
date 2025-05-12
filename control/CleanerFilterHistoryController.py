@@ -7,20 +7,12 @@ class CleanerFilterHistoryController:
     
     def filterHistory(self, cleanerId, startDate, endDate):
         try:
-            if not startDate and not endDate:
-                return []
-            
-            if not startDate:
-                startDate = datetime(2000, 1, 1).date()
-                
-            if not endDate:
-                endDate = datetime.now().date()
-                
             results = HistoryRecord.cleanerFilterHistory(cleanerId, startDate, endDate)
             return results
         except Exception as e:
-            return []
-    
+            print(f"Error in controller.filterHistory: {str(e)}")
+            return []    
+        
     def getHistoryDetails(self, historyId, cleanerId):
         try:
             record = HistoryRecord.getHistoryDetails(historyId, cleanerId)

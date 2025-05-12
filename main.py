@@ -14,20 +14,14 @@ from boundary.PMManageServCatGUI import view_category_bp
 from boundary.PMUpdateServCat import update_category_bp
 from boundary.PMSuspendServCat import suspend_category_bp
 from boundary.PMViewReportsGUI import view_reports_bp
-from boundary.CleanerConfirmedMatchesPg import confirmed_matches_bp
-from boundary.CleanerFilterHistoryPg import filter_history_bp
-from boundary.CleanerSearchHistoryPage import cleaner_search_history_bp
-from boundary.ShortlistCountForCleanerPage import shortlist_bp
-from boundary.ServiceViewsPage import service_views_bp
+from boundary.CleanerConfirmedMatchesPg import history_bp  # Updated: Now contains all history functionality
 from boundary.ServiceSuspensionPage import suspend_service_bp
 from boundary.CleanerSearchServicePage import search_service_bp
 from boundary.CleanerViewServicePage import view_service_bp
-from boundary.CleanerCreateService import create_service_bp
+from boundary.CleanerCreateServicePage import create_service_bp
 from boundary.CleanerUpdateServicePage import update_service_bp
 
-import secret # for access secret key -- SESSION
-
-
+import secret # for access secret key -- SESSION  
 
 app = Flask(__name__)
 
@@ -48,18 +42,13 @@ app.register_blueprint(view_category_bp)
 app.register_blueprint(update_category_bp)
 app.register_blueprint(suspend_category_bp)
 app.register_blueprint(view_reports_bp)
-app.register_blueprint(confirmed_matches_bp)
-app.register_blueprint(shortlist_bp)
-app.register_blueprint(service_views_bp)
+app.register_blueprint(history_bp, name='cleaner_history')  # Updated: Consolidated history blueprint
 app.register_blueprint(suspend_service_bp)
 app.register_blueprint(search_service_bp)
 app.register_blueprint(view_service_bp)
 app.register_blueprint(create_service_bp)
 app.register_blueprint(update_service_bp)
-app.register_blueprint(filter_history_bp, name='cleaner_filter_history')
-app.register_blueprint(cleaner_search_history_bp, name='cleaner_search_history')
 app.secret_key = secret.SECRET_KEY # SESSION RELATED
-
 
 if __name__ == "__main__":
     print(app.url_map)

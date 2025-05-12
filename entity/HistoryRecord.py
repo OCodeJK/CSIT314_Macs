@@ -10,40 +10,64 @@ class HistoryRecord:
         self.endDate = endDate
         self.cleanerId = cleanerId
 
-    
+        
     @staticmethod
     def searchService(searchName, cleanerId):
         try:
-            print(f"Searching for '{searchName}' for cleaner {cleanerId}")
+            print(f"[HistoryRecord] Searching for '{searchName}' for cleaner {cleanerId}")
             
             if not searchName or searchName.strip() == "":
+                print("[HistoryRecord] Search name is empty, returning empty list")
                 return []
             
             conn = db_connection()
             cur = conn.cursor()
             
-            cur.execute(
+            search_pattern = f"%{searchName}%"
+            print(f"[HistoryRecord] Using search pattern: '{search_pattern}'")
+            
+            # Debug: Test connection
+            try:
+                cur.execute("SELECT 1")
+                test_result = cur.fetchone()
+                print(f"[HistoryRecord] Database connection test: {test_result}")
+            except Exception as conn_err:
+                print(f"[HistoryRecord] Database connection error: {conn_err}")
+            
+            # Main query with more detailed error handling
+            try:
+                query = """
+                    SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
+                    FROM historyrecord h
+                    JOIN service s ON h.serviceid = s.serviceid
+                    WHERE h.cleanerid = %s 
+                    AND s.servicename ILIKE %s
+                    ORDER BY h.startdate DESC
                 """
-                SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
-                FROM historyrecord h
-                JOIN service s ON h.serviceid = s.serviceid
-                WHERE h.cleanerid = %s 
-                AND s.servicename ILIKE %s
-                ORDER BY h.startdate DESC
-                """,
-                (cleanerId, f"%{searchName}%")
-            )
-            
-            results = cur.fetchall()
-            print(f"ILIKE search results: {len(results)} records found")
-            
-            cur.close()
-            conn.close()
-            
-            return results
+                print(f"[HistoryRecord] Executing query with params: {cleanerId}, {search_pattern}")
+                cur.execute(query, (cleanerId, search_pattern))
+                
+                results = cur.fetchall()
+                print(f"[HistoryRecord] ILIKE search found {len(results)} records")
+                
+                # Debug the first few results if any
+                if results and len(results) > 0:
+                    print(f"[HistoryRecord] First result: {results[0]}")
+                    
+                cur.close()
+                conn.close()
+                
+                return results
+            except Exception as query_err:
+                print(f"[HistoryRecord] Query execution error: {query_err}")
+                if 'cur' in locals() and cur:
+                    cur.close()
+                if 'conn' in locals() and conn:
+                    conn.close()
+                return []
                 
         except Exception as e:
-            print(f"Error searching service: {e}")
+            print(f"[HistoryRecord] Error in searchService: {e}")
             if 'cur' in locals() and cur:
                 cur.close()
             if 'conn' in locals() and conn:
@@ -61,8 +85,6 @@ class HistoryRecord:
                 SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
                 FROM historyrecord h
                 JOIN service s ON h.serviceid = s.serviceid
-                WHERE h.cleanerid = %s 
-                AND h.enddate IS NULL
                 ORDER BY h.startdate DESC
                 """, 
                 (cleanerId,)
@@ -82,35 +104,61 @@ class HistoryRecord:
             if 'conn' in locals() and conn:
                 conn.close()
             return []
-
+        
     @staticmethod
     def cleanerFilterHistory(cleanerId, startDate, endDate):
         try:
             conn = db_connection()
             cur = conn.cursor()
             
-            cur.execute(
-                """
-                SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
-                FROM historyrecord h
-                LEFT JOIN service s ON h.serviceid = s.serviceid
-                WHERE h.cleanerid = %s 
-                AND (
-                    (h.startdate BETWEEN %s AND %s) OR
-                    (h.enddate BETWEEN %s AND %s) OR
-                    (h.startdate <= %s AND (h.enddate IS NULL OR h.enddate >= %s))
+            # If both dates are None, fetch all history records
+            if startDate is None and endDate is None:
+                cur.execute(
+                    """
+                    SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
+                    FROM historyrecord h
+                    LEFT JOIN service s ON h.serviceid = s.serviceid
+                    WHERE h.cleanerid = %s 
+                    ORDER BY h.startdate DESC
+                    """,
+                    (cleanerId,)
                 )
-                ORDER BY h.startdate DESC
-                """,
-                (cleanerId, startDate, endDate, startDate, endDate, startDate, endDate)
-            )
+            else:
+                # Use date conditions only when dates are provided
+                start = startDate if startDate is not None else datetime(2000, 1, 1).date()
+                end = endDate if endDate is not None else datetime.now().date()
+                
+                cur.execute(
+                    """
+                    SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
+                    FROM historyrecord h
+                    LEFT JOIN service s ON h.serviceid = s.serviceid
+                    WHERE h.cleanerid = %s 
+                    AND (
+                        (h.startdate BETWEEN %s AND %s) OR
+                        (h.enddate BETWEEN %s AND %s) OR
+                        (h.startdate <= %s AND (h.enddate IS NULL OR h.enddate >= %s))
+                    )
+                    ORDER BY h.startdate DESC
+                    """,
+                    (cleanerId, start, end, start, end, start, end)
+                )
             
+            # fetchall() returns a list of tuples
             results = cur.fetchall()
             
             cur.close()
             conn.close()
             
             return results
+                
+        except Exception as e:
+            print(f"Error in cleanerFilterHistory: {e}")
+            if 'cur' in locals() and cur:
+                cur.close()
+            if 'conn' in locals() and conn:
+                conn.close()
+            return []
                 
         except Exception as e:
             print(f"Error in cleanerFilterHistory: {e}")

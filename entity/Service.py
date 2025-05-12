@@ -176,33 +176,31 @@ class Service:
     
     @staticmethod
     def updateCleanerService(serviceId, serviceName, cleanerId, categoryId):
-        """Update a cleaner's service details and create a history record"""
+        """Update a cleaner's service details - only updates name and category ID"""
         if not serviceId or not serviceName or not cleanerId or not categoryId:
             return False
-
+        
         conn = db_connection()
         cur = conn.cursor()
-
+        
         try:
             # Update the service
             cur.execute(
                 """
                 UPDATE service
                 SET serviceName = %s, categoryId = %s
-                WHERE serviceId = %s
+                WHERE serviceId = %s AND cleanerId = %s
                 """,
-                (serviceName, categoryId, serviceId)
-            )
-
-        
-            cur.execute(
-                """
-                INSERT INTO historyrecord (cleanerId, serviceId, startDate, endDate, homeownerid)
-                VALUES (%s, %s, CURRENT_DATE, CURRENT_DATE, %s)
-                """,
-                (cleanerId, serviceId, 22)  
+                (serviceName, categoryId, serviceId, cleanerId)
             )
             
+            if cur.rowcount == 0:
+                print(f"Service {serviceId} does not belong to cleaner {cleanerId}")
+                conn.rollback()
+                cur.close()
+                conn.close()
+                return False
+                        
             conn.commit()
             cur.close()
             conn.close()
@@ -214,13 +212,12 @@ class Service:
             cur.close()
             conn.close()
             return False
-        
+  
     @staticmethod
     def getServices(cleanerId, searchQuery):
         """Search for services by name for a specific cleaner"""
         conn = db_connection()
         cur = conn.cursor()
-        
         # If search query is empty, return all services for the cleaner
         if not searchQuery or searchQuery.strip() == "":
             cur.execute(

@@ -37,11 +37,7 @@ class CleanerUpdateServiceController:
             if not service:
                 print(f"Service {serviceId} not found")
                 return None
-            
-            # Check if the service belongs to the cleaner
-            if str(service[3]) != int(cleanerId):
-                print(f"Service {serviceId} does not belong to cleaner {cleanerId}")
-                return None
+
             
             # Format service for template
             formatted_service = {
@@ -54,7 +50,7 @@ class CleanerUpdateServiceController:
             
             return formatted_service
         except Exception as e:
-            print(f"Error in getServiceDetails: {int(e)}")
+            print(f"Error in getServiceDetails: {str(e)}")
             return None
         
     def validateCategoryId(self, categoryId):

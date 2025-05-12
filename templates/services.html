@@ -7,7 +7,7 @@
     <!-- Header and Navigation -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Cleaner Services</h1>
-        <a href="{{ url_for('login_ui.Login') }}" class="btn btn-sm btn-secondary">Back</a>
+        <a href="{{ url_for('login_ui.Login') }}" class="btn btn-sm btn-secondary">Log Out</a>
     </div>
 
     <!-- Flash Messages -->
@@ -50,6 +50,7 @@
                             <th>Category</th>
                             <th>Price</th>
                             <th>Status</th>
+                            <th>Views</th>
                             <th>Shortlisted</th>
                             <th>Actions</th>
                         </tr>
@@ -65,21 +66,29 @@
                                     {{ 'Suspended' if service.suspended else 'Active' }}
                                 </span>
                             </td>
-
                             <td>
-                                <span class="badge bg-purple">
-                                    {{ shortlist_counts[service.serviceId] if shortlist_counts and service.serviceId in
-                                    shortlist_counts else 0 }}
-                                </span>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-eye me-2"></i>
+                                    <span class="badge bg-info">
+                                        {{ service_views[service.serviceId] if service_views and service.serviceId in
+                                        service_views else 0 }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-star me-2"></i>
+                                    <span class="badge bg-purple">
+                                        {{ shortlist_counts[service.serviceId] if shortlist_counts and service.serviceId
+                                        in
+                                        shortlist_counts else 0 }}
+                                    </span>
+                                </div>
                             </td>
                             <td>
                                 <!-- Edit button -->
                                 <a href="/update-service/{{ service.serviceId }}?cleaner_id={{ cleaner.cleanerId }}"
                                     class="btn btn-sm btn-primary">Edit</a>
-
-                                <!-- Views button -->
-                                <a href="/service/{{ service.serviceId }}/views?cleaner_id={{ cleaner.cleanerId }}"
-                                    class="btn btn-sm btn-info">Views</a>
 
                                 <!-- Suspend button (only for active services) -->
                                 {% if not service.suspended %}
@@ -149,6 +158,10 @@
         background-color: #9b59b6;
     }
 
+    .bg-info {
+        background-color: #3498db;
+    }
+
     .btn-purple {
         color: #fff;
         background-color: #9b59b6;
@@ -172,7 +185,7 @@
 
     table th:last-child,
     table td:last-child {
-        min-width: 300px;
+        min-width: 220px;
     }
 </style>
 
