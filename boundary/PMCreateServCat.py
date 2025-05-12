@@ -1,20 +1,16 @@
-from flask import Blueprint, request, render_template, flash, redirect, url_for, session
+from flask import Blueprint, request, flash, redirect, url_for
 from control.PMCreateServCatController import PMCreateServCatController
 
 createservcat_bp = Blueprint('createservcat', __name__)
 
-@createservcat_bp.route('/platformmanagement/create_service_category', methods=['GET', 'POST'])
+@createservcat_bp.route('/platformmanagement/create_service_category', methods=['POST'])  # Remove GET
 def create_service_category():
-
     controller = PMCreateServCatController()
-
-    if request.method == 'POST':
-        category_name = request.form.get('category_name', '').strip()
-        result = controller.CreateServCat(category_name)
-        flash(result)
-        if result == "Service category created":
-            return redirect(url_for('createservcat.create_service_category'))
-
-    return render_template('create_service_category.html')
-
-
+    category_name = request.form.get('category_name', '').strip()
+    
+    # Process creation
+    result = controller.CreateServCat(category_name)
+    flash(result)
+    
+    # Always redirect back to view categories page
+    return redirect(url_for('view_category.view_category'))

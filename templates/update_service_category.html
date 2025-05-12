@@ -2,27 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Service Category</title>
+    <title>Edit Service Category</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='pm_update_service_category.css') }}">
 </head>
 <body>
-    <h2>Update Service Category</h2>
-    <form method="POST">
-        <label for="category_name">Category Name:</label><br>
-        <input type="text" id="category_name" name="category_name" value="{{ category.categoryname }}" required><br><br>
-        <input type="submit" value="Update">
-    </form>
-    <br>
-    <a href="{{ url_for('view_category.view_category') }}">
-        <button type="button">Back to Categories</button>
-    </a>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="message">
-          {% for message in messages %}
-            <div>{{ message }}</div>
-          {% endfor %}
+    <div class="layout">
+        <div class="sidebar">
+            <h2>[X] MACS</h2>
+            <a href="{{ url_for('view_category.view_category') }}" style="text-decoration: underline;">👤 View Categories</a>
+            <a href="/admin/view_report">🔍 View Reports</a>
+            <a href="/">❌ Logout</a>
         </div>
-      {% endif %}
-    {% endwith %}
+
+        <div class="main">
+            <div class="topbar">
+                <h2>Service Categories</h2>
+            </div>
+
+            <div class="form-card">
+                <form action="{{ url_for('update_category.update_category_form', category_id=category.categoryid) }}" method="POST">
+                    <div class="form-header">
+                        <h3>Edit Service Category</h3>
+                        <a href="{{ url_for('view_category.view_category') }}" class="close">&times;</a>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Category Name</label>
+                            <input type="text" name="category_name" value="{{ category.categoryname }}" required>
+                        </div>
+                    </div>
+                    <div class="form-footer">
+                        <button type="submit">Save</button>
+                    </div>
+                </form>
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <div class="message">
+                      {% for message in messages %}
+                        <div>{{ message }}</div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>
