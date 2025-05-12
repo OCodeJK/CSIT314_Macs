@@ -138,16 +138,7 @@ class Service:
         
     @staticmethod
     def cleanerSuspendService(cleanerId, serviceId):
-        """
-        Suspend a service owned by a cleaner
-        
-        Args:
-            cleanerId (str): ID of the cleaner who owns the service
-            serviceId (str): ID of the service to suspend
-            
-        Returns:
-            bool: True if successful, False if service is already suspended or doesn't belong to cleaner
-        """
+
         conn = db_connection()
         cur = conn.cursor()
         

@@ -3,7 +3,7 @@ from db_config import db_connection
 class ServiceViews:
     
     @staticmethod
-    def getViewCount(cleanerId, serviceId=None):
+    def getViewCount(cleanerId, serviceId):
         
         conn = db_connection()
         cur = conn.cursor()

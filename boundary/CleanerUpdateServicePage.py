@@ -5,10 +5,8 @@ from control.CleanerUpdateServiceController import CleanerUpdateServiceControlle
 update_service_bp = Blueprint('update_service', __name__)
 
 class CleanerUpdateServicePage:
-   """Boundary class for handling service update operations"""
    
    def __init__(self):
-       """Initialize with controller """
        self.controller = CleanerUpdateServiceController()
 
 

@@ -18,7 +18,7 @@ class Shortlist:
             # Establish database connection
             conn = db_connection()
             cur = conn.cursor()
-            cleanerId = str(cleanerId)
+            cleanerId = int(cleanerId)
             
             if serviceId:
                 # Count shortlists for specific service

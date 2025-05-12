@@ -10,6 +10,7 @@ class CleanerConfirmedMatchesPg:
 
 page_handler = CleanerConfirmedMatchesPg()
 
+
 @confirmed_matches_bp.route('/cleaner/confirmed-matches', methods=['GET'])
 def display_matches():
     """

@@ -51,7 +51,7 @@ class HistoryRecord:
             return []
 
     @staticmethod
-    def cleanerVewConfirmedMatches(cleanerId: str) -> list:
+    def cleanerVewConfirmedMatches(cleanerId) -> list:
         try:
             conn = db_connection()
             cur = conn.cursor()

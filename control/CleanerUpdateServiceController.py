@@ -1,7 +1,6 @@
 from entity.Service import Service
 
 class CleanerUpdateServiceController:
-    """Controller class for handling cleaner service update operations"""
     
     def __init__(self):
         """Initialize the controller"""
@@ -31,7 +30,6 @@ class CleanerUpdateServiceController:
             return False
         
     def getServiceDetails(self, serviceId, cleanerId):
-
         try:
             # Get service details from entity
             service = Service.get_by_id(serviceId)
@@ -41,7 +39,7 @@ class CleanerUpdateServiceController:
                 return None
             
             # Check if the service belongs to the cleaner
-            if str(service[3]) != str(cleanerId):
+            if str(service[3]) != int(cleanerId):
                 print(f"Service {serviceId} does not belong to cleaner {cleanerId}")
                 return None
             
@@ -56,7 +54,7 @@ class CleanerUpdateServiceController:
             
             return formatted_service
         except Exception as e:
-            print(f"Error in getServiceDetails: {str(e)}")
+            print(f"Error in getServiceDetails: {int(e)}")
             return None
         
     def validateCategoryId(self, categoryId):
@@ -64,8 +62,8 @@ class CleanerUpdateServiceController:
         try:
             # Ensure categoryId is an integer
             try:
-                # Convert to integer if it's a string
-                if isinstance(categoryId, str):
+                # Only convert to int if it's not already an int
+                if not isinstance(categoryId, int):
                     categoryId = int(categoryId)
             except ValueError:
                 print(f"Invalid category ID format: {categoryId}")
