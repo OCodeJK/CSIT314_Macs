@@ -2,92 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>View Service Categories</title>
-    <style>
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
-        .search-container { margin: 20px 0; }
-        .button { padding: 5px 10px; margin-right: 5px; cursor: pointer; }
-        .suspend-active { background-color: #f44336; color: white; }
-        .suspend-inactive { background-color: #4CAF50; color: white; }
-        .message { margin: 10px 0; color: #d9534f; }
-    </style>
+    <title>Service Categories Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='pm_view_service_category.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h2>Service Categories</h2>
-    
-    <!-- Search Form -->
-    <div class="search-container">
-        <form action="{{ url_for('view_category.view_category') }}" method="GET" style="display:inline;">
-            <input type="text" placeholder="Search categories..." name="search" value="{{ search_term or '' }}">
-            <button type="submit">Search</button>
-        </form>
-        {% if search_term %}
-            <a href="{{ url_for('view_category.view_category') }}"><button type="button">Clear</button></a>
-        {% endif %}
-    </div>
-    
-    <!-- Feedback / Flashed messages -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="message">
-          {% for message in messages %}
-            <div>{{ message }}</div>
-          {% endfor %}
+    <div class="layout">
+        <div class="sidebar">
+            <h2>[X] MACS</h2>
+            <a href="{{ url_for('view_category.view_category') }}" style="text-decoration: underline;">📋 View Categories</a>
+            <a href="/admin/view_report">📄 View Reports</a>
+            <a href="/">❌ Logout</a>
         </div>
-      {% endif %}
-    {% endwith %}
+        <div class="main">
+            <div class="topbar">
+                <h2>Service Categories</h2>
+                <div class="search-container">
+                    <form method="GET" action="{{ url_for('view_category.view_category') }}" class="search-bar" autocomplete="off" id="searchForm">
+                        <input type="search" name="search" placeholder="Search" value="{{ search_term or '' }}" id="searchInput">
+                        <button type="button" id="clearSearchBtn" title="Clear search" aria-label="Clear search" style="display:none;">&times;</button>
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="content">
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <div class="message">
+                      {% for message in messages %}
+                        <div>{{ message }}</div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endwith %}
 
-    <!-- Categories Table -->
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Category Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if categories %}
-                {% for category in categories %}
-                <tr>
-                    <td>{{ category.categoryid }}</td>
-                    <td>{{ category.categoryname }}</td>
-                    <td>{{ "Suspended" if category.suspend else "Active" }}</td>
-                    <td>
-                        <!-- Update button -->
-                        <a href="{{ url_for('update_category.update_category_form', category_id=category.categoryid) }}">
-                            <button class="button">Update</button>
-                        </a>
-                        <!-- Suspend/Unsuspend toggle button -->
-                        <form method="POST" action="{{ url_for('suspend_category.toggle_suspend', category_id=category.categoryid) }}" style="display:inline;">
-                            <input type="hidden" name="suspend_action" value="suspend">
-                            <button type="submit" class="button suspend-active">Suspend</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="4">
-                        {% if search_term %}
-                            No categories found matching "{{ search_term }}".
-                        {% else %}
-                            No categories found.
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
-
-    <!-- Back to Create Service Category Button -->
-    <div style="margin-top: 30px;">
-        <a href="{{ url_for('createservcat.create_service_category') }}">
-            <button type="button">Back to Create Service Category</button>
-        </a>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                <th style="text-align: right; width: 180px;">
+                                    <a id="openCategoryModalBtn" style="text-decoration: none; color:grey;" href="#">+ New Category</a>
+                                    <div id="categoryModal" class="modal">
+                                        <div class="modal-content">
+                                            <span class="close">&times;</span>
+                                            <h2>Create New Category</h2>
+                                            <form action="{{ url_for('createservcat.create_service_category') }}" method="POST">
+                                                <input type="text" name="category_name" placeholder="Category Name" required><br><br>
+                                                <div style="display: flex; justify-content: center;">
+                                                    <input type="submit" value="Create" class="button">
+                                                    <button type="button" class="cancel-btn" onclick="document.getElementById('categoryModal').style.display='none'">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr class="{% if category.suspend %}suspended{% endif %}">
+                                <td>{{ category.categoryid }}</td>
+                                <td>{{ category.categoryname }}</td>
+                                <td class="action-cell">
+                                    <div class="dropdown">
+                                        <button class="dropdown-toggle">⋮</button>
+                                        <div class="dropdown-menu">
+                                            <a href="{{ url_for('update_category.update_category_form', category_id=category.categoryid) }}">Update</a>
+                                            <form method="POST" action="{{ url_for('suspend_category.toggle_suspend', category_id=category.categoryid) }}">
+                                                <button type="submit">Suspend</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if categories|length == 0 %}
+                            <tr>
+                                <td colspan="3" style="text-align: center;">
+                                    {% if search_term %}
+                                        No categories found matching "{{ search_term }}".
+                                    {% else %}
+                                        No categories found.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+    <script>
+    // Dropdown menu logic
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".dropdown-toggle").forEach(function (toggle) {
+            toggle.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const menu = this.nextElementSibling;
+                document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
+                const rect = this.getBoundingClientRect();
+                menu.style.top = `${rect.bottom + window.scrollY - 6}px`;
+                menu.style.left = `${rect.left - 110}px`;
+                menu.style.display = "block";
+            });
+        });
+        document.addEventListener("click", function () {
+            document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
+        });
+
+        // Modal logic
+        const modal = document.getElementById("categoryModal");
+        const openBtn = document.getElementById("openCategoryModalBtn");
+        const closeBtn = modal.querySelector(".close");
+        openBtn.onclick = function(e) {
+            e.preventDefault();
+            modal.style.display = "block";
+        }
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Search clear button logic
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const searchForm = document.getElementById('searchForm');
+        function toggleClearButton() {
+            clearBtn.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+        }
+        searchInput.addEventListener('input', toggleClearButton);
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            searchInput.focus();
+            searchForm.submit(); // Immediately submit the form with empty string
+        });
+        // Also handle the built-in browser 'search' event (when user clicks native X)
+        searchInput.addEventListener('search', function() {
+            if (!searchInput.value) {
+                searchForm.submit();
+            }
+        });
+        toggleClearButton();
+    });
+    </script>
 </body>
 </html>

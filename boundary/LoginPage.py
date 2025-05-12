@@ -49,7 +49,7 @@ def Login():
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here
                 flash('login success', 'success')
-                return render_template('login.html', redirect_url=url_for('createservcat.create_service_category'))
+                return render_template('login.html', redirect_url=url_for('view_category.view_category'))
             
         else:
             return render_template("login.html", message="❌ Invalid credentials or role.", profiles=profiles)

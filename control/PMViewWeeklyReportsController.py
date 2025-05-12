@@ -4,5 +4,5 @@ class PMViewWeeklyReportsController:
     def __init__(self):
         self.entity = Report()
 
-    def ViewWeeklyReports(self, year, week):
+    def ViewWeeklyReport(self, year, week):
         return self.entity.ViewWeeklyReport(year, week)

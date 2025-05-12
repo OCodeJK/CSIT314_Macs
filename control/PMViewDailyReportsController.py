@@ -4,5 +4,5 @@ class PMViewDailyReportsController:
     def __init__(self):
         self.entity = Report()
 
-    def ViewDailyReports(self, date_str):
+    def ViewDailyReport(self, date_str):
         return self.entity.ViewDailyReport(date_str)

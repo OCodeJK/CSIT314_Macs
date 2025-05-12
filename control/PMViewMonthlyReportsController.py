@@ -4,5 +4,5 @@ class PMViewMonthlyReportsController:
     def __init__(self):
         self.entity = Report()
 
-    def ViewMonthlyReports(self, year, month):
+    def ViewMonthlyReport(self, year, month):
         return self.entity.ViewMonthlyReport(year, month)
