@@ -29,9 +29,9 @@ def add_shortlist():
     final = HomeownerCreateShortlistController.homeownerCreateShortlist(serviceid, userid)
     
     if final:
-        return redirect(url_for('view_hoservice.view_service', message='Cleaner successfully added to shortlist'))
+        return redirect(url_for('view_hoservice.view_service', message='Service successfully added to shortlist'))
     else:
-        return redirect(url_for('view_hoservice.view_service', message='Cleaner already shortlisted'))
+        return redirect(url_for('view_hoservice.view_service', message='Service already shortlisted'))
 
 
 @view_hoservice_bp.route('/inc_viewcount', methods=['POST'])
