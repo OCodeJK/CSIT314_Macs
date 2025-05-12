@@ -4,10 +4,6 @@ from control.HomeownerSearchCompletedServiceController import HomeownerSearchCom
 
 view_completedservice_bp = Blueprint('view_completedservice', __name__)
 
-@view_completedservice_bp.route('/homeowner_base')
-def homeowner_base():
-    return render_template('homeowner_base.html')
-
 @view_completedservice_bp.route('/view_completedservice')
 def view_completedservice():
     userid = session.get('userid')

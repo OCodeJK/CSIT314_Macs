@@ -4,10 +4,6 @@ from control.HomeownerSearchShortlistController import HomeownerSearchShortlistC
 
 view_hoshortlist_bp = Blueprint('view_hoshortlist', __name__)
 
-@view_hoshortlist_bp.route('/homeowner_base')
-def homeowner_base():
-    return render_template('homeowner_base.html')
-
 @view_hoshortlist_bp.route('/view_hoshortlist')
 def view_shortlist():
     userid = session.get('userid')
