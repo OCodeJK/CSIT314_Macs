@@ -357,3 +357,57 @@ class Service:
         except Exception as e:
             print("Error displaying cleaner accounts:", e)
             return None
+        
+    @staticmethod
+    def incViewCount(serviceid):
+        #check to see if serviceid exist in serviceviews table
+        conn = db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT *
+            FROM serviceviews
+            WHERE serviceid = %s
+        """,(serviceid,))
+        ResultSet = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        #create new column for serviceid if serviceid does not exist in table
+        if not ResultSet:
+            try:
+                conn = db_connection()
+                cur = conn.cursor()
+                    
+                cur.execute("INSERT INTO serviceviews (serviceid, viewcount) VALUES (%s, %s)"
+                            , (serviceid, 1))
+                    
+                conn.commit()
+                        
+                return True
+            except Exception as e:
+                print("DB Error1:", e)
+                conn.rollback()
+                return False
+            finally:
+                cur.close()
+                conn.close()
+
+        #increase viewcount if serviceid exists
+        elif ResultSet:
+            try:
+                conn = db_connection()
+                cur = conn.cursor()
+                    
+                cur.execute("UPDATE serviceviews SET viewcount = viewcount + 1 WHERE serviceid = %s"
+                            , (serviceid,))
+                    
+                conn.commit()
+                        
+                return True
+            except Exception as e:
+                print("DB Error2:", e)
+                conn.rollback()
+                return False
+            finally:
+                cur.close()
+                conn.close()
