@@ -5,6 +5,7 @@ from control.PMViewMonthlyReportsController import PMViewMonthlyReportsControlle
 from control.PMSearchDailyReportsController import PMSearchDailyReportsController
 from control.PMSearchWeeklyReportsController import PMSearchWeeklyReportsController
 from control.PMSearchMonthlyReportsController import PMSearchMonthlyReportsController
+from helper.util_functions import get_all_services, get_daily_options, get_weekly_options, get_monthly_options
 import datetime
 
 view_reports_bp = Blueprint('view_reports', __name__)
@@ -14,10 +15,10 @@ def view_report():
 
     # Use the controller to get all services
     options_controller = PMSearchDailyReportsController()
-    all_services = options_controller.GetAllServices()
-    daily_options = options_controller.GetDailyOptions()
-    weekly_options = options_controller.GetWeeklyOptions()
-    monthly_options = options_controller.GetMonthlyOptions()
+    all_services = get_all_services()
+    daily_options = get_daily_options()
+    weekly_options = get_weekly_options()
+    monthly_options = get_monthly_options()
 
     selected_daily = None
     selected_weekly = None

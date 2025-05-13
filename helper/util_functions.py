@@ -1,4 +1,5 @@
 from db_config import db_connection
+import datetime
 
 def get_all_profiles():
     conn = db_connection()
@@ -76,3 +77,57 @@ def check_if_user_suspended(username, password, profileid):
         cur.close()
         conn.close()
         return "suspended"
+
+def get_all_services():
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT DISTINCT servicename FROM service ORDER BY servicename;")
+            return [row[0] for row in cur.fetchall()]
+
+def get_daily_options():
+    start_date = datetime.date(2024, 1, 1)
+    today = datetime.date.today()
+    delta = today - start_date
+    return [(start_date + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(delta.days + 1)]
+
+def get_weekly_options():
+    start_date = datetime.date(2024, 1, 1)
+    today = datetime.date.today()
+    first_monday = start_date + datetime.timedelta(days=(7 - start_date.weekday()) % 7)
+    weeks = []
+    current = first_monday
+    while current <= today:
+        iso_year, iso_week, _ = current.isocalendar()
+        weeks.append({'label': current.strftime('%Y-%m-%d'), 'value': f'{iso_year}-{iso_week:02d}'})
+        current += datetime.timedelta(days=7)
+    return weeks
+
+def get_monthly_options():
+    start_year, start_month = 2024, 1
+    end_year, end_month = datetime.date.today().year, datetime.date.today().month
+    months = []
+    year, month = start_year, start_month
+    while (year < end_year) or (year == end_year and month <= end_month):
+        months.append(f"{year}-{month:02d}")
+        if month == 12:
+            year += 1
+            month = 1
+        else:
+            month += 1
+    return months
+
+def GetCategoryById(category_id: int):
+    """
+    Fetch a single category by its ID.
+    """
+    with db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT categoryid, categoryname, suspend FROM public.category WHERE categoryid = %s",
+                (category_id,)
+            )
+            row = cur.fetchone()
+            if row:
+                columns = [desc[0] for desc in cur.description]
+                return dict(zip(columns, row))
+            return None
