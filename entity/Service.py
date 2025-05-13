@@ -312,26 +312,6 @@ class Service:
         
         return count > 0
     
-    @staticmethod
-    def viewServiceForHomeowner():
-        """Display all services with cleaner and category information"""
-        try:
-            conn = db_connection()
-            cur = conn.cursor()
-            cur.execute("""
-                SELECT s.serviceid, s.servicename, a.username, c.categoryname, s.price
-                FROM service s
-                INNER JOIN account a ON s.cleanerid = a.userid
-                INNER JOIN category c ON s.categoryid = c.categoryid
-            """)
-            ResultSet = cur.fetchall()
-            cur.close()
-            conn.close()
-
-            return ResultSet
-        except Exception as e:
-            print("Error fetching cleaner accounts:", e)
-            return None
 
     @staticmethod
     def searchServiceForHomeowner(servicename):
@@ -356,7 +336,7 @@ class Service:
             return None
         
     @staticmethod
-    def incViewCount(serviceid):
+    def viewServiceForHomeowner(serviceid):
         #check to see if serviceid exist in serviceviews table
         conn = db_connection()
         cur = conn.cursor()
@@ -365,12 +345,12 @@ class Service:
             FROM serviceviews
             WHERE serviceid = %s
         """,(serviceid,))
-        ResultSet = cur.fetchall()
+        ResultSet1 = cur.fetchall()
         cur.close()
         conn.close()
 
         #create new column for serviceid if serviceid does not exist in table
-        if not ResultSet:
+        if not ResultSet1:
             try:
                 conn = db_connection()
                 cur = conn.cursor()
@@ -379,18 +359,28 @@ class Service:
                             , (serviceid, 1))
                     
                 conn.commit()
+                cur.execute("""
+                    SELECT s.serviceid, s.servicename, a.username, c.categoryname, s.price
+                    FROM service s
+                    INNER JOIN account a ON s.cleanerid = a.userid
+                    INNER JOIN category c ON s.categoryid = c.categoryid
+                    WHERE s.serviceid = %s
+                """, (serviceid,))
+                ResultSet = cur.fetchall()
+
+                ResultSet = [] #return nothing
                         
-                return True
+                return ResultSet
             except Exception as e:
                 print("DB Error1:", e)
                 conn.rollback()
-                return False
+                return ResultSet
             finally:
                 cur.close()
                 conn.close()
 
         #increase viewcount if serviceid exists
-        elif ResultSet:
+        elif ResultSet1:
             try:
                 conn = db_connection()
                 cur = conn.cursor()
@@ -399,12 +389,21 @@ class Service:
                             , (serviceid,))
                     
                 conn.commit()
+
+                cur.execute("""
+                    SELECT s.serviceid, s.servicename, a.username, c.categoryname, s.price
+                    FROM service s
+                    INNER JOIN account a ON s.cleanerid = a.userid
+                    INNER JOIN category c ON s.categoryid = c.categoryid
+                    WHERE s.serviceid = %s
+                """, (serviceid,))
+                ResultSet = cur.fetchall()
                         
-                return True
+                return ResultSet
             except Exception as e:
                 print("DB Error2:", e)
                 conn.rollback()
-                return False
+                return ResultSet
             finally:
                 cur.close()
                 conn.close()

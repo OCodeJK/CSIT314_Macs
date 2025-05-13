@@ -131,3 +131,23 @@ def GetCategoryById(category_id: int):
                 columns = [desc[0] for desc in cur.description]
                 return dict(zip(columns, row))
             return None
+
+def viewServiceForHomeownerH():
+        """Display all services with cleaner and category information"""
+        try:
+            conn = db_connection()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT s.serviceid, s.servicename, a.username
+                FROM service s
+                INNER JOIN account a ON s.cleanerid = a.userid
+                INNER JOIN category c ON s.categoryid = c.categoryid
+            """)
+            ResultSet = cur.fetchall()
+            cur.close()
+            conn.close()
+
+            return ResultSet
+        except Exception as e:
+            print("Error fetching cleaner accounts:", e)
+            return None
