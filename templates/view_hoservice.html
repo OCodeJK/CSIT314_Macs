@@ -8,38 +8,42 @@
 
     <script>
 
-        // Start of View Details pop up
-        function showPopup(service, cleaner, category, price) {
+        function showPopup(service, cleaner, category, price, serviceid) {
             const content = `
                 <strong>Full details of selected service</strong><br><br>
-                Service: ${service}<br>
-                Cleaner: ${cleaner}<br>
-                Category: ${category}<br>
-                Price: ${price}
+                <strong>Service:</strong> ${service}<br>
+                <strong>Cleaner:</strong> ${cleaner}<br>
+                <strong>Category:</strong> ${category}<br>
+                <strong>Price: $</strong> ${price}
             `;
             document.getElementById("popupContent").innerHTML = content;
             document.getElementById("popupModal").style.display = "block";
             document.getElementById("popupBackdrop").style.display = "block";
+
+            // Update hidden input in the shortlist form
+            document.getElementById("shortlistServiceId").value = serviceid;
         }
-        
+
         function closePopup() {
             document.getElementById("popupModal").style.display = "none";
             document.getElementById("popupBackdrop").style.display = "none";
         }
-        // === End ===
 
-        // After click view detail, maintain current state
-        function incViewCount(event) { 
-            event.preventDefault();  // Prevent form from submitting normally
+        function incViewCount(event, serviceid) {
+            event.preventDefault(); // Prevent form submission
+            const form = event.target;
+            const formData = new FormData(form);
 
-            const formData = new FormData(event.target);
-            
-            fetch('/inc_viewcount', {
+            fetch('/view_hoservice', {
                 method: 'POST',
                 body: formData
-            }).then(response => {
-                // Optional: handle response
-                console.log("");
+            })
+            .then(response => response.json())
+            .then(data => {
+                showPopup(data.service, data.cleaner, data.category, data.price, data.serviceid);
+            })
+            .catch(error => {
+                console.error("Error fetching service details:", error);
             });
         }
     </script>
@@ -49,7 +53,7 @@
         <div class="sidebar">
             <div>
                 <h2>[X] MACS</h2>
-                <a href="/view_hoservice" style="text-decoration: underline;">🧹 View All Services</a>
+                <a href="/search_hoservice" style="text-decoration: underline;">🧹 View All Services</a>
                 <a href="/view_hoshortlist">📋 View Shortlist</a>
                 <a href="/view_completedservice">✅ View Completed Services</a>
                 <a href="/">&#10060; Logout</a>
@@ -60,7 +64,7 @@
             <div class="topbar">
                 <h2>All Services</h2>
                 <div class="search-container">
-                    <form method="GET" action="/view_hoservice" class="search-bar">
+                    <form method="GET" action="/search_hoservice" class="search-bar">
                         <input type="text" name="search" placeholder="Search by service name" value="{{ request.args.get('search', '') }}">
                         <button type="submit"><i class="fas fa-search"></i></button>
                     </form>
@@ -88,23 +92,10 @@
                                 <td>{{ service[1] }}</td>
                                 <td>{{ service[2] }}</td>
                                 <td>
-                                    <form method="POST" action="/inc_viewcount" onsubmit="incViewCount(event)">
+                                    <form method="POST" action="/view_hoservice" onsubmit="incViewCount(event, '{{ service[0] }}')">
                                         <input type="hidden" name="serviceid" value="{{ service[0] }}">
-                                        <button type="submit" class="btn-shortlist" onclick="showPopup('{{ service[1] }}', '{{ service[2] }}', '{{ service[3] }}', '{{ service[4] }}')">View Full Service Details</button>
+                                        <button type="submit" class="btn-shortlist">View Full Service Details</button>
                                     </form>
-
-                                    <div id="popupBackdrop"></div>
-                                    <div id="popupModal">
-                                        <div id="popupContent"></div>
-                                        <br><br>
-                                        <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
-                                            <button onclick="closePopup()">Close</button>
-                                            <form method="POST" action="/add_shortlist" style="margin: 0;">
-                                                <input type="hidden" name="serviceid" value="{{ service[0] }}">
-                                                <button onclick="closePopup()">Add to Shortlist</button>
-                                            </form>
-                                        </div>
-                                    </div>
 
                                     {% if message %}
                                         <p style="color: green;">{{ message }}</p>
@@ -117,10 +108,25 @@
                                 <td colspan="5">No services found.</td>
                             </tr>
                             {% endif %}
+
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="popupBackdrop" style="display: none;"></div>
+
+    <div id="popupModal" style="display: none;">
+        <div id="popupContent"></div>
+        <br><br>
+        <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+            <button onclick="closePopup()">Close</button>
+            <form method="POST" action="/add_shortlist" style="margin: 0;">
+                <input type="hidden" name="serviceid" id="shortlistServiceId">
+                <button type="submit" onclick="closePopup()">Add to Shortlist</button>
+            </form>
         </div>
     </div>
     
