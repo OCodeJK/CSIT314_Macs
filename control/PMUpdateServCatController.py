@@ -1,8 +1,8 @@
-from entity.ServiceCategory import ServiceCategory
+from entity.category import Category
 
 class PMUpdateServCatController:
     def __init__(self):
-        self.entity = ServiceCategory()
+        self.entity = Category()
 
     def UpdateServCat(self, category_id: int, new_name: str) -> (bool, str):
         """
