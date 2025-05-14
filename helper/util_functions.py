@@ -151,3 +151,108 @@ def viewServiceForHomeownerH():
         except Exception as e:
             print("Error fetching cleaner accounts:", e)
             return None
+        
+
+
+@staticmethod
+def get_all():
+    """Get all services from the database"""
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    cur.execute("SELECT * FROM service")
+    results = cur.fetchall()
+    
+    cur.close()
+    conn.close()
+    
+    return results
+    
+@staticmethod
+def get_available_services():
+
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    cur.execute(
+        """
+        SELECT * FROM service 
+        WHERE (cleanerId IS NULL) 
+        AND suspend = FALSE
+        ORDER BY serviceName
+        """
+    )
+    results = cur.fetchall()
+    
+    cur.close()
+    conn.close()
+    
+    return results
+
+@staticmethod
+def get_by_id(serviceId):
+    """Get a service by ID"""
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    cur.execute(
+        """
+        SELECT * FROM service 
+        WHERE serviceId = %s
+        """,
+        (serviceId,)
+    )
+    result = cur.fetchone()
+    
+    cur.close()
+    conn.close()
+    
+    return result
+
+
+
+@staticmethod
+def getServiceWithDetails(serviceId):
+    """Get service details with category information"""
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    try:
+        cur.execute(
+            """
+            SELECT s.serviceId, s.serviceName, s.categoryId, s.cleanerId, s.price, 
+                    s.suspend, c.categoryName
+            FROM service s
+            LEFT JOIN category c ON s.categoryId = c.categoryId
+            WHERE s.serviceId = %s
+            """,
+            (serviceId,)
+        )
+        
+        result = cur.fetchone()
+        
+        if result:
+            # Convert to dictionary for easier access
+            service = {
+                'serviceId': result[0],
+                'serviceName': result[1],
+                'categoryId': result[2],
+                'cleanerId': result[3],
+                'price': result[4],
+                'suspend': result[5],
+                'categoryName': result[6]
+            }
+            
+            cur.close()
+            conn.close()
+            return service
+        else:
+            cur.close()
+            conn.close()
+            return None
+            
+    except Exception as e:
+        print(f"Error in getServiceWithDetails: {str(e)}")
+        cur.close()
+        conn.close()
+        return None

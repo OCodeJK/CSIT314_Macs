@@ -1,9 +1,7 @@
 from entity.HistoryRecord import HistoryRecord
 
-class CleanerConfirmedMatchesController:
-    def __init__(self):
-        pass
-        
+class CleanerViewConfirmedMatchesController:
+
     def cleanerViewMatches(self, cleanerId: str) -> list:
         try:
             matches = HistoryRecord.cleanerViewConfirmedMatches(cleanerId)

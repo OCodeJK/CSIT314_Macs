@@ -75,7 +75,7 @@ class HistoryRecord:
             return []
 
     @staticmethod
-    def cleanerVewConfirmedMatches(cleanerId) -> list:
+    def cleanerViewConfirmedMatches(cleanerId) -> list:
         try:
             conn = db_connection()
             cur = conn.cursor()
@@ -90,12 +90,12 @@ class HistoryRecord:
                 (cleanerId,)
             )
             
-            results = cur.fetchall()
+            matches = cur.fetchall()
             
             cur.close()
             conn.close()
             
-            return results
+            return matches
                 
         except Exception as e:
             print(f"Error getting confirmed matches: {e}")
@@ -159,14 +159,7 @@ class HistoryRecord:
             if 'conn' in locals() and conn:
                 conn.close()
             return []
-                
-        except Exception as e:
-            print(f"Error in cleanerFilterHistory: {e}")
-            if 'cur' in locals() and cur:
-                cur.close()
-            if 'conn' in locals() and conn:
-                conn.close()
-            return []
+
 
     @staticmethod
     def create_record(cleanerId, serviceId):
@@ -197,94 +190,9 @@ class HistoryRecord:
                 conn.close()
             return False
                 
-    @staticmethod
-    def end_service(cleanerId, serviceId):
-        try:
-            today = datetime.now().date()
-            
-            conn = db_connection()
-            cur = conn.cursor()
-            cleanerId = str(cleanerId)
-            
-            cur.execute(
-                "SELECT * FROM historyrecord WHERE cleanerId = %s AND serviceId = %s AND endDate IS NULL",
-                (cleanerId, serviceId)
-            )
-            
-            history = cur.fetchone()
-            
-            if history:
-                cur.execute(
-                    "UPDATE historyrecord SET endDate = %s WHERE cleanerId = %s AND serviceId = %s AND endDate IS NULL",
-                    (today, cleanerId, serviceId)
-                )
-                
-                conn.commit()
-                cur.close()
-                conn.close()
-                return True
-            else:
-                cur.close()
-                conn.close()
-                return False
-                
-        except Exception as e:
-            print(f"Error ending service: {e}")
-            if 'cur' in locals() and cur:
-                cur.close()
-            if 'conn' in locals() and conn:
-                conn.close()
-            return False
-    
-    @staticmethod
-    def getHistoryDetails(id, cleanerId):
-        try:
-            conn = db_connection()
-            cur = conn.cursor()
-            
-            cur.execute(
-                """
-                SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid,
-                    s.servicename, s.categoryid, s.price 
-                FROM historyrecord h
-                LEFT JOIN service s ON h.serviceid = s.serviceid
-                WHERE h.historyid = %s AND h.cleanerid = %s
-                """,
-                (id, cleanerId)
-            )
-            
-            record = cur.fetchone()
-            
-            if record:
-                cur.execute(
-                    """
-                    SELECT viewcount 
-                    FROM serviceviews 
-                    WHERE serviceid = %s
-                    """,
-                    (record[1],)
-                )
-                
-                view_result = cur.fetchone()
-                view_count = view_result[0] if view_result else 0
-                
-                cur.close()
-                conn.close()
-                
-                return record + (view_count,)
-            else:
-                cur.close()
-                conn.close()
-                return None
-                
-        except Exception as e:
-            print(f"Error getting history details: {str(e)}")
-            if 'cur' in locals() and cur:
-                cur.close()
-            if 'conn' in locals() and conn:
-                conn.close()
-            return None
 
+    
+ 
     @staticmethod
     def viewCompletedServiceForHomeowner(userid):
         try:

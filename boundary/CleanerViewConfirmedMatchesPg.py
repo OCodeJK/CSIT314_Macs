@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, flash
-from control.CleanerConfirmedMatchesController import CleanerConfirmedMatchesController
+from control.CleanerViewConfirmedMatchesController import CleanerViewConfirmedMatchesController
 from control.CleanerFilterHistoryController import CleanerFilterHistoryController
 from control.CleanerSearchHistoryController import CleanerSearchHistoryController
 from datetime import datetime
@@ -9,7 +9,7 @@ history_bp = Blueprint('cleaner_history', __name__)
 
 class CleanerConfirmedMatchesPg:
     def __init__(self):
-        self.confirmed_controller = CleanerConfirmedMatchesController()
+        self.confirmed_controller = CleanerViewConfirmedMatchesController()
         self.filter_controller = CleanerFilterHistoryController()
         self.search_controller = CleanerSearchHistoryController()
 
@@ -44,18 +44,47 @@ def display_history():
         
         # If search query is provided, use search controller
         if search_query:
-            history = page_handler.search_controller.cleanerSearchService(search_query, cleaner_id)
+            # Get search results and apply date filters if needed
+            search_results = page_handler.search_controller.cleanerSearchService(search_query, cleaner_id)
+            
+            # Apply date filters to search results if dates are provided
+            if start_date_obj or end_date_obj:
+                filtered_results = []
+                for record in search_results:
+                    record_start_date = record[2] if record[2] else None
+                    record_end_date = record[3] if record[3] else None
+                    
+                    # Check if record dates fall within the specified range
+                    date_match = True
+                    
+                    if start_date_obj and record_start_date:
+                        if record_start_date < start_date_obj:
+                            date_match = False
+                    
+                    if end_date_obj and record_start_date:
+                        if record_start_date > end_date_obj:
+                            date_match = False
+                    
+                    if date_match:
+                        filtered_results.append(record)
+                
+                history = filtered_results
+            else:
+                history = search_results
         else:
             # Otherwise use filter controller
             history = page_handler.filter_controller.filterHistory(cleaner_id, start_date_obj, end_date_obj)
         
         if not isinstance(history, list):
             history = []
-            
-        active_matches = page_handler.confirmed_controller.cleanerViewMatches(cleaner_id)
         
-        # Format results for template
+        confirmed_matches = page_handler.confirmed_controller.cleanerViewMatches(cleaner_id)
+        
+        # Combine and format results
         formatted_history = []
+        existing_ids = set()
+        
+        # First add history records
         if history:
             for record in history:
                 formatted_history.append({
@@ -66,14 +95,28 @@ def display_history():
                     'cleanerId': record[4],
                     'serviceName': record[5] if len(record) > 5 else 'Unknown Service'
                 })
-                
-        formatted_matches = []
-        if active_matches:
-            for match in active_matches:
-                # Only add if not already in history (to avoid duplicates)
-                match_id = match[0]
-                if not any(record['historyId'] == match_id for record in formatted_history):
-                    formatted_matches.append({
+                existing_ids.add(record[0])
+        
+        # Then add confirmed matches that aren't already in history
+        if confirmed_matches:
+            for match in confirmed_matches:
+                if match[0] not in existing_ids:
+                    # Apply search filter to matches if search query exists
+                    if search_query:
+                        service_name = match[5] if len(match) > 5 else ''
+                        if search_query.lower() not in service_name.lower():
+                            continue
+                    
+                    # Apply date filter to matches if date filters exist
+                    if start_date_obj or end_date_obj:
+                        match_start_date = match[2] if match[2] else None
+                        
+                        if start_date_obj and match_start_date and match_start_date < start_date_obj:
+                            continue
+                        if end_date_obj and match_start_date and match_start_date > end_date_obj:
+                            continue
+                    
+                    formatted_history.append({
                         'historyId': match[0],
                         'serviceId': match[1],
                         'startDate': match[2],
@@ -82,12 +125,14 @@ def display_history():
                         'serviceName': match[5] if len(match) > 5 else 'Unknown Service'
                     })
         
+        # Sort by start date (newest first)
+        formatted_history.sort(key=lambda x: x['startDate'] if x['startDate'] else '', reverse=True)
+        
         return render_template(
             'history.html', 
             cleaner_id=cleaner_id,
             search_query=search_query,
             history=formatted_history,
-            active_matches=formatted_matches,
             start_date=start_date, 
             end_date=end_date
         )
@@ -99,66 +144,9 @@ def display_history():
             cleaner_id=request.args.get('cleaner_id', '1'),
             search_query='',
             history=[],
-            active_matches=[],
             start_date='',
             end_date=''
         )
-
-@history_bp.route('/cleaner/history/details/<record_id>', methods=['GET'])
-def view_record_details(record_id):
-    try:
-        cleaner_id = request.args.get('cleaner_id', '1')
-        
-        # Get record details - using the filter controller's getHistoryDetails method
-        record = page_handler.filter_controller.getHistoryDetails(record_id, cleaner_id)
-        
-        if not record:
-            flash("Record not found or you don't have permission to view it", "error")
-            return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
-        
-        formatted_record = {
-            'historyId': record[0],
-            'serviceId': record[1],
-            'startDate': record[2].strftime('%Y-%m-%d') if hasattr(record[2], 'strftime') else record[2],
-            'endDate': record[3].strftime('%Y-%m-%d') if record[3] and hasattr(record[3], 'strftime') else record[3],
-            'cleanerId': record[4],
-            'serviceName': record[5] if len(record) > 5 else 'Unknown Service',
-            'categoryName': record[6] if len(record) > 6 else 'Unknown Category',
-            'price': record[7] if len(record) > 7 else 0.0,
-            'viewCount': record[8] if len(record) > 8 else 0
-        }
-        
-        return render_template(
-            'history_detail.html',
-            cleaner_id=cleaner_id,
-            record=formatted_record
-        )
-    except Exception as e:
-        print(f"Error in view_record_details: {str(e)}")
-        flash(f"An error occurred while loading details: {str(e)}", "error")
-        return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
-
-@history_bp.route('/cleaner/service/end', methods=['GET'])
-def end_service():
-    try:
-        cleaner_id = request.args.get('cleaner_id', '1')
-        service_id = request.args.get('service_id')
-        
-        if not service_id:
-            flash("Service ID is required", "error")
-            return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
-        
-        result = page_handler.filter_controller.endService(cleaner_id, service_id)
-        
-        flash("Service has been successfully completed" if result else 
-            "Failed to end service. It may already be completed or does not exist.", 
-            "success" if result else "error")
-            
-        return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
-    except Exception as e:
-        print(f"Error in end_service: {str(e)}")
-        flash(f"An error occurred while ending the service: {str(e)}", "error")
-        return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
 
 # Redirect from old URLs to new consolidated route
 @history_bp.route('/cleaner/confirmed-matches', methods=['GET'])
@@ -178,9 +166,3 @@ def redirect_from_search():
     cleaner_id = request.args.get('cleaner_id', '1')
     search_query = request.args.get('search_query', '')
     return redirect(f'/cleaner/history?cleaner_id={cleaner_id}&search_query={search_query}')
-
-# These routes are for backward compatibility
-@history_bp.route('/cleaner/match-details/<match_id>', methods=['GET'])
-def view_match_details(match_id):
-    cleaner_id = request.args.get('cleaner_id', '1')
-    return redirect(f'/cleaner/history/details/{match_id}?cleaner_id={cleaner_id}')

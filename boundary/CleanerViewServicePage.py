@@ -2,33 +2,27 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from control.CleanerViewServiceController import CleanerViewServiceController
 from control.ServiceViewsController import ServiceViewsController
 from control.ShortlistCountForCleanerController import ShortlistCountForCleanerController
-from control.CleanerCreateServiceController import CleanerCreateServiceController
-from helper.util_functions import get_profile_by_id
 
 # Create blueprint
 view_service_bp = Blueprint('view_service', __name__)
 
 class CleanerViewServicePage:
-   
-   def __init__(self):
-       """Initialize with controllers for business logic"""
-       self.controller = CleanerViewServiceController()
-       self.views_controller = ServiceViewsController()
-       self.shortlist_controller = ShortlistCountForCleanerController()
-
+    def __init__(self):
+        """Initialize with controllers for business logic"""
+        self.controller = CleanerViewServiceController()
+        self.views_controller = ServiceViewsController()
+        self.shortlist_controller = ShortlistCountForCleanerController()
 
 # Define the route with the same function name as used in url_for
 @view_service_bp.route('/services/<cleaner_id>')
 def view_services(cleaner_id):
     # Create controller instances
     view_controller = CleanerViewServiceController()
-    create_controller = CleanerCreateServiceController()
     views_controller = ServiceViewsController()
     shortlist_controller = ShortlistCountForCleanerController()
     
     # Get data from controllers
     db_services = view_controller.getServiceList(cleaner_id)
-    available_services = create_controller.getAvailableServices()
     
     # Format services for the template
     formatted_services = []
@@ -58,17 +52,6 @@ def view_services(cleaner_id):
             shortlist_counts[service_id] = shortlist_controller.getNumberOfShortlistedTime(cleaner_id, service_id)
             print(f"Service {service_id} - Shortlist count: {shortlist_counts[service_id]}")
     
-    # Format available services
-    formatted_available = []
-    if available_services:
-        for service in available_services:
-            formatted_available.append({
-                'serviceId': service[0],
-                'serviceName': service[1],
-                'categoryId': service[2],
-                'price': service[4] if len(service) > 4 else None,
-            })
-    
     # Get cleaner object
     cleaner = {"cleanerId": cleaner_id}
     
@@ -77,13 +60,12 @@ def view_services(cleaner_id):
         "services.html",
         services=formatted_services,
         search_query=None,
-        available_services=formatted_available,
         cleaner_id=cleaner_id,
         cleaner=cleaner,
         service_views=service_views,
         shortlist_counts=shortlist_counts
     )
-   
+
 @view_service_bp.route('/')
 def index():
     # Render the index.html template (home page)

@@ -92,7 +92,8 @@
         </div>
         {% endif %}
 
-        <form method="POST">
+        <!-- Fixed: Added action="/add-service" and method="POST" -->
+        <form action="/add-service" method="POST">
             <div class="form-group">
                 <label for="cleaner_id">Cleaner ID:</label>
                 <input type="text" id="cleaner_id" name="cleaner_id" value="{{ cleaner_id }}" required>
