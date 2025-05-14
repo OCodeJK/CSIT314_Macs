@@ -52,7 +52,7 @@ def display_history():
         if not isinstance(history, list):
             history = []
             
-        active_matches = page_handler.confirmed_controller.cleanerViewMatches(cleaner_id)
+        matches = page_handler.confirmed_controller.cleanerViewMatches(cleaner_id)
         
         # Format results for template
         formatted_history = []
@@ -68,8 +68,8 @@ def display_history():
                 })
                 
         formatted_matches = []
-        if active_matches:
-            for match in active_matches:
+        if matches:
+            for match in matches:
                 # Only add if not already in history (to avoid duplicates)
                 match_id = match[0]
                 if not any(record['historyId'] == match_id for record in formatted_history):
@@ -87,7 +87,7 @@ def display_history():
             cleaner_id=cleaner_id,
             search_query=search_query,
             history=formatted_history,
-            active_matches=formatted_matches,
+            matches=formatted_matches,
             start_date=start_date, 
             end_date=end_date
         )
@@ -99,66 +99,12 @@ def display_history():
             cleaner_id=request.args.get('cleaner_id', '1'),
             search_query='',
             history=[],
-            active_matches=[],
+            matches=[],
             start_date='',
             end_date=''
         )
 
-@history_bp.route('/cleaner/history/details/<record_id>', methods=['GET'])
-def view_record_details(record_id):
-    try:
-        cleaner_id = request.args.get('cleaner_id', '1')
-        
-        # Get record details - using the filter controller's getHistoryDetails method
-        record = page_handler.filter_controller.getHistoryDetails(record_id, cleaner_id)
-        
-        if not record:
-            flash("Record not found or you don't have permission to view it", "error")
-            return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
-        
-        formatted_record = {
-            'historyId': record[0],
-            'serviceId': record[1],
-            'startDate': record[2].strftime('%Y-%m-%d') if hasattr(record[2], 'strftime') else record[2],
-            'endDate': record[3].strftime('%Y-%m-%d') if record[3] and hasattr(record[3], 'strftime') else record[3],
-            'cleanerId': record[4],
-            'serviceName': record[5] if len(record) > 5 else 'Unknown Service',
-            'categoryName': record[6] if len(record) > 6 else 'Unknown Category',
-            'price': record[7] if len(record) > 7 else 0.0,
-            'viewCount': record[8] if len(record) > 8 else 0
-        }
-        
-        return render_template(
-            'history_detail.html',
-            cleaner_id=cleaner_id,
-            record=formatted_record
-        )
-    except Exception as e:
-        print(f"Error in view_record_details: {str(e)}")
-        flash(f"An error occurred while loading details: {str(e)}", "error")
-        return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
 
-@history_bp.route('/cleaner/service/end', methods=['GET'])
-def end_service():
-    try:
-        cleaner_id = request.args.get('cleaner_id', '1')
-        service_id = request.args.get('service_id')
-        
-        if not service_id:
-            flash("Service ID is required", "error")
-            return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
-        
-        result = page_handler.filter_controller.endService(cleaner_id, service_id)
-        
-        flash("Service has been successfully completed" if result else 
-            "Failed to end service. It may already be completed or does not exist.", 
-            "success" if result else "error")
-            
-        return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
-    except Exception as e:
-        print(f"Error in end_service: {str(e)}")
-        flash(f"An error occurred while ending the service: {str(e)}", "error")
-        return redirect('/cleaner/history?cleaner_id=' + cleaner_id)
 
 # Redirect from old URLs to new consolidated route
 @history_bp.route('/cleaner/confirmed-matches', methods=['GET'])

@@ -46,31 +46,7 @@ def display_history():
         if search_query:
             # Get search results and apply date filters if needed
             search_results = page_handler.search_controller.cleanerSearchService(search_query, cleaner_id)
-            
-            # Apply date filters to search results if dates are provided
-            if start_date_obj or end_date_obj:
-                filtered_results = []
-                for record in search_results:
-                    record_start_date = record[2] if record[2] else None
-                    record_end_date = record[3] if record[3] else None
-                    
-                    # Check if record dates fall within the specified range
-                    date_match = True
-                    
-                    if start_date_obj and record_start_date:
-                        if record_start_date < start_date_obj:
-                            date_match = False
-                    
-                    if end_date_obj and record_start_date:
-                        if record_start_date > end_date_obj:
-                            date_match = False
-                    
-                    if date_match:
-                        filtered_results.append(record)
-                
-                history = filtered_results
-            else:
-                history = search_results
+            history = search_results
         else:
             # Otherwise use filter controller
             history = page_handler.filter_controller.filterHistory(cleaner_id, start_date_obj, end_date_obj)

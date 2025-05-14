@@ -160,38 +160,6 @@ class HistoryRecord:
                 conn.close()
             return []
 
-
-    @staticmethod
-    def create_record(cleanerId, serviceId):
-        try:
-            conn = db_connection()
-            cur = conn.cursor()
-            cleanerId = str(cleanerId)
-            
-            cur.execute(
-                """
-                INSERT INTO historyrecord (cleanerid, serviceid, startdate, enddate)
-                VALUES (%s, %s, %s, NULL)
-                """,
-                (cleanerId, serviceId, datetime.now().date())
-            )
-            
-            conn.commit()
-            cur.close()
-            conn.close()
-            
-            return True
-                
-        except Exception as e:
-            print(f"Error creating record: {e}")
-            if 'cur' in locals() and cur:
-                cur.close()
-            if 'conn' in locals() and conn:
-                conn.close()
-            return False
-                
-
-    
  
     @staticmethod
     def viewCompletedServiceForHomeowner(userid):
