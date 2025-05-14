@@ -1,8 +1,8 @@
-from entity.ServiceCategory import ServiceCategory
+from entity.category import Category
 
 class PMUpdateServCatController:
     def __init__(self):
-        self.entity = ServiceCategory()
+        self.entity = Category()
 
     def UpdateServCat(self, category_id: int, new_name: str) -> (bool, str):
         """
@@ -16,6 +16,3 @@ class PMUpdateServCatController:
             return True, "Service Category updated successfully."
         else:
             return False, "Failed to update service category. The name may already exist or be invalid."
-
-    def GetCategoryById(self, category_id: int):
-        return self.entity.GetCategoryById(category_id)

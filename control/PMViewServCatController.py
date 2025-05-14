@@ -1,8 +1,8 @@
-from entity.ServiceCategory import ServiceCategory
+from entity.category import Category
 
 class PMViewServCatController:
     def __init__(self):
-        self.entity = ServiceCategory()
+        self.entity = Category()
 
     def SearchServCat(self, category_name: str = ""):
         return self.entity.SearchServCat(category_name)

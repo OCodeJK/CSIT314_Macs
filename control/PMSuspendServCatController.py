@@ -1,8 +1,8 @@
-from entity.ServiceCategory import ServiceCategory
+from entity.category import Category
 
 class PMSuspendServCatController:
     def __init__(self):
-        self.entity = ServiceCategory()
+        self.entity = Category()
 
     def SuspendServCat(self, category_id: int, suspend: bool) -> (bool, str):
         """

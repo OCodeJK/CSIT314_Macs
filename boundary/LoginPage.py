@@ -44,7 +44,7 @@ def Login():
             elif user.get_profileid() == "Homeowner":
                 #implement Homeowner page here
                 flash('login success', 'success')
-                return render_template('login.html', redirect_url=url_for('view_hoservice.view_service'))
+                return render_template('login.html', redirect_url=url_for('view_hoservice.search_service'))
        
             elif user.get_profileid() == "Platform Management":
                 #implement Platform Management page here

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from control.PMUpdateServCatController import PMUpdateServCatController
+from helper.util_functions import GetCategoryById
 
 update_category_bp = Blueprint('update_category', __name__)
 
@@ -16,5 +17,5 @@ def update_category_form(category_id):
         # else fall through to re-render form with message
 
     # Optionally fetch current category name for display
-    current_category = controller.GetCategoryById(category_id)
+    current_category = GetCategoryById(category_id)
     return render_template('update_service_category.html', category=current_category)
