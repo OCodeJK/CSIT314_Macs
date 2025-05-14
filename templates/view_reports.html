@@ -5,6 +5,26 @@
     <title>Reports dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='pm_view_reports.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    /* Clear All button styling for the dropdown */
+    .clear-services-btn {
+        display: block;
+        width: 100%;
+        background: #f5f5f5;
+        border: none;
+        color: #d9534f;
+        font-weight: bold;
+        padding: 6px 0;
+        margin-bottom: 5px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background 0.2s;
+        text-align: left;
+    }
+    .clear-services-btn:hover {
+        background: #ffeaea;
+    }
+    </style>
 </head>
 <body>
     <div class="layout">
@@ -24,6 +44,7 @@
                     <div class="dropdown-checkbox" id="service-dropdown">
                         <div class="dropdown-checkbox-btn" onclick="toggleDropdown()">Select services &#x25BC;</div>
                         <div class="dropdown-checkbox-list">
+                            <button type="button" class="clear-services-btn" onclick="clearSelectedServices(event)">Clear All</button>
                             {% for service in all_services %}
                                 <label>
                                     <input type="checkbox" name="services" value="{{ service }}"
@@ -138,6 +159,14 @@
             dropdown.classList.remove('open');
         }
     });
+
+    // Clear All button logic for service dropdown
+    function clearSelectedServices(event) {
+        event.stopPropagation();
+        document.querySelectorAll('#service-dropdown input[type="checkbox"]').forEach(function(cb) {
+            cb.checked = false;
+        });
+    }
     </script>
 </body>
 </html>
