@@ -89,17 +89,6 @@
                                 </td>
                             </tr>
                             {% endfor %}
-                            {% if categories|length == 0 %}
-                            <tr>
-                                <td colspan="3" style="text-align: center;">
-                                    {% if search_term %}
-                                        No categories found matching "{{ search_term }}".
-                                    {% else %}
-                                        No categories found.
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endif %}
                         </tbody>
                     </table>
                 </div>
