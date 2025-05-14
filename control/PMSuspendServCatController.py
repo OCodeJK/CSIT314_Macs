@@ -1,4 +1,4 @@
-from entity.category import Category
+from entity.Category import Category
 
 class PMSuspendServCatController:
     def __init__(self):

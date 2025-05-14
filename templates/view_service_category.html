@@ -61,9 +61,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {# Split categories into not suspended and suspended #}
+                            {% set not_suspended = [] %}
+                            {% set suspended = [] %}
                             {% for category in categories %}
+                                {% if category.suspend %}
+                                    {% set _ = suspended.append(category) %}
+                                {% else %}
+                                    {% set _ = not_suspended.append(category) %}
+                                {% endif %}
+                            {% endfor %}
+                            {% set display_categories = not_suspended + suspended %}
+                            {% for category in display_categories %}
                             <tr class="{% if category.suspend %}suspended{% endif %}">
-                                <td>{{ category.categoryid }}</td>
+                                <td>{{ loop.index }}</td>
                                 <td>{{ category.categoryname }}</td>
                                 <td class="action-cell">
                                     <div class="dropdown">
