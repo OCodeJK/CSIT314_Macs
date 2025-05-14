@@ -7,7 +7,13 @@
     <!-- Header and Navigation -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Cleaner Services</h1>
-        <a href="{{ url_for('login_ui.Login') }}" class="btn btn-sm btn-secondary">Log Out</a>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('create_service.get_available_services_route', cleaner_id=cleaner.cleanerId) }}"
+                class="btn btn-sm btn-success">
+                <i class="bi bi-plus-circle"></i> Add New Service
+            </a>
+            <a href="{{ url_for('login_ui.Login') }}" class="btn btn-sm btn-secondary">Log Out</a>
+        </div>
     </div>
 
     <!-- Flash Messages -->
@@ -23,12 +29,18 @@
     <div class="card mb-3">
         <div class="card-header bg-light">Search Services</div>
         <div class="card-body">
-            <form action="/search-services" method="get">
+            <form action="/search-services" method="get" id="searchForm">
                 <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
                 <div class="input-group">
                     <input type="text" name="search_query" class="form-control" placeholder="Search for services..."
-                        value="{{ search_query|default('') }}">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                        value="{{ search_query|default('') }}" id="searchInput">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="clearSearch" {% if not search_query
+                        %}style="display: none;" {% endif %}>
+                        <i class="bi bi-x-circle"></i> Clear
+                    </button>
                 </div>
             </form>
         </div>
@@ -106,48 +118,9 @@
             </div>
             {% else %}
             <div class="p-4 text-center">
-                <p class="mb-0">You don't have any services yet. Add a service to get started.</p>
+                <p class="mb-0">You don't have any services yet.</p>
             </div>
             {% endif %}
-        </div>
-    </div>
-
-    <!-- Add Service (Collapsed by default) -->
-    <div class="card mb-3">
-        <div class="card-header bg-light" data-bs-toggle="collapse" data-bs-target="#addServiceSection"
-            style="cursor: pointer;">
-            <div class="d-flex justify-content-between">
-                <span>Add New Service</span>
-                <span class="small">Click to expand</span>
-            </div>
-        </div>
-        <div class="collapse" id="addServiceSection">
-            <div class="card-body">
-                {% if available_services %}
-                <form action="/add-service" method="post" id="serviceAddForm">
-                    <input type="hidden" name="cleaner_id" value="{{ cleaner.cleanerId }}">
-                    <div class="mb-3">
-                        <label for="service_id" class="form-label">Select a service to add:</label>
-                        <select name="service_id" id="service_id" class="form-select" required>
-                            <option value="">-- Select a service --</option>
-                            {% for service in available_services %}
-                            <option value="{{ service.serviceId }}">
-                                {{ service.serviceName }} - {{ service.categoryId }} - ${{ service.price }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-success" id="addServiceBtn">
-                        <i class="bi bi-plus-circle"></i> Add Service
-                    </button>
-                </form>
-                {% else %}
-                <div class="alert alert-info mb-0">
-                    <i class="bi bi-info-circle me-2"></i>
-                    No available services to add. You may have already added all available services.
-                </div>
-                {% endif %}
-            </div>
         </div>
     </div>
 </div>
@@ -191,34 +164,25 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize collapsible sections
-        var addServiceSection = document.getElementById('addServiceSection');
-        if (addServiceSection && typeof bootstrap !== 'undefined') {
-            // Auto-expand the Add Service section if no services
-            {% if not services %}
-            var bsCollapse = new bootstrap.Collapse(addServiceSection, {
-                toggle: true
+        // Clear search functionality
+        var clearSearchBtn = document.getElementById('clearSearch');
+        var searchInput = document.getElementById('searchInput');
+        var searchForm = document.getElementById('searchForm');
+
+        if (clearSearchBtn) {
+            // Show/hide clear button based on input value
+            searchInput.addEventListener('input', function () {
+                if (this.value.trim() === '') {
+                    clearSearchBtn.style.display = 'none';
+                } else {
+                    clearSearchBtn.style.display = 'inline-block';
+                }
             });
-            {% endif %}
-        }
 
-        // Form validation
-        var form = document.getElementById('serviceAddForm');
-        if (form) {
-            form.addEventListener('submit', function (event) {
-                var serviceSelect = document.getElementById('service_id');
-                if (!serviceSelect.value) {
-                    event.preventDefault();
-                    alert('Please select a service to add');
-                    return false;
-                }
-
-                // Show loading state on button
-                var button = document.getElementById('addServiceBtn');
-                if (button) {
-                    button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
-                    button.disabled = true;
-                }
+            // Clear search functionality
+            clearSearchBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                searchForm.submit();
             });
         }
     });

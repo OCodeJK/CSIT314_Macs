@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request
 from control.CleanerSearchServiceController import CleanerSearchServiceController
+from helper.util_functions import get_by_id
+
 
 search_service_bp = Blueprint('search_service', __name__)
 
@@ -14,8 +16,7 @@ def search_services():
     cleaner_id = request.args.get('cleaner_id')
     search_query = request.args.get('search_query', '')
     
-     
-    cleaner = page.controller.getCleanerInfo(cleaner_id)
+    cleaner = get_by_id(cleaner_id)
     
     results = page.controller.searchCleanerService(cleaner_id, search_query)
     

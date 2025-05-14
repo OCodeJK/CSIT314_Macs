@@ -52,7 +52,6 @@ def display_history():
         if not isinstance(history, list):
             history = []
             
-        # Get active matches and merge into the main history display
         active_matches = page_handler.confirmed_controller.cleanerViewMatches(cleaner_id)
         
         # Format results for template

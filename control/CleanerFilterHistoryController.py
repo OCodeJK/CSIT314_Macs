@@ -2,9 +2,7 @@ from datetime import datetime
 from entity.HistoryRecord import HistoryRecord
 
 class CleanerFilterHistoryController:
-    def __init__(self):
-        pass
-    
+
     def filterHistory(self, cleanerId, startDate, endDate):
         try:
             results = HistoryRecord.cleanerFilterHistory(cleanerId, startDate, endDate)
@@ -13,16 +11,4 @@ class CleanerFilterHistoryController:
             print(f"Error in controller.filterHistory: {str(e)}")
             return []    
         
-    def getHistoryDetails(self, historyId, cleanerId):
-        try:
-            record = HistoryRecord.getHistoryDetails(historyId, cleanerId)
-            return record
-        except Exception as e:
-            return None
             
-    def endService(self, cleanerId, serviceId):
-        try:
-            result = HistoryRecord.end_service(cleanerId, serviceId)
-            return result
-        except Exception as e:
-            return False

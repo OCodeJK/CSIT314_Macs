@@ -6,7 +6,7 @@ class CleanerConfirmedMatchesController:
         
     def cleanerViewMatches(self, cleanerId: str) -> list:
         try:
-            matches = HistoryRecord.cleanerVewConfirmedMatches(cleanerId)
+            matches = HistoryRecord.cleanerViewConfirmedMatches(cleanerId)
             return matches
         except Exception:
             return []

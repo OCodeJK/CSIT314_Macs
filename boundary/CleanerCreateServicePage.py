@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from control.CleanerCreateServiceController import CleanerCreateServiceController
+from helper.util_functions import get_available_services  
+
 
 create_service_bp = Blueprint('create_service', __name__)
 
@@ -30,23 +32,22 @@ def create_service():
         return redirect(url_for('view_service.view_services', cleaner_id=cleaner_id))
 
 @create_service_bp.route('/available-services/<cleaner_id>', methods=['GET'])
-def get_available_services(cleaner_id):
+def get_available_services_route(cleaner_id):   
     try:
-        # Merged getAvailableServicesFormatted functionality directly into the route
-        controller = CleanerCreateServiceController()
-        available_services = controller.getAvailableServices()
+        available_services = get_available_services()
         
         formatted_available = []
-        for service in available_services:
-            formatted_available.append({
-                'serviceId': service[0],
-                'serviceName': service[1],
-                'categoryId': service[2],
-                'price': service[4] if len(service) > 4 else None,
-            })
+        if available_services:   
+            for service in available_services:
+                formatted_available.append({
+                    'serviceId': service[0],
+                    'serviceName': service[1],
+                    'categoryId': service[2],
+                    'price': service[4] if len(service) > 4 else None,
+                })
         
         return render_template(
-            'available_services.html',
+            'create_service.html',
             cleaner_id=cleaner_id,
             available_services=formatted_available
         )

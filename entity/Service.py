@@ -14,61 +14,6 @@ class Service:
         self.suspend = suspend if suspend is not None else False
     
     @staticmethod
-    def get_all():
-        """Get all services from the database"""
-        conn = db_connection()
-        cur = conn.cursor()
-        
-        cur.execute("SELECT * FROM service")
-        results = cur.fetchall()
-        
-        cur.close()
-        conn.close()
-        
-        return results
-    
-    @staticmethod
-    def get_available_services():
- 
-        conn = db_connection()
-        cur = conn.cursor()
-        
-        cur.execute(
-            """
-            SELECT * FROM service 
-            WHERE (cleanerId IS NULL) 
-            AND suspend = FALSE
-            ORDER BY serviceName
-            """
-        )
-        results = cur.fetchall()
-        
-        cur.close()
-        conn.close()
-        
-        return results
-    
-    @staticmethod
-    def get_by_id(serviceId):
-        """Get a service by ID"""
-        conn = db_connection()
-        cur = conn.cursor()
-        
-        cur.execute(
-            """
-            SELECT * FROM service 
-            WHERE serviceId = %s
-            """,
-            (serviceId,)
-        )
-        result = cur.fetchone()
-        
-        cur.close()
-        conn.close()
-        
-        return result
-    
-    @staticmethod
     def getServiceName(cleanerId):
         """Get all services for a specific cleaner"""
         conn = db_connection()
@@ -290,27 +235,7 @@ class Service:
         conn.close()
         
         return results
-    
-    @staticmethod
-    def checkCategoryExists(categoryId):
-        """Check if a category exists in the database"""
-        conn = db_connection()
-        cur = conn.cursor()
-        
-        cur.execute(
-            """
-            SELECT COUNT(*) FROM category 
-            WHERE categoryId = %s
-            """,
-            (categoryId,)
-        )
-        
-        count = cur.fetchone()[0]
-        
-        cur.close()
-        conn.close()
-        
-        return count > 0
+
     
 
     @staticmethod
