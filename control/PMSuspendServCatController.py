@@ -12,7 +12,7 @@ class PMSuspendServCatController:
         if result is True:
             return True, "Service Category suspended successfully."
         elif result == "already_suspended":
-            return False, "Category is already suspended."
+            return False, "Service Category is already suspended."
         else:
             return False, "Failed to update suspension status. Please try again."
 
