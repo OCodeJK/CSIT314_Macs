@@ -18,7 +18,7 @@ class Service:
         """Get all services for a specific cleaner"""
         conn = db_connection()
         cur = conn.cursor()
-        cleanerId = str(cleanerId)
+        cleanerId = cleanerId
         cur.execute(
             """
             SELECT s.serviceId, s.serviceName, s.categoryId, s.cleanerId, s.price, s.suspend
@@ -123,24 +123,47 @@ class Service:
     def updateCleanerService(serviceId, serviceName, cleanerId, categoryId):
         """Update a cleaner's service details - only updates name and category ID"""
         if not serviceId or not serviceName or not cleanerId or not categoryId:
+            print(f"Invalid input parameters: serviceId={serviceId}, serviceName={serviceName}, cleanerId={cleanerId}, categoryId={categoryId}")
             return False
         
         conn = db_connection()
         cur = conn.cursor()
         
         try:
+            # First check if the service belongs to the cleaner
+            cur.execute(
+                """
+                SELECT cleanerId FROM service
+                WHERE serviceId = %s
+                """,
+                (serviceId,)
+            )
+            
+            result = cur.fetchone()
+            if not result:
+                print(f"Service {serviceId} not found")
+                cur.close()
+                conn.close()
+                return False
+            
+            if result[0] != cleanerId:
+                print(f"Service {serviceId} does not belong to cleaner {cleanerId}")
+                cur.close()
+                conn.close()
+                return False
+            
             # Update the service
             cur.execute(
                 """
                 UPDATE service
                 SET serviceName = %s, categoryId = %s
-                WHERE serviceId = %s AND cleanerId = %s
+                WHERE serviceId = %s
                 """,
-                (serviceName, categoryId, serviceId, cleanerId)
+                (serviceName, categoryId, serviceId)
             )
             
             if cur.rowcount == 0:
-                print(f"Service {serviceId} does not belong to cleaner {cleanerId}")
+                print(f"No rows affected when updating service {serviceId}")
                 conn.rollback()
                 cur.close()
                 conn.close()
@@ -157,86 +180,87 @@ class Service:
             cur.close()
             conn.close()
             return False
-  
+            
     @staticmethod
     def getServices(cleanerId, searchQuery):
         """Search for services by name for a specific cleaner"""
         conn = db_connection()
         cur = conn.cursor()
-        # If search query is empty, return all services for the cleaner
-        if not searchQuery or searchQuery.strip() == "":
-            cur.execute(
-                """
-                SELECT * FROM service
-                WHERE cleanerId = %s
-                ORDER BY serviceName
-                """,
-                (cleanerId,)
-            )
+        
+        try:
+            # If search query is empty, return all services for the cleaner
+            if not searchQuery or searchQuery.strip() == "":
+                cur.execute(
+                    """
+                    SELECT * FROM service
+                    WHERE cleanerId = %s
+                    ORDER BY serviceName
+                    """,
+                    (cleanerId,)
+                )
+            else:
+                # First try exact match
+                cur.execute(
+                    """
+                    SELECT * FROM service
+                    WHERE cleanerId = %s
+                    AND serviceName = %s
+                    ORDER BY serviceName
+                    """,
+                    (cleanerId, searchQuery)
+                )
+                
+                results = cur.fetchall()
+                
+                # If no exact matches and the query has spaces, try word-by-word search
+                if not results and ' ' in searchQuery:
+                    # Split the search term into words
+                    search_words = searchQuery.split()
+                    # Create conditions for each word (they must all match)
+                    conditions = []
+                    params = [cleanerId]
+                    
+                    for word in search_words:
+                        conditions.append("serviceName ILIKE %s")
+                        params.append(f"%{word}%")
+                    
+                    # Combine all conditions with AND
+                    condition_str = " AND ".join(conditions)
+                    
+                    # Build and execute the query
+                    query = f"""
+                        SELECT * FROM service
+                        WHERE cleanerId = %s
+                        AND {condition_str}
+                        ORDER BY serviceName
+                    """
+                    
+                    cur.execute(query, params)
+                    results = cur.fetchall()
+                    
+                # If still no results, use a partial match
+                elif not results:
+                    cur.execute(
+                        """
+                        SELECT * FROM service
+                        WHERE cleanerId = %s
+                        AND serviceName ILIKE %s
+                        ORDER BY serviceName
+                        """,
+                        (cleanerId, f"%{searchQuery}%")
+                    )
+                    results = cur.fetchall()
+                
+                return results
+            
+            # This line will only be reached when searchQuery is empty
             results = cur.fetchall()
-            
-            cur.close()
-            conn.close()
-            
             return results
             
-        cur.execute(
-            """
-            SELECT * FROM service
-            WHERE cleanerId = %s
-            AND serviceName = %s
-            ORDER BY serviceName
-            """,
-            (cleanerId, searchQuery)
-        )
+        finally:
+            cur.close()
+            conn.close()
         
-        results = cur.fetchall()
-        
-        # If no exact matches and the query has spaces, try word-by-word search
-        if not results and ' ' in searchQuery:
-            # Split the search term into words
-            search_words = searchQuery.split()
-            # Create conditions for each word (they must all match)
-            conditions = []
-            params = [cleanerId]
-            
-            for word in search_words:
-                conditions.append("serviceName ILIKE %s")
-                params.append(f"%{word}%")
-            
-            # Combine all conditions with AND
-            condition_str = " AND ".join(conditions)
-            
-            # Build and execute the query
-            query = f"""
-                SELECT * FROM service
-                WHERE cleanerId = %s
-                AND {condition_str}
-                ORDER BY serviceName
-            """
-            
-            cur.execute(query, params)
-            results = cur.fetchall()
-            
-        # If still no results, use a partial match
-        elif not results:
-            cur.execute(
-                """
-                SELECT * FROM service
-                WHERE cleanerId = %s
-                AND serviceName ILIKE %s
-                ORDER BY serviceName
-                """,
-                (cleanerId, f"%{searchQuery}%")
-            )
-            results = cur.fetchall()
-            
-        cur.close()
-        conn.close()
-        
-        return results
-
-    
 
     @staticmethod
     def searchServiceForHomeowner(servicename):

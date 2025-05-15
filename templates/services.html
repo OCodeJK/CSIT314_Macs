@@ -185,6 +185,31 @@
                 searchForm.submit();
             });
         }
+
+        // Validate form before submit - CÁCH 1
+        searchForm.addEventListener('submit', function (e) {
+            var cleanerId = document.querySelector('input[name="cleaner_id"]').value;
+            if (!cleanerId || cleanerId.trim() === '') {
+                e.preventDefault();
+                alert('Invalid cleaner ID. Please reload the page.');
+                return false;
+            }
+        });
+
+        // Additional validation for clear button
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', function (e) {
+                var cleanerId = document.querySelector('input[name="cleaner_id"]').value;
+                if (!cleanerId || cleanerId.trim() === '') {
+                    e.preventDefault();
+                    alert('Invalid cleaner ID. Please reload the page.');
+                    return false;
+                }
+                // If validation passes, clear the search
+                searchInput.value = '';
+                searchForm.submit();
+            });
+        }
     });
 </script>
 {% endblock %}

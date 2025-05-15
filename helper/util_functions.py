@@ -189,26 +189,51 @@ def get_available_services():
     
     return results
 
+
+
+
+
 @staticmethod
-def get_by_id(serviceId):
-    """Get a service by ID"""
+def get_by_id(cleanerId):
+    """Get a cleaner by ID"""
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute(
-        """
-        SELECT * FROM service 
-        WHERE serviceId = %s
-        """,
-        (serviceId,)
-    )
-    result = cur.fetchone()
+    # Validate and convert cleanerId to int
+    if not cleanerId or cleanerId == '':
+        cur.close()
+        conn.close()
+        return None
     
-    cur.close()
-    conn.close()
+    try:
+        cleanerId = int(cleanerId)
+    except (ValueError, TypeError):
+        cur.close()
+        conn.close()
+        return None
     
-    return result
-
+    try:
+        # Query cleaner table with cleanerId column (not serviceId)
+        cur.execute("SELECT * FROM cleaner WHERE cleanerId = %s", (cleanerId,))
+        result = cur.fetchone()
+        
+        cur.close()
+        conn.close()
+        
+        if not result:
+            return None
+        
+        # Return cleaner data (adjust based on your cleaner table structure)
+        return {
+            'cleanerId': result[0],
+            # Add other cleaner fields as needed
+        }
+        
+    except Exception as e:
+        print(f"Error in get_by_id: {str(e)}")
+        cur.close()  
+        conn.close()
+        return None
 
 
 @staticmethod

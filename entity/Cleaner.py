@@ -5,3 +5,4 @@ class Cleaner:
     
     def __init__(self, cleanerId=None):
         self.cleanerId = cleanerId
+
