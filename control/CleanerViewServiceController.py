@@ -13,10 +13,4 @@ class CleanerViewServiceController:
         print(f"Found {len(services)} services for cleaner {cleanerId}")
         return services
     
-    def getServiceById(self, serviceId):
-        service = Service.get_by_id(serviceId)
-        if service:
-            print(f"Found service {serviceId}")
-        else:
-            print(f"Service {serviceId} not found")
-        return service
+ 

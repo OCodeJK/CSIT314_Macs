@@ -14,7 +14,7 @@ from boundary.PMManageServCatGUI import view_category_bp
 from boundary.PMUpdateServCat import update_category_bp
 from boundary.PMSuspendServCat import suspend_category_bp
 from boundary.PMViewReportsGUI import view_reports_bp
-from boundary.CleanerConfirmedMatchesPg import history_bp  # Updated: Now contains all history functionality
+from boundary.CleanerViewConfirmedMatchesPg import history_bp  
 from boundary.ServiceSuspensionPage import suspend_service_bp
 from boundary.CleanerSearchServicePage import search_service_bp
 from boundary.CleanerViewServicePage import view_service_bp

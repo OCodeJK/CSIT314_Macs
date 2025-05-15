@@ -42,7 +42,7 @@ def update_service(service_id):
     
     # Handle GET request (display form)
     else:
-        service = getServiceWithDetails(service_id, cleaner_id)
+        service = getServiceWithDetails(service_id)
         
         if service:
 

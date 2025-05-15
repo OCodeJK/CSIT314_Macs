@@ -24,7 +24,7 @@ def suspend_service_submit(serviceId):
     
     # Handle result
     if result:
-        flash(f"Service {serviceId} has been suspended", "success")
+        flash(f"Service has been suspended", "success")
     else:
         flash("Failed to suspend service. Service may already be suspended.", "error")
     
