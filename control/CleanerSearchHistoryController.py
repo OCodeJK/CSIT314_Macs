@@ -8,8 +8,6 @@ class CleanerSearchHistoryController:
                 return []
                 
             results = HistoryRecord.searchService(searchName, cleanerId)
-            if isinstance(results, str):
-                return []
             return results
         except Exception as e:
             return []

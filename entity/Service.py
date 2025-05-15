@@ -122,10 +122,6 @@ class Service:
     @staticmethod
     def updateCleanerService(serviceId, serviceName, cleanerId, categoryId):
         """Update a cleaner's service details - only updates name and category ID"""
-        if not serviceId or not serviceName or not cleanerId or not categoryId:
-            print(f"Invalid input parameters: serviceId={serviceId}, serviceName={serviceName}, cleanerId={cleanerId}, categoryId={categoryId}")
-            return False
-        
         conn = db_connection()
         cur = conn.cursor()
         
@@ -212,34 +208,8 @@ class Service:
                 
                 results = cur.fetchall()
                 
-                # If no exact matches and the query has spaces, try word-by-word search
-                if not results and ' ' in searchQuery:
-                    # Split the search term into words
-                    search_words = searchQuery.split()
-                    # Create conditions for each word (they must all match)
-                    conditions = []
-                    params = [cleanerId]
-                    
-                    for word in search_words:
-                        conditions.append("serviceName ILIKE %s")
-                        params.append(f"%{word}%")
-                    
-                    # Combine all conditions with AND
-                    condition_str = " AND ".join(conditions)
-                    
-                    # Build and execute the query
-                    query = f"""
-                        SELECT * FROM service
-                        WHERE cleanerId = %s
-                        AND {condition_str}
-                        ORDER BY serviceName
-                    """
-                    
-                    cur.execute(query, params)
-                    results = cur.fetchall()
-                    
-                # If still no results, use a partial match
-                elif not results:
+                # If no results, use a partial match
+                if not results:
                     cur.execute(
                         """
                         SELECT * FROM service
