@@ -245,6 +245,8 @@ th:nth-child(3), td:nth-child(3) { width: 20%; text-align: right; }
   padding: 30px;
   border-radius: 12px;
   width: 450px;
+  margin-top: 20%;
+  margin-left: 43%;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   text-align: center;
 }

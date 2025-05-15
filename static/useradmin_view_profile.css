@@ -209,6 +209,8 @@ th {
     padding: 30px;
     border-radius: 12px;
     width: 450px;
+    margin-top: 20%;
+    margin-left: 43%;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
