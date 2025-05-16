@@ -8,9 +8,7 @@ class CleanerViewServiceController:
         pass
     
     def getServiceList(self, cleanerId):
-        print(f"Getting services for cleaner {cleanerId}")
         services = Service.getServiceName(cleanerId)
-        print(f"Found {len(services)} services for cleaner {cleanerId}")
         return services
     
  

@@ -6,7 +6,6 @@ class CleanerUpdateServiceController:
     def cleanerUpdateService(self, serviceId, serviceName, cleanerId, categoryId):
         """Update cleaner service"""
         if not serviceId or not serviceName or not cleanerId or not categoryId:
-            print(f"Invalid input parameters: serviceId={serviceId}, serviceName={serviceName}, cleanerId={cleanerId}, categoryId={categoryId}")
             return False
         try:
             # Use entity method to update service
