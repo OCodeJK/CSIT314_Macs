@@ -116,6 +116,18 @@ class UserAccount:
         try:
             conn = db_connection()
             cur = conn.cursor()
+            
+            # check if username exists in the database before update
+            cur.execute("""
+                SELECT username FROM account 
+                WHERE username = %s AND userid != %s
+            """, (username, userid)) 
+            
+            result = cur.fetchone()
+            
+            if result:
+                return False
+            
             cur.execute("""
                 UPDATE account
                 SET username = %s, password = %s, profileid = %s

@@ -29,5 +29,4 @@ def submitUpdateProfInfo(profileid):
     if success:
         return redirect("/admin/view_profiles?message=✅+Profile+details+updated+successfully.")
     else:
-        return render_template("update_profile.html", profile=[profileid, profilename],
-                               message = "❌ Failed to update profile details.")
+        return redirect("/admin/view_profiles?message=❌+Failed+to+update+profile+details.")
