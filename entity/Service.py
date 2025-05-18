@@ -4,15 +4,6 @@ from datetime import datetime
 class Service:
     """Entity class representing a Service in the system"""
     
-    def __init__(self, serviceId=None, serviceName=None, categoryId=None, cleanerId=None, price=None, suspend=False):
-        """Initialize a new Service instance"""
-        self.serviceId = serviceId
-        self.serviceName = serviceName
-        self.categoryId = categoryId
-        self.cleanerId = cleanerId
-        self.price = price
-        self.suspend = suspend if suspend is not None else False
-    
     @staticmethod
     def getServiceName(cleanerId):
         """Get all services for a specific cleaner"""
@@ -62,15 +53,6 @@ class Service:
             UPDATE service
             SET cleanerId = %s
             WHERE serviceId = %s
-            """,
-            (cleanerId, serviceId)
-        )
-        
-        # Create history record
-        cur.execute(
-            """
-            INSERT INTO historyrecord (cleanerId, serviceId, startDate)
-            VALUES (%s, %s, CURRENT_DATE)
             """,
             (cleanerId, serviceId)
         )
@@ -126,28 +108,6 @@ class Service:
         cur = conn.cursor()
         
         try:
-            # First check if the service belongs to the cleaner
-            cur.execute(
-                """
-                SELECT cleanerId FROM service
-                WHERE serviceId = %s
-                """,
-                (serviceId,)
-            )
-            
-            result = cur.fetchone()
-            if not result:
-                print(f"Service {serviceId} not found")
-                cur.close()
-                conn.close()
-                return False
-            
-            if result[0] != cleanerId:
-                print(f"Service {serviceId} does not belong to cleaner {cleanerId}")
-                cur.close()
-                conn.close()
-                return False
-            
             # Update the service
             cur.execute(
                 """
@@ -159,12 +119,11 @@ class Service:
             )
             
             if cur.rowcount == 0:
-                print(f"No rows affected when updating service {serviceId}")
                 conn.rollback()
                 cur.close()
                 conn.close()
                 return False
-                        
+            
             conn.commit()
             cur.close()
             conn.close()
@@ -176,7 +135,7 @@ class Service:
             cur.close()
             conn.close()
             return False
-            
+        
     @staticmethod
     def getServices(cleanerId, searchQuery):
         """Search for services by name for a specific cleaner"""

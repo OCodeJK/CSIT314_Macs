@@ -3,25 +3,14 @@ from datetime import datetime
 
 class Shortlist:
     """Entity class for managing shortlisted services"""
-    
-    def __init__(self, id=None, cleanerId=None, homeownerId=None, serviceId=None):
-        """Initialize a new Shortlist instance"""
-        self.id = id
-        self.cleanerId = cleanerId
-        self.homeownerId = homeownerId
-        self.serviceId = serviceId
-    
     @staticmethod
     def numberOfShortlistedTime(cleanerId, serviceId=None):
-        """Count how many times a cleaner's service has been shortlisted"""
         try:
-            # Establish database connection
             conn = db_connection()
             cur = conn.cursor()
             cleanerId = int(cleanerId)
             
             if serviceId:
-                # Count shortlists for specific service
                 cur.execute(
                     """
                     SELECT COUNT(*) 
@@ -32,7 +21,6 @@ class Shortlist:
                     (cleanerId, serviceId)
                 )
             else:
-                # Count all shortlists for the cleaner
                 cur.execute(
                     """
                     SELECT COUNT(*) 
@@ -44,22 +32,18 @@ class Shortlist:
                 )
             
             result = cur.fetchone()
-            
-            # Close cursor and connection
             cur.close()
             conn.close()
             
-            return result[0] if result else 0
-                
+            return result[0]
+            
         except Exception as e:
             print(f"Error in numberOfShortlistedTime: {str(e)}")
-            # Ensure connection is closed even if an error occurs
             if 'cur' in locals() and cur:
                 cur.close()
             if 'conn' in locals() and conn:
                 conn.close()
-            return 0
-    
+        return 0
     
     @staticmethod
     def viewShortlistForHomeowner(userid):
