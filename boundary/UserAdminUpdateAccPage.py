@@ -38,6 +38,5 @@ def submitUpdateUserInfo(userid):
     if success:
         return redirect("/admin/view_accounts?message=✅+User+details+updated+successfully.")
     else:
-        return render_template("update_account.html", user=[userid, username, None, profileid],
-                               message = "❌ Failed to update user details.")
+        return redirect("/admin/view_accounts?message=❌+Failed+to+update+user+details.")
     

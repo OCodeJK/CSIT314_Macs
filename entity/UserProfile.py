@@ -50,6 +50,18 @@ class UserProfile:
         try:
             conn = db_connection()
             cur = conn.cursor()
+            
+            # check if username exists in the database before update
+            cur.execute("""
+                SELECT profilename FROM profile 
+                WHERE profilename = %s AND profileid != %s
+            """, (profilename, profileid)) 
+            
+            result = cur.fetchone()
+            
+            if result:
+                return False
+            
             cur.execute("""
                 UPDATE profile
                 SET profilename = %s
