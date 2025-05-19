@@ -15,7 +15,7 @@ def update_category_form(category_id):
             flash("Service Category updated successfully.")
             return redirect(url_for('view_category.view_category'))
         else:
-            flash("Failed to update service category. This name may already exist or be invalid")
+            flash("Failed to update: Name already exists.")
 
     # Optionally fetch current category name for display
     current_category = GetCategoryById(category_id)
