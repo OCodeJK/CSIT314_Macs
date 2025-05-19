@@ -79,11 +79,11 @@ class Category:
             # Optionally log e
             return False
 
-    def SuspendServCat(self, category_id: int, suspend: bool) -> bool or str:
+    def SuspendServCat(self, category_id: int, suspend: bool) -> bool:
         """
         Sets the suspend flag for a category.
         If suspend=True, suspends the category.
-        Returns True if successful, False if failed, or a string for already suspended.
+        Returns True if successful, False if already suspended.
         """
         try:
             with db_connection() as conn:
@@ -91,11 +91,9 @@ class Category:
                     # Check current status
                     cur.execute("SELECT suspend FROM public.category WHERE categoryid = %s", (category_id,))
                     row = cur.fetchone()
-                    if row is None:
-                        return False  # Category does not exist
                     current_status = row[0]
                     if suspend and current_status:
-                        return "already_suspended"
+                        return False
                     cur.execute(
                         "UPDATE public.category SET suspend = %s WHERE categoryid = %s",
                         (suspend, category_id)

@@ -13,7 +13,7 @@ def create_service_category():
     if result is True:
         flash("Service category created successfully")
     else:
-        flash("Failed: Service category already exists.")
+        flash("Failed to create service category. Service category already exists.")
 
     # Always redirect back to view categories page
     return redirect(url_for('view_category.view_category'))
