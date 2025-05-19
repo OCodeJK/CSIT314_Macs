@@ -15,7 +15,7 @@ class Category:
                 cur.execute(query, (category_name,))
                 return cur.fetchone() is not None
 
-    def CreateServCat(self, category_name: str) -> bool or str:
+    def CreateServCat(self, category_name: str) -> bool:
         """
         Create a new service category with the given name.
         Returns True if successful, "exists" if duplicate, False otherwise.
