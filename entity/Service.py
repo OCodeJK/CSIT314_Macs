@@ -182,7 +182,6 @@ class Service:
                 
                 return results
             
-            # This line will only be reached when searchQuery is empty
             results = cur.fetchall()
             return results
             

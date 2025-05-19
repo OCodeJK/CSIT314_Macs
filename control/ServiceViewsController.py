@@ -2,7 +2,7 @@ from entity.ServiceViews import ServiceViews
 
 class ServiceViewsController:
 
-    def getTotalViews(self, cleanerId, serviceId=None):
+    def getTotalViews(self, cleanerId, serviceId):
         try:
             return ServiceViews.getViewCount(cleanerId, serviceId)
         except Exception as e:
