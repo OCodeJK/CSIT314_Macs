@@ -1,10 +1,5 @@
 from entity.Service import Service
-from entity.HistoryRecord import HistoryRecord
-
 class ServiceSuspensionController:
-    
-    def __init__(self):
-        self.history_record = HistoryRecord()
     
     def suspendService(self, cleanerId, serviceId):
         # Validate input parameters
@@ -12,5 +7,4 @@ class ServiceSuspensionController:
             return False
         # Call the Service entity method to suspend the service
         result = Service.cleanerSuspendService(cleanerId, serviceId)
-        
         return result
