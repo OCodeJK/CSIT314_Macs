@@ -10,11 +10,16 @@ def update_category_form(category_id):
 
     if request.method == 'POST':
         new_name = request.form.get('category_name', '').strip()
-        success, message = controller.UpdateServCat(category_id, new_name)
-        flash(message)
-        if success:
+        result = controller.UpdateServCat(category_id, new_name)
+        if result is True:
+            flash("Service Category updated successfully.")
             return redirect(url_for('view_category.view_category'))
-        # else fall through to re-render form with message
+        elif result == "duplicate":
+            flash("Failed to update: Name already exists.")
+        elif result is False or result is None:
+            flash("Failed to update: Invalid name or error.")
+        else:
+            flash("Failed to update service category.")
 
     # Optionally fetch current category name for display
     current_category = GetCategoryById(category_id)

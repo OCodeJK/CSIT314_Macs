@@ -5,16 +5,7 @@ class PMCreateServCatController:
         # No parameters needed; entity manages DB connection internally
         pass
 
-    def CreateServCat(self, category_name: str) -> str:
-        if not category_name or not category_name.strip():
-            return "Failed to create service category: Name required"
-
+    def CreateServCat(self, category_name: str):
         category_entity = Category()
-
-        if category_entity.checkServCatExists(category_name):
-            return "Failed to create service category. Service category exists."
-
-        if category_entity.CreateServCat(category_name):
-            return "Service category created successfully"
-
-        return "Failed to create service category"
+        # Let the entity handle all logic and just return its result
+        return category_entity.CreateServCat(category_name)
