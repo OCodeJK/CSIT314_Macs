@@ -10,7 +10,10 @@ def create_service_category():
     
     # Process creation
     result = controller.CreateServCat(category_name)
-    flash(result)
-    
+    if result is True:
+        flash("Service category created successfully")
+    else:
+        flash("Failed: Service category already exists.")
+
     # Always redirect back to view categories page
     return redirect(url_for('view_category.view_category'))

@@ -15,20 +15,23 @@ class Category:
                 cur.execute(query, (category_name,))
                 return cur.fetchone() is not None
 
-    def CreateServCat(self, category_name: str) -> bool:
+    def CreateServCat(self, category_name: str) -> bool or str:
         """
         Create a new service category with the given name.
-        Returns True if successful, False otherwise.
+        Returns True if successful, "exists" if duplicate, False otherwise.
         """
+        # Check for duplicate name (case-insensitive)
+        if self.checkServCatExists(category_name):
+            return "exists"
         insert_query = """
-            INSERT INTO public.category (categoryname) VALUES (%s)
+        INSERT INTO public.category (categoryname) VALUES (%s)
         """
         try:
             with db_connection() as conn:
                 with conn.cursor() as cur:
                     cur.execute(insert_query, (category_name,))
-                conn.commit()
-                return True
+                    conn.commit()
+                    return True
         except Exception as e:
             # Optionally log the exception e here
             return False
