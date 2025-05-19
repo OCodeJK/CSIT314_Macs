@@ -12,8 +12,8 @@ def toggle_suspend(category_id):
     controller = PMSuspendServCatController()
     result = controller.SuspendServCat(category_id, suspend)
     if result is True:
-        flash("Category suspended successfully.")
+        flash("Service Category suspended successfully.")
     else:
-        flash("Category is already suspended.")
+        flash("Service Category is already suspended.")
 
     return redirect(url_for('view_category.view_category'))
