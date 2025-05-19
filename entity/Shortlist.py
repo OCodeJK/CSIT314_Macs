@@ -4,32 +4,46 @@ from datetime import datetime
 class Shortlist:
     """Entity class for managing shortlisted services"""
     @staticmethod
-    def numberOfShortlistedTime(cleanerId, serviceId):
+    def numberOfShortlistedTime(cleanerId, serviceId=None):
         try:
             conn = db_connection()
             cur = conn.cursor()
+            cleanerId = int(cleanerId)
             
-            cur.execute(
-                """
-                SELECT COUNT(*)
-                FROM shortlist sl
-                JOIN service s ON sl.serviceid = s.serviceid
-                WHERE s.cleanerid = %s AND sl.serviceid = %s
-                """,
-                (cleanerId, serviceId)
-            )
-                
+            if serviceId:
+                cur.execute(
+                    """
+                    SELECT COUNT(*) 
+                    FROM shortlist sl
+                    JOIN service s ON sl.serviceid = s.serviceid
+                    WHERE s.cleanerid = %s AND sl.serviceid = %s
+                    """,
+                    (cleanerId, serviceId)
+                )
+            else:
+                cur.execute(
+                    """
+                    SELECT COUNT(*) 
+                    FROM shortlist sl
+                    JOIN service s ON sl.serviceid = s.serviceid
+                    WHERE s.cleanerid = %s
+                    """,
+                    (cleanerId,)
+                )
+            
             result = cur.fetchone()
             cur.close()
             conn.close()
+            
             return result[0]
+            
         except Exception as e:
             print(f"Error in numberOfShortlistedTime: {str(e)}")
             if 'cur' in locals() and cur:
                 cur.close()
             if 'conn' in locals() and conn:
                 conn.close()
-            return 0  # Return 0 if there's an error
+        return 0
     
     @staticmethod
     def viewShortlistForHomeowner(userid):
