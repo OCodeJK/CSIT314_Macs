@@ -102,18 +102,16 @@ class HistoryRecord:
                 
                 cur.execute(
                     """
-                    SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
-                    FROM historyrecord h
-                    LEFT JOIN service s ON h.serviceid = s.serviceid
-                    WHERE h.cleanerid = %s 
-                    AND (
-                        (h.startdate BETWEEN %s AND %s) OR
-                        (h.enddate BETWEEN %s AND %s) OR
-                        (h.startdate <= %s AND (h.enddate IS NULL OR h.enddate >= %s))
-                    )
-                    ORDER BY h.startdate DESC
+                        SELECT h.historyid, h.serviceid, h.startdate, h.enddate, h.cleanerid, s.servicename 
+                        FROM historyrecord h
+                        LEFT JOIN service s ON h.serviceid = s.serviceid
+                        WHERE h.cleanerid = %s 
+                        AND h.startdate BETWEEN %s AND %s
+                        AND h.enddate BETWEEN %s AND %s
+                        ORDER BY h.startdate DESC
+
                     """,
-                    (cleanerId, start, end, start, end, start, end)
+                    (cleanerId, start, end, start, end)
                 )
             
             # fetchall() returns a list of tuples

@@ -19,7 +19,7 @@ class Service:
             (cleanerId,)
         )
         
-        result = cur.fetchall()
+        result = cur.fetchall() #list
         
         cur.close()
         conn.close()
@@ -113,9 +113,9 @@ class Service:
                 """
                 UPDATE service
                 SET serviceName = %s, categoryId = %s
-                WHERE serviceId = %s
+                WHERE serviceId = %s AND cleanerId = %s
                 """,
-                (serviceName, categoryId, serviceId)
+                (serviceName, categoryId, serviceId, cleanerId)
             )
             
             if cur.rowcount == 0:

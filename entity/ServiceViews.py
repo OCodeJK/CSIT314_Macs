@@ -7,7 +7,6 @@ class ServiceViews:
         
         conn = db_connection()
         cur = conn.cursor()
-        cleanerId = int(cleanerId)
         try:
             if serviceId:
                 # Get view count for specific service
